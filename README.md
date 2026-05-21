@@ -23,6 +23,8 @@ Start the Vite dev server:
 
 ```bash
 pnpm dev
+# or
+pnpm dev:mock
 ```
 
 Create a production build:
@@ -86,3 +88,24 @@ Run unit tests:
 ```bash
 pnpm test:unit
 ```
+
+## Mocking With Mock Service Worker
+
+This project uses [Mock Service Worker](https://mswjs.io/) to intercept browser requests during local development.
+
+Start the app with mocks enabled:
+
+```bash
+pnpm dev:mock
+```
+
+This sets `VITE_USE_MOCK_API=true`, which makes `src/main.ts` start the MSW worker from `src/mocks/browser.ts` before the Vue app is mounted.
+
+The worker script is checked in at `public/mockServiceWorker.js`. If MSW is re-initialized, run:
+
+```bash
+pnpm msw:init
+```
+
+Mock handlers live in `src/mocks/handlers.ts`.
+
