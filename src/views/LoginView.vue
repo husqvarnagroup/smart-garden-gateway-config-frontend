@@ -11,14 +11,15 @@ const password = ref('')
 
 const onSubmit = async () => {
   if (!password.value) {
+    console.warn("Failed to login: No password.");
     return
   }
 
   try {
     await login(password.value)
     await router.push('/')
-  } catch {
-    // Error state is exposed from the shared auth module.
+  } catch (error) {
+    console.error("Failed to login:", error);
   }
 }
 </script>

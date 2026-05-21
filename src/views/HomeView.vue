@@ -13,8 +13,8 @@ const onLogout = async () => {
 </script>
 
 <template>
-  <main class="home-page">
-    <section class="home-card">
+  <main>
+    <section>
       <h1>Home</h1>
       <p class="status">Session active</p>
       <button type="button" @click="onLogout">Logout</button>
@@ -23,17 +23,10 @@ const onLogout = async () => {
 </template>
 
 <style scoped>
-.home-page {
-  padding: 2rem;
-}
-
-.home-card {
+main {
   display: grid;
-  gap: 1rem;
-}
-
-.status {
-  font-weight: 600;
+  min-height: 100vh;
+  place-items: center;
 }
 
 button {
