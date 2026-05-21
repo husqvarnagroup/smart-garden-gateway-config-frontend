@@ -1,6 +1,6 @@
 import { computed, readonly } from 'vue'
 
-import { loginRequest } from '@/services/auth'
+import { loginRequest, logoutRequest } from '@/services/auth'
 import { authState, resetAuthState } from '@/state/auth'
 
 const isAuthenticated = computed(() => authState.session !== null)
@@ -20,8 +20,12 @@ const login = async (password: string) => {
   }
 }
 
-const logout = () => {
-  resetAuthState()
+const logout = async () => {
+  try {
+    await logoutRequest()
+  } finally {
+    resetAuthState()
+  }
 }
 
 export const useAuth = () => ({
