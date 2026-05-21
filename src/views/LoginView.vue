@@ -11,7 +11,7 @@ const password = ref('')
 
 const onSubmit = async () => {
   if (!password.value) {
-    console.warn("Failed to login: No password.");
+    console.warn('Failed to login: No password.')
     return
   }
 
@@ -19,7 +19,7 @@ const onSubmit = async () => {
     await login(password.value)
     await router.push('/')
   } catch (error) {
-    console.error("Failed to login:", error);
+    console.error('Failed to login:', error)
   }
 }
 </script>
