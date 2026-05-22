@@ -4,7 +4,8 @@
 
 <style>
 html,
-body, #app {
+body,
+#app {
   height: 100%;
   width: 100%;
   margin: 0;

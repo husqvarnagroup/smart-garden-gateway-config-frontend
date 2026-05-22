@@ -2,6 +2,7 @@
 import { useRouter } from 'vue-router';
 
 import { useAuth } from '@/composables/useAuth';
+import BaseLayout from '@/layouts/BaseLayout.vue';
 import SystemInfo from '@/components/SystemInfo.vue';
 import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import WifiInfo from '@/components/WifiInfo.vue';
@@ -16,7 +17,7 @@ const onLogout = async () => {
 </script>
 
 <template>
-  <main>
+  <BaseLayout>
     <section>
       <h1>Gateway</h1>
       <SystemInfo />
@@ -24,16 +25,10 @@ const onLogout = async () => {
       <WifiInfo />
       <button type="button" @click="onLogout">Logout</button>
     </section>
-  </main>
+  </BaseLayout>
 </template>
 
 <style scoped>
-main {
-  display: grid;
-  min-height: 100vh;
-  place-items: center;
-}
-
 button {
   width: fit-content;
   font: inherit;

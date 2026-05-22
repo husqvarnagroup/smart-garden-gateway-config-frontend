@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { useAuth } from '@/composables/useAuth';
+import BaseLayout from '@/layouts/BaseLayout.vue';
 
 const router = useRouter();
 const { authState, login } = useAuth();
@@ -25,7 +26,7 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <main>
+  <BaseLayout>
     <form @submit.prevent="onSubmit">
       <h1>Login</h1>
       <input v-model="password" type="password" autocomplete="current-password" required />
@@ -34,16 +35,10 @@ const onSubmit = async () => {
         {{ authState.loading ? 'Signing in...' : 'Sign in' }}
       </button>
     </form>
-  </main>
+  </BaseLayout>
 </template>
 
 <style scoped>
-main {
-  display: grid;
-  min-height: 100vh;
-  place-items: center;
-}
-
 form {
   width: min(100%, 24rem);
   display: grid;
