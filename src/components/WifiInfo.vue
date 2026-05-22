@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { getCurrentWifi, type WifiConfig } from '@/services/wifi';
 import { useLoading } from '@/composables/useLoading';
+import BaseCard from '@/components/BaseCard.vue';
 
 const { withLoading } = useLoading();
 const current = ref<WifiConfig | null>(null);
@@ -18,9 +19,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
+  <BaseCard>
     <h2>Wifi</h2>
     <p>SSID: {{ current?.ssid ?? '…' }}</p>
     <p>Security: {{ current?.key_mgmt ?? '…' }}</p>
-  </section>
+  </BaseCard>
 </template>

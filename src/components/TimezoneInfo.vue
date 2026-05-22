@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue';
 
 import { getCurrentTimezone, type TimezoneConfig } from '@/services/timezone';
 import { useLoading } from '@/composables/useLoading';
+import BaseCard from '@/components/BaseCard.vue';
 
 const { withLoading } = useLoading();
 const current = ref<TimezoneConfig | null>(null);
@@ -18,8 +19,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <section>
+  <BaseCard>
     <h2>Timezone</h2>
     <p>{{ current?.timezone ?? '…' }}</p>
-  </section>
+  </BaseCard>
 </template>
