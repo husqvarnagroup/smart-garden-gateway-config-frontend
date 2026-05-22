@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import StyledButton from '@/components/StyledButton.vue';
+import PasswordField from '@/components/PasswordField.vue';
 
 const router = useRouter();
 const { authState, login } = useAuth();
@@ -30,7 +31,7 @@ const onSubmit = async () => {
   <BaseLayout>
     <form @submit.prevent="onSubmit">
       <h1>Login</h1>
-      <input v-model="password" type="password" autocomplete="current-password" required />
+      <PasswordField v-model="password" label="Password" placeholder="Admin password" />
       <p v-if="authState.error" class="error">{{ authState.error }}</p>
       <StyledButton type="submit" variant="primary" :disabled="authState.loading">
         {{ authState.loading ? 'Signing in...' : 'Sign in' }}
