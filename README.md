@@ -101,6 +101,8 @@ pnpm dev:mock
 
 This sets `VITE_USE_MOCK_API=true`, which makes `src/main.ts` start the MSW worker from `src/mocks/browser.ts` before the Vue app is mounted.
 
+Set `VITE_API_BASE_URL` in your env file to the backend origin the browser should call directly. This value is required, including when local mocks are enabled.
+
 The worker script is checked in at `public/mockServiceWorker.js`. If MSW is re-initialized, run:
 
 ```bash
@@ -108,4 +110,3 @@ pnpm msw:init
 ```
 
 Mock handlers live in `src/mocks/handlers.ts`.
-

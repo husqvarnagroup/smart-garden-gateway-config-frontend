@@ -6,7 +6,13 @@ type ErrorResponse = {
   message?: string
 }
 
-const LOGIN_URL = '/login'
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+
+if (!apiBaseUrl) {
+  throw new Error('Missing required VITE_API_BASE_URL environment variable')
+}
+
+const LOGIN_URL = new URL('/login', apiBaseUrl).toString()
 
 const getErrorMessage = async (response: Response) => {
   const contentType = response.headers.get('content-type') ?? ''
