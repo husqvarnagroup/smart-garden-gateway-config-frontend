@@ -14,13 +14,25 @@ const current = ref<WifiConfig | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
 
-const fetchWifi = async () => {
+const fetchCurrentWifi = async () => {
   loading.value = true
   error.value = null
   try {
-    ;[networks.value, current.value] = await Promise.all([wifiScan(), getCurrentWifi()])
+    current.value = await getCurrentWifi()
   } catch (e) {
     error.value = e instanceof Error ? e.message : 'Failed to load wifi'
+  } finally {
+    loading.value = false
+  }
+}
+
+const scanWifi = async () => {
+  loading.value = true
+  error.value = null
+  try {
+    networks.value = await wifiScan()
+  } catch (e) {
+    error.value = e instanceof Error ? e.message : 'Failed to scan wifi'
   } finally {
     loading.value = false
   }
@@ -58,7 +70,8 @@ export const useWifi = () => ({
   current: readonly(current),
   loading: readonly(loading),
   error: readonly(error),
-  fetchWifi,
+  fetchCurrentWifi,
+  scanWifi,
   connectWifi,
   disconnectWifi,
 })
