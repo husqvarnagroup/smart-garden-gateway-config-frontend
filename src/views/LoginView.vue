@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router';
 
 import { useAuth } from '@/composables/useAuth';
 import BaseLayout from '@/layouts/BaseLayout.vue';
+import StyledButton from '@/components/StyledButton.vue';
 
 const router = useRouter();
 const { authState, login } = useAuth();
@@ -31,9 +32,9 @@ const onSubmit = async () => {
       <h1>Login</h1>
       <input v-model="password" type="password" autocomplete="current-password" required />
       <p v-if="authState.error" class="error">{{ authState.error }}</p>
-      <button type="submit" :disabled="authState.loading">
+      <StyledButton type="submit" variant="primary" :disabled="authState.loading">
         {{ authState.loading ? 'Signing in...' : 'Sign in' }}
-      </button>
+      </StyledButton>
     </form>
   </BaseLayout>
 </template>
@@ -43,12 +44,6 @@ form {
   width: min(100%, 24rem);
   display: grid;
   gap: 1rem;
-}
-
-input,
-button {
-  font: inherit;
-  padding: 0.75rem;
 }
 
 p {
