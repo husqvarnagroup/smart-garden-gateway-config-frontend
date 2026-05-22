@@ -1,36 +1,36 @@
-import { computed, readonly } from 'vue'
+import { computed, readonly } from 'vue';
 
-import { loginRequest, logoutRequest } from '@/services/auth'
-import { authState, resetAuthState } from '@/state/auth'
+import { loginRequest, logoutRequest } from '@/services/auth';
+import { authState, resetAuthState } from '@/state/auth';
 
-const isAuthenticated = computed(() => authState.session !== null)
+const isAuthenticated = computed(() => authState.session !== null);
 
 const login = async (password: string) => {
-  authState.loading = true
-  authState.error = null
+  authState.loading = true;
+  authState.error = null;
 
   try {
-    authState.session = await loginRequest(password)
+    authState.session = await loginRequest(password);
   } catch (error) {
-    resetAuthState()
-    authState.error = error instanceof Error ? error.message : 'Login failed'
-    throw error
+    resetAuthState();
+    authState.error = error instanceof Error ? error.message : 'Login failed';
+    throw error;
   } finally {
-    authState.loading = false
+    authState.loading = false;
   }
-}
+};
 
 const logout = async () => {
   try {
-    await logoutRequest()
+    await logoutRequest();
   } finally {
-    resetAuthState()
+    resetAuthState();
   }
-}
+};
 
 export const useAuth = () => ({
   authState: readonly(authState),
   isAuthenticated,
   login,
   logout,
-})
+});

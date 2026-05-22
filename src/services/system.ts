@@ -1,17 +1,16 @@
-import { apiFetch } from '@/services/api'
+import { apiFetch } from '@/services/api';
 
 export type GatewayVersion = {
-  version: string
-}
+  gateway_version: string;
+};
 
-export type ApConfig = {
-  ssid: string
-  password: string
-}
+export type HomekitStatus = {
+  active: boolean;
+};
 
 export const getGatewayVersion = (): Promise<GatewayVersion> =>
-  apiFetch<GatewayVersion>('/version', 'GET', undefined, true)
+  apiFetch<GatewayVersion>('/version', 'GET', undefined, true);
 
-export const getAp = (): Promise<ApConfig> => apiFetch<ApConfig>('/ap', 'GET')
+export const getHomekitStatus = (): Promise<HomekitStatus> => apiFetch<HomekitStatus>('/ap', 'GET');
 
-export const resetHomekit = (): Promise<void> => apiFetch<void>('/homekit', 'DELETE')
+export const resetHomekit = (): Promise<void> => apiFetch<void>('/homekit', 'DELETE');

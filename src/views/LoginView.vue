@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-import { useAuth } from '@/composables/useAuth'
+import { useAuth } from '@/composables/useAuth';
 
-const router = useRouter()
-const { authState, login } = useAuth()
+const router = useRouter();
+const { authState, login } = useAuth();
 
-const password = ref('')
+const password = ref('');
 
 const onSubmit = async () => {
   if (!password.value) {
-    console.warn('Failed to login: No password.')
-    return
+    console.warn('Failed to login: No password.');
+    return;
   }
 
   try {
-    await login(password.value)
-    await router.push('/')
+    await login(password.value);
+    await router.push('/');
   } catch (error) {
-    console.error('Failed to login:', error)
+    console.error('Failed to login:', error);
   }
-}
+};
 </script>
 
 <template>
