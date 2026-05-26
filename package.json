@@ -25,6 +25,8 @@
     "code:fix": "run-s format:fix lint:fix type-check"
   },
   "dependencies": {
+    "i18next": "^26.2.0",
+    "i18next-vue": "^5.4.0",
     "vue": "^3.5.32",
     "vue-router": "^5.0.4"
   },
