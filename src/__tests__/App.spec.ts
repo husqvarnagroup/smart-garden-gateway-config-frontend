@@ -20,6 +20,6 @@ describe('App', () => {
 
     await nextTick();
 
-    expect(wrapper.text()).toContain('Login');
+    expect(wrapper.text()).toContain('Log in');
   });
 });
