@@ -10,4 +10,9 @@ header {
   text-align: center;
   background-color: #ffff;
 }
+
+h1 {
+  font-size: 28px;
+  font-weight: 300;
+}
 </style>
