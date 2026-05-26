@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
+import I18NextVue from 'i18next-vue';
 import App from './App.vue';
 import router from './router';
+import i18next from './i18n';
 import './styles/global.css';
 
 const bootstrap = async () => {
@@ -12,6 +14,7 @@ const bootstrap = async () => {
   const app = createApp(App);
 
   app.use(router);
+  app.use(I18NextVue, { i18next });
 
   app.mount('#app');
 };

@@ -1,0 +1,38 @@
+---
+title: 'Configuraziun da la passarella'
+version: 'Versiun'
+licenses: 'Licenzas'
+logo: 'Logo dal GARDENA smart system'
+noresults: 'Chattà nagins resultats'
+login.password.title: 'Pled-clav'
+login.password.placeholder: "Pled-clav d'administraziun"
+login.button: "S'annunziar"
+login.failed: 'Annunzia betg reussida.'
+main.timezone.label: "Zona d'urari"
+main.timezone.placeholder: "Tscherna tia zona d'urari"
+main.timezone.save.button: 'Memorisar'
+main.networks.network.label: 'Rait da WLAN'
+main.networks.network.placeholder: 'Tscherna tia rait da WLAN'
+main.networks.password.label: 'Pled-clav'
+main.networks.password.placeholder: 'Endatar il pled-clav'
+main.networks.reset.button: 'Stizzar ils parameters da WLAN'
+main.networks.save.button: 'Memorisar ils parameters da WLAN'
+main.networks.divider: 'u'
+main.homekit.label: 'Apple HomeKit'
+main.homekit.text: 'HomeKit lubescha be in singul pairing cun quest GARDENA smart Gateway. Sche ti vuls definir in nov pairing stos ti redefinir il pairing existent.'
+main.homekit.reset.button: 'Redefinir il pairing da HomeKit'
+main.logout.button: 'Sortir'
+main.timezone.loading.failed: "Errur cun chargiar las zonas d'urari"
+main.timezone.save.successful: 'Memorisà cun success'
+main.timezone.save.failed: 'Errur cun memorisar'
+main.networks.loading.failed: 'Errur cun chargiar la glista da las raits'
+main.networks.reset.successful: 'Redefinì cun success'
+main.networks.reset.failed: 'Errur cun redefinir'
+main.networks.save.successful: 'Memorisà cun success ils parameters da WLAN'
+main.networks.save.failed: 'Errur cun memorisar ils parameters da WLAN'
+main.homekit.reset.successful: 'Redefinì cun success il pairing da HomeKit'
+main.homekit.reset.failed: 'Errur cun redefinir il pairing da HomeKit'
+main.logout.successful: 'Sortì cun success'
+flashmessages.saving: 'Memorisar…'
+flashmessages.loading: 'Chargiar…'
+flashmessages.resetting: 'Redefinir…'

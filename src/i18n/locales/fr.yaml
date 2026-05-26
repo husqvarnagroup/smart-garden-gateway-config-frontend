@@ -1,0 +1,38 @@
+---
+title: 'Configuration de la passerelle'
+version: 'Version'
+licenses: 'Licences'
+logo: 'Logo GARDENA smart system'
+noresults: 'Aucun résultat trouvé'
+login.password.title: 'Mot de passe'
+login.password.placeholder: 'Mot de passe admin'
+login.button: 'Connexion'
+login.failed: 'Échec de la connexion.'
+main.timezone.label: 'Fuseau horaire'
+main.timezone.placeholder: 'Sélectionnez votre fuseau horaire'
+main.timezone.save.button: 'Enregistrer'
+main.networks.network.label: 'Réseau Wi-Fi'
+main.networks.network.placeholder: 'Sélectionnez votre réseau Wi-Fi'
+main.networks.password.label: 'Mot de passe'
+main.networks.password.placeholder: 'Entrer le mot de passe'
+main.networks.reset.button: 'Supprimer les paramètres Wi-Fi'
+main.networks.save.button: 'Enregistrer les paramètres Wi-Fi'
+main.networks.divider: 'ou'
+main.homekit.label: 'Apple HomeKit'
+main.homekit.text: "HomeKit ne permet d'établir qu'un seul appairage avec cette smart Gateway GARDENA. Si devez établir un nouvel appairage, réinitialisez les appairages existants."
+main.homekit.reset.button: 'Réinitialiser les appairages HomeKit'
+main.logout.button: 'Déconnexion'
+main.timezone.loading.failed: 'Échec du chargement des fuseaux horaires'
+main.timezone.save.successful: 'Enregistrement réussi'
+main.timezone.save.failed: "Échec de l'enregistrement"
+main.networks.loading.failed: 'Échec du chargement des réseaux'
+main.networks.reset.successful: 'Réinitialisation réussie'
+main.networks.reset.failed: 'Échec de la réinitialisation'
+main.networks.save.successful: 'Sauvegarde des paramètres Wi-Fi réussie'
+main.networks.save.failed: "Échec de l'enregistrement des paramètres Wi-Fi"
+main.homekit.reset.successful: "Réinitialisation de l'appairage HomeKit réussi"
+main.homekit.reset.failed: "Échec de la réinitialisation de l'appairage HomeKit"
+main.logout.successful: 'Déconnexion réussie'
+flashmessages.saving: 'Enregistrement…'
+flashmessages.loading: 'Chargement…'
+flashmessages.resetting: 'Réinitialisation…'
