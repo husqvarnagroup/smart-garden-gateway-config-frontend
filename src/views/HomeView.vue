@@ -8,7 +8,6 @@ import WifiInfo from '@/components/WifiInfo.vue';
 
 const { logout } = useAuth();
 
-const onLogout = () => logout();
 </script>
 
 <template>
@@ -18,7 +17,7 @@ const onLogout = () => logout();
       <SystemInfo />
       <TimezoneInfo />
       <WifiInfo />
-      <StyledButton type="button" variant="primary" @click="onLogout">Logout</StyledButton>
+      <StyledButton type="button" variant="primary" @click="logout">Logout</StyledButton>
     </section>
   </BaseLayout>
 </template>
