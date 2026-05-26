@@ -2,8 +2,10 @@ import { describe, it, expect } from 'vitest';
 
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import I18NextVue from 'i18next-vue';
 import App from '../App.vue';
 import router from '../router';
+import i18next from '../i18n';
 
 describe('App', () => {
   it('redirects unauthenticated users to login', async () => {
@@ -12,7 +14,7 @@ describe('App', () => {
 
     const wrapper = mount(App, {
       global: {
-        plugins: [router],
+        plugins: [router, [I18NextVue, { i18next }]],
       },
     });
 
