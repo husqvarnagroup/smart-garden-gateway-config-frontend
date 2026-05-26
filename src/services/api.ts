@@ -45,6 +45,9 @@ export const apiFetch = async <T>(
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      authState.session = null;
+    }
     throw new Error(await getErrorMessage(response));
   }
 

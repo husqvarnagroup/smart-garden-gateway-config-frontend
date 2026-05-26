@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-
 import { useAuth } from '@/composables/useAuth';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import StyledButton from '@/components/StyledButton.vue';
@@ -8,13 +6,9 @@ import SystemInfo from '@/components/SystemInfo.vue';
 import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import WifiInfo from '@/components/WifiInfo.vue';
 
-const router = useRouter();
 const { logout } = useAuth();
 
-const onLogout = async () => {
-  await logout();
-  await router.push('/login');
-};
+const onLogout = () => logout();
 </script>
 
 <template>
