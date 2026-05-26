@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useTranslation } from 'i18next-vue';
 
 import { useAuth } from '@/composables/useAuth';
 import PasswordField from '@/components/PasswordField.vue';
 import StyledButton from '@/components/StyledButton.vue';
+
+const { t } = useTranslation();
 
 const router = useRouter();
 const { authState, login } = useAuth();
@@ -25,13 +28,13 @@ const onSubmit = async () => {
   <form @submit.prevent="onSubmit">
     <PasswordField
       v-model="password"
-      label="Password"
-      placeholder="Admin password"
+      :label="t('login.password.title')"
+      :placeholder="t('login.password.placeholder')"
       autocomplete="current-password"
     />
     <p v-if="authState.error" class="error">{{ authState.error }}</p>
     <StyledButton type="submit" variant="primary" :disabled="authState.loading">
-      {{ authState.loading ? 'Signing in...' : 'Sign in' }}
+      {{ authState.loading ? 'Signing in…' : t('login.button') }}
     </StyledButton>
   </form>
 </template>
