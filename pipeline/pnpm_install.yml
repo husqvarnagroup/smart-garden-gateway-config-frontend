@@ -1,0 +1,12 @@
+steps:
+  - script: |
+      echo "Before: corepack version => $(corepack --version || echo 'not installed')"
+      npm install -g corepack@latest
+      echo "After : corepack version => $(corepack --version)"
+      corepack enable
+      pnpm --version
+    displayName: 'pnpm: install tool'
+
+  - script: |
+      pnpm install
+    displayName: 'pnpm: install packages'

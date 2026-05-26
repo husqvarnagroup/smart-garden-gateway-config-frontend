@@ -1,0 +1,2 @@
+stages:
+  - template: pipeline/lint-test-stage.yml
