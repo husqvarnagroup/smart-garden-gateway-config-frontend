@@ -33,36 +33,12 @@ Create a production build:
 pnpm build
 ```
 
-Preview the production build locally:
-
-```bash
-pnpm preview
-```
-
 ## Quality Checks
 
-Format check:
+Run unit tests:
 
 ```bash
-pnpm format
-```
-
-Apply formatting fixes:
-
-```bash
-pnpm format:fix
-```
-
-Run lint checks:
-
-```bash
-pnpm lint
-```
-
-Apply lint fixes:
-
-```bash
-pnpm lint:fix
+pnpm test
 ```
 
 Run formatting, lint, and type-checks together:
@@ -77,17 +53,14 @@ Apply formatting and lint fixes, then run type-checking:
 pnpm code:fix
 ```
 
-Type-check the app:
+## Environment Variables
 
-```bash
-pnpm type-check
-```
+| Variable | Description |
+|---|---|
+| `VITE_API_BASE_URL` | Backend origin the browser calls. Use `https://localhost` when the app runs on the gateway itself (production or on-device testing). Use the gateway's IP (e.g. `http://192.168.1.100`) to develop against a real gateway on the same local network. Required in all modes. |
+| `VITE_USE_MOCK_API` | Set to `true` to enable MSW mock interception. Defaults to `false`. |
 
-Run unit tests:
-
-```bash
-pnpm test:unit
-```
+Defaults are in `.env.development` (dev server) and `.env.test` (unit tests).
 
 ## Mocking With Mock Service Worker
 
@@ -100,8 +73,6 @@ pnpm dev:mock
 ```
 
 This sets `VITE_USE_MOCK_API=true`, which makes `src/main.ts` start the MSW worker from `src/mocks/browser.ts` before the Vue app is mounted.
-
-Set `VITE_API_BASE_URL` in your env file to the backend origin the browser should call directly. This value is required, including when local mocks are enabled.
 
 The worker script is checked in at `public/mockServiceWorker.js`. If MSW is re-initialized, run:
 
