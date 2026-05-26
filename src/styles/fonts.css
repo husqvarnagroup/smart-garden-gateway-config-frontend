@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'Gardena Sans';
+  font-weight: normal;
+  font-style: normal;
+  src: url('/fonts/GardenaSans-Regular.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gardena Sans';
+  font-weight: normal;
+  font-style: italic;
+  src: url('/fonts/GardenaSans-RegularItalic.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gardena Sans';
+  font-weight: bold;
+  font-style: normal;
+  src: url('/fonts/GardenaSans-Bold.woff') format('woff');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gardena Sans';
+  font-weight: bold;
+  font-style: italic;
+  src: url('/fonts/GardenaSans-BoldItalic.woff') format('woff');
+  font-display: swap;
+}

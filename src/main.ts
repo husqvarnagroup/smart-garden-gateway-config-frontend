@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import router from './router';
+import './styles/global.css';
 
 const bootstrap = async () => {
   if (import.meta.env.VITE_USE_MOCK_API === 'true') {
