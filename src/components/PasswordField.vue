@@ -1,16 +1,29 @@
 <script setup lang="ts">
+import { useId } from 'vue';
+
 const model = defineModel<string>({ default: '' });
 
 defineProps<{
   label: string;
   placeholder?: string;
+  autocomplete?: 'current-password' | 'new-password';
 }>();
+
+const id = useId();
 </script>
 
 <template>
   <div class="field">
-    <label class="field__label">{{ label }}</label>
-    <input v-model="model" type="password" class="field__input" :placeholder="placeholder" />
+    <label :for="id">{{ label }}</label>
+    <input
+      :id="id"
+      v-model="model"
+      type="password"
+      :placeholder="placeholder"
+      name="password"
+      :autocomplete="autocomplete"
+      required
+    />
   </div>
 </template>
 
@@ -21,11 +34,11 @@ defineProps<{
   gap: 8px;
 }
 
-.field__label {
+label {
   font-weight: 700;
 }
 
-.field__input {
+input {
   padding: 12px 16px;
   border: 1px solid #d4d4d4;
   border-radius: 4px;
@@ -35,7 +48,7 @@ defineProps<{
   box-sizing: border-box;
 }
 
-.field__input::placeholder {
+input::placeholder {
   color: #aaa;
 }
 </style>

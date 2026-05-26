@@ -7,7 +7,6 @@ import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import WifiInfo from '@/components/WifiInfo.vue';
 
 const { logout } = useAuth();
-
 </script>
 
 <template>

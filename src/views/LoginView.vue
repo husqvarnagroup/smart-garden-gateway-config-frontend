@@ -31,7 +31,12 @@ const onSubmit = async () => {
   <BaseLayout>
     <form @submit.prevent="onSubmit">
       <h1>Login</h1>
-      <PasswordField v-model="password" label="Password" placeholder="Admin password" />
+      <PasswordField
+        v-model="password"
+        label="Password"
+        placeholder="Admin password"
+        autocomplete="current-password"
+      />
       <p v-if="authState.error" class="error">{{ authState.error }}</p>
       <StyledButton type="submit" variant="primary" :disabled="authState.loading">
         {{ authState.loading ? 'Signing in...' : 'Sign in' }}
