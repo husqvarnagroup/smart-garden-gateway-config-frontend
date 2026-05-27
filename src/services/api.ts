@@ -1,11 +1,5 @@
 import { authState } from '@/state/auth';
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-if (!apiBaseUrl) {
-  throw new Error('Missing required VITE_API_BASE_URL environment variable');
-}
-
 type ErrorResponse = {
   message?: string;
 };
@@ -28,7 +22,7 @@ export const apiFetch = async <T>(
   body?: unknown,
   skipAuth = false,
 ): Promise<T> => {
-  const url = new URL(path, apiBaseUrl).toString();
+  const url = path;
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',

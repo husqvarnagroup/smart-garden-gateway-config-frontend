@@ -5,14 +5,6 @@ const MOCK_USER = {
   session: 'mock-session-123',
 };
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
-
-if (!apiBaseUrl) {
-  throw new Error('Missing required VITE_API_BASE_URL environment variable');
-}
-
-const url = (path: string) => new URL(path, apiBaseUrl).toString();
-
 const requireSession = (request: Request) => {
   const session = request.headers.get('X-Session');
   if (session !== MOCK_USER.session) {
@@ -22,7 +14,7 @@ const requireSession = (request: Request) => {
 };
 
 export const handlers = [
-  http.post(url('/login'), async ({ request }) => {
+  http.post('/login', async ({ request }) => {
     await delay(400);
     const body = (await request.json()) as { password?: string };
     if (body.password === MOCK_USER.password) {
@@ -31,14 +23,14 @@ export const handlers = [
     return HttpResponse.json({ message: 'Invalid password' }, { status: 401 });
   }),
 
-  http.post(url('/logout'), async ({ request }) => {
+  http.post('/logout', async ({ request }) => {
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({});
   }),
 
-  http.get(url('/timezone_list'), async ({ request }) => {
+  http.get('/timezone_list', async ({ request }) => {
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
@@ -51,14 +43,14 @@ export const handlers = [
     ]);
   }),
 
-  http.get(url('/timezone'), async ({ request }) => {
+  http.get('/timezone', async ({ request }) => {
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json('UTC');
   }),
 
-  http.put(url('/timezone'), async ({ request }) => {
+  http.put('/timezone', async ({ request }) => {
     await delay(300);
     const denied = requireSession(request);
     if (denied) return denied;
@@ -66,7 +58,7 @@ export const handlers = [
     return HttpResponse.json({ timezone: body.timezone ?? 'UTC' });
   }),
 
-  http.get(url('/wifi_list'), async ({ request }) => {
+  http.get('/wifi_list', async ({ request }) => {
     await delay(600);
     const denied = requireSession(request);
     if (denied) return denied;
@@ -77,14 +69,14 @@ export const handlers = [
     ]);
   }),
 
-  http.get(url('/wifi'), async ({ request }) => {
+  http.get('/wifi', async ({ request }) => {
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({ ssid: 'HomeNetwork', key_mgmt: 'WPA2' });
   }),
 
-  http.put(url('/wifi'), async ({ request }) => {
+  http.put('/wifi', async ({ request }) => {
     await delay(500);
     const denied = requireSession(request);
     if (denied) return denied;
@@ -92,26 +84,26 @@ export const handlers = [
     return HttpResponse.json({ ssid: body.ssid ?? '', key_mgmt: body.key_mgmt ?? 'none' });
   }),
 
-  http.delete(url('/wifi'), async ({ request }) => {
+  http.delete('/wifi', async ({ request }) => {
     await delay(300);
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({});
   }),
 
-  http.get(url('/version'), async () => {
+  http.get('/version', async () => {
     await delay(100);
     return HttpResponse.json({ gateway_version: '1.2.3-mock' });
   }),
 
-  http.get(url('/ap'), async ({ request }) => {
+  http.get('/ap', async ({ request }) => {
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({ active: true });
   }),
 
-  http.delete(url('/homekit'), async ({ request }) => {
+  http.delete('/homekit', async ({ request }) => {
     await delay(400);
     const denied = requireSession(request);
     if (denied) return denied;
