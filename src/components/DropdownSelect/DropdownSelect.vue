@@ -9,8 +9,20 @@ import {
 const props = defineProps<DropdownSelectProps>();
 const emit = defineEmits<DropdownSelectEmits>();
 
-const { open, triggerRef, listRef, resolvedOptions, selectedLabel, listLoading, listError, toggle, retry, select, onKeydown } =
-  useDropdownSelect(props, emit);
+const {
+  open,
+  highlighted,
+  triggerRef,
+  listRef,
+  resolvedOptions,
+  selectedLabel,
+  listLoading,
+  listError,
+  toggle,
+  retry,
+  select,
+  onKeydown,
+} = useDropdownSelect(props, emit);
 </script>
 
 <template>
@@ -37,6 +49,7 @@ const { open, triggerRef, listRef, resolvedOptions, selectedLabel, listLoading, 
       :loading="listLoading"
       :error="listError"
       :model-value="modelValue"
+      :highlighted="highlighted"
       @select="select"
       @retry="retry"
     >

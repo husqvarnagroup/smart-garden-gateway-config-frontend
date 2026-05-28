@@ -14,6 +14,7 @@ export type DropdownSelectEmits = {
 
 export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSelectEmits) {
   const open = ref(false);
+  const highlighted = ref('');
   const triggerRef = ref<HTMLButtonElement | null>(null);
   const listRef = ref<ComponentPublicInstance | null>(null);
 
@@ -43,6 +44,7 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
 
   const openList = async () => {
     open.value = true;
+    highlighted.value = props.modelValue;
     if (props.loadOptions && loadedOptions.value === null && !listLoading.value) {
       await fetchOptions();
     }
@@ -93,18 +95,18 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
       return;
     }
     const opts = resolvedOptions.value;
-    const idx = opts.indexOf(props.modelValue);
+    const idx = opts.indexOf(highlighted.value);
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       const next = opts[Math.min(idx + 1, opts.length - 1)];
-      if (next) select(next);
+      if (next) highlighted.value = next;
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       const prev = opts[Math.max(idx - 1, 0)];
-      if (prev) select(prev);
+      if (prev) highlighted.value = prev;
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      open.value = false;
+      if (highlighted.value) select(highlighted.value);
       triggerRef.value?.focus();
     }
   };
@@ -114,6 +116,7 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
 
   return {
     open,
+    highlighted,
     triggerRef,
     listRef,
     resolvedOptions,

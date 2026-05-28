@@ -4,6 +4,7 @@ defineProps<{
   loading: boolean;
   error: string | null;
   modelValue: string;
+  highlighted: string;
 }>();
 
 const emit = defineEmits<{
@@ -29,7 +30,10 @@ const emit = defineEmits<{
         tabindex="0"
         :aria-selected="option === modelValue"
         class="base-select__option"
-        :class="{ 'base-select__option--selected': option === modelValue }"
+        :class="{
+          'base-select__option--selected': option === modelValue,
+          'base-select__option--highlighted': option === highlighted,
+        }"
         @mousedown.prevent="emit('select', option)"
       >
         <slot name="option" :option="option">{{ option }}</slot>
@@ -70,6 +74,10 @@ const emit = defineEmits<{
 .base-select__option--selected {
   font-weight: 600;
   background: #e8eeff;
+}
+
+.base-select__option--highlighted {
+  background: #f0f4ff;
 }
 
 .base-select__status {
