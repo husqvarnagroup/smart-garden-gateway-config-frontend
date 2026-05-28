@@ -5,7 +5,7 @@ import { useTranslation } from 'i18next-vue';
 import { getCurrentWifi, wifiScan, setWifi, type WifiNetwork } from '@/services/wifi';
 import { useLoading } from '@/composables/useLoading';
 import BaseCard from '@/components/BaseCard.vue';
-import DropdownSelect from '@/components/DropdownSelect.vue';
+import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import WifiSignal from '@/components/WifiSignal.vue';
 import WifiLockIcon from '@/components/WifiLockIcon.vue';
 

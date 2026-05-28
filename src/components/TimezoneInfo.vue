@@ -6,7 +6,7 @@ import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timez
 
 import { useLoading } from '@/composables/useLoading';
 import BaseCard from '@/components/BaseCard.vue';
-import DropdownSelect from '@/components/DropdownSelect.vue';
+import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 
 const { t } = useTranslation();
 
