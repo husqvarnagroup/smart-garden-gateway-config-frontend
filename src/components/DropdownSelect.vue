@@ -2,9 +2,10 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue';
 
 const props = defineProps<{
-  options: string[];
+  options?: string[];
   modelValue: string;
   disabled?: boolean;
+  loadOptions?: () => Promise<string[]>;
 }>();
 
 const emit = defineEmits<{
@@ -16,11 +17,51 @@ const open = ref(false);
 const triggerRef = ref<HTMLButtonElement | null>(null);
 const listRef = ref<HTMLDivElement | null>(null);
 
+// Deferred loading state
+const loadedOptions = ref<string[] | null>(null);
+const listLoading = ref(false);
+const listError = ref<string | null>(null);
+
+const resolvedOptions = computed(() => {
+  if (props.loadOptions) return loadedOptions.value ?? [];
+  return props.options ?? [];
+});
+
 const selectedLabel = computed(() => props.modelValue || '—');
 
-const toggle = () => {
+const fetchOptions = async () => {
+  if (!props.loadOptions) return;
+  listLoading.value = true;
+  listError.value = null;
+  try {
+    loadedOptions.value = await props.loadOptions();
+  } catch (e) {
+    listError.value = e instanceof Error ? e.message : 'Failed to load options';
+  } finally {
+    listLoading.value = false;
+  }
+};
+
+const openList = async () => {
+  open.value = true;
+  // Only load once; retry sets loadedOptions back to null
+  if (props.loadOptions && loadedOptions.value === null && !listLoading.value) {
+    await fetchOptions();
+  }
+};
+
+const toggle = async () => {
   if (props.disabled) return;
-  open.value = !open.value;
+  if (open.value) {
+    open.value = false;
+  } else {
+    await openList();
+  }
+};
+
+const retry = async () => {
+  loadedOptions.value = null;
+  await openList();
 };
 
 const select = (option: string) => {
@@ -37,11 +78,11 @@ const onClickOutside = (e: MouseEvent) => {
   }
 };
 
-const onKeydown = (e: KeyboardEvent) => {
+const onKeydown = async (e: KeyboardEvent) => {
   if (!open.value) {
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
       e.preventDefault();
-      open.value = true;
+      await openList();
     }
     return;
   }
@@ -50,14 +91,15 @@ const onKeydown = (e: KeyboardEvent) => {
     triggerRef.value?.focus();
     return;
   }
-  const idx = props.options.indexOf(props.modelValue);
+  const opts = resolvedOptions.value;
+  const idx = opts.indexOf(props.modelValue);
   if (e.key === 'ArrowDown') {
     e.preventDefault();
-    const next = props.options[Math.min(idx + 1, props.options.length - 1)];
+    const next = opts[Math.min(idx + 1, opts.length - 1)];
     if (next) select(next);
   } else if (e.key === 'ArrowUp') {
     e.preventDefault();
-    const prev = props.options[Math.max(idx - 1, 0)];
+    const prev = opts[Math.max(idx - 1, 0)];
     if (prev) select(prev);
   } else if (e.key === 'Enter' || e.key === ' ') {
     e.preventDefault();
@@ -81,23 +123,34 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
       @click="toggle"
       @keydown="onKeydown"
     >
-      <span class="base-select__value">{{ selectedLabel }}</span>
+      <span class="base-select__value">
+        <slot name="value" :value="modelValue">{{ selectedLabel }}</slot>
+      </span>
       <span class="base-select__arrow" aria-hidden="true">&#9660;</span>
     </button>
 
     <div v-if="open" ref="listRef" role="listbox" tabindex="-1" class="base-select__list">
-      <div
-        v-for="option in options"
-        :key="option"
-        role="option"
-        tabindex="0"
-        :aria-selected="option === modelValue"
-        class="base-select__option"
-        :class="{ 'base-select__option--selected': option === modelValue }"
-        @mousedown.prevent="select(option)"
-      >
-        {{ option }}
+      <div v-if="listLoading" class="base-select__status">
+        <span class="base-select__spinner" aria-label="Loading" />
       </div>
+      <div v-else-if="listError" class="base-select__status base-select__status--error">
+        <span>{{ listError }}</span>
+        <button type="button" class="base-select__retry" @click="retry">Retry</button>
+      </div>
+      <template v-else>
+        <div
+          v-for="option in resolvedOptions"
+          :key="option"
+          role="option"
+          tabindex="0"
+          :aria-selected="option === modelValue"
+          class="base-select__option"
+          :class="{ 'base-select__option--selected': option === modelValue }"
+          @mousedown.prevent="select(option)"
+        >
+          <slot name="option" :option="option">{{ option }}</slot>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -175,5 +228,49 @@ onBeforeUnmount(() => document.removeEventListener('mousedown', onClickOutside))
 .base-select__option--selected {
   font-weight: 600;
   background: #e8eeff;
+}
+
+.base-select__status {
+  padding: 8px 12px;
+  color: #666;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.base-select__spinner {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.12);
+  border-top-color: #555;
+  border-radius: 50%;
+  animation: base-select-spin 0.7s linear infinite;
+}
+
+@keyframes base-select-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.base-select__status--error {
+  color: #c0392b;
+}
+
+.base-select__retry {
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  cursor: pointer;
+  border: 1px solid #c0392b;
+  border-radius: 3px;
+  background: transparent;
+  color: #c0392b;
+}
+
+.base-select__retry:hover {
+  background: #fdf0ef;
 }
 </style>
