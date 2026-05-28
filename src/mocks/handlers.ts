@@ -42,7 +42,13 @@ export const handlers = [
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
-    return HttpResponse.json(['UTC', 'Europe/Berlin', 'America/New_York', 'Asia/Tokyo']);
+    return HttpResponse.json([
+      'UTC',
+      'Europe/Berlin',
+      'America/New York',
+      'Asia/Tokyo',
+      'A really very very very very very very very very very very very very long timezone string',
+    ]);
   }),
 
   http.get(url('/timezone'), async ({ request }) => {
