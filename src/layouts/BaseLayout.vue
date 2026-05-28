@@ -24,5 +24,7 @@ import AppHeader from '@/components/AppHeader.vue';
 main {
   max-width: 450px;
   width: 100%;
+  padding: 0 14px;
+  box-sizing: border-box;
 }
 </style>

@@ -45,8 +45,6 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 0 14px;
-  box-sizing: border-box;
 }
 
 .error {
