@@ -7,6 +7,7 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
 import LogoutButton from '@/components/LogoutButton.vue';
 import WebsocketToggle from '@/components/WebsocketToggle.vue';
 import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
+import SshSettings from '@/components/SshSettings.vue';
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
       <GatewayVersion />
       <AdvancedFeatures>
         <WebsocketToggle />
+        <SshSettings />
       </AdvancedFeatures>
     </section>
   </BaseLayout>

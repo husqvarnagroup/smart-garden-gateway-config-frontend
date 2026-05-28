@@ -30,3 +30,4 @@ homekit.label: 'Apple HomeKit'
 network.label: 'Rait da WLAN'
 timezone.label: "Zona d'urari"
 websocket.label: 'Sustegn WebSocket'
+ssh.label: 'Access SSH'
