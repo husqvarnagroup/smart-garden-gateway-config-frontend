@@ -17,10 +17,10 @@ const apply = async (enable: boolean) => {
   try {
     await setWebsocketEnabled(enable);
     successMessage.value = enable
-      ? t('main.websocket.enable.successful')
-      : t('main.websocket.disable.successful');
+      ? t('main.action.enable.successful', { feature: t('main.websocket.title') })
+      : t('main.action.disable.successful', { feature: t('main.websocket.title') });
   } catch {
-    errorMessage.value = t('main.websocket.save.failed');
+    errorMessage.value = t('main.action.save.failed', { feature: t('main.websocket.title') });
   }
 };
 </script>
@@ -30,10 +30,10 @@ const apply = async (enable: boolean) => {
     <h2>{{ t('main.websocket.title') }}</h2>
     <div class="actions">
       <StyledButton type="button" variant="secondary" @click="apply(false)">
-        {{ t('main.websocket.disable.button') }}
+        {{ t('main.action.disable') }}
       </StyledButton>
       <StyledButton type="button" variant="primary" @click="apply(true)">
-        {{ t('main.websocket.enable.button') }}
+        {{ t('main.action.enable') }}
       </StyledButton>
     </div>
     <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
