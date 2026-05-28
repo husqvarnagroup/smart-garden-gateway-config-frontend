@@ -3,6 +3,7 @@
 body {
   font-family: 'Gardena Sans', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
   font-size: 14px;
+  color: #34373a;
 }
 
 html,
@@ -15,4 +16,16 @@ body,
 
 a {
   color: #4183c4;
+}
+
+h2 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 12px;
+  font-size: 14px;
+  line-height: 1.5;
 }

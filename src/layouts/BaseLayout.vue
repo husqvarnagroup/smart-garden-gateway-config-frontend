@@ -13,7 +13,7 @@ import AppHeader from '@/components/AppHeader.vue';
 
 <style scoped>
 .container {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   background-color: #ececec;
   display: flex;

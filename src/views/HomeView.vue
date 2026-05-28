@@ -4,9 +4,10 @@ import { useTranslation } from 'i18next-vue';
 import { useAuth } from '@/composables/useAuth';
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import StyledButton from '@/components/StyledButton.vue';
-import SystemInfo from '@/components/SystemInfo.vue';
 import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import WifiInfo from '@/components/WifiInfo.vue';
+import HomekitInfo from '@/components/HomekitInfo.vue';
+import GatewayVersion from '@/components/GatewayVersion.vue';
 
 const { t } = useTranslation();
 
@@ -15,22 +16,20 @@ const { logout } = useAuth();
 
 <template>
   <BaseLayout>
-    <section>
-      <h1>{{ t('title') }}</h1>
-      <SystemInfo />
+    <section class="content">
       <TimezoneInfo />
       <WifiInfo />
-      <StyledButton type="button" variant="primary" @click="logout">{{
-        t('main.logout.button')
-      }}</StyledButton>
+      <HomekitInfo />
+      <StyledButton type="button" variant="primary" @click="logout">
+        {{ t('main.logout.button') }}
+      </StyledButton>
+      <GatewayVersion />
     </section>
   </BaseLayout>
 </template>
 
 <style scoped>
-main {
-  display: grid;
-  min-height: 100vh;
-  place-items: center;
+.content {
+  padding: 16px;
 }
 </style>
