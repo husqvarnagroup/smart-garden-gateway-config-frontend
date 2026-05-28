@@ -33,6 +33,17 @@ main.networks.save.failed: "Échec de l'enregistrement des paramètres Wi-Fi"
 main.homekit.reset.successful: "Réinitialisation de l'appairage HomeKit réussi"
 main.homekit.reset.failed: "Échec de la réinitialisation de l'appairage HomeKit"
 main.logout.successful: 'Déconnexion réussie'
+main.websocket.label: 'Avancé'
+main.websocket.enable.label: "Activer l'API WebSocket"
+main.websocket.save.failed: 'Impossible de mettre à jour le paramètre WebSocket'
+main.websocket.title: 'Support WebSocket'
+main.websocket.enable.button: 'Activer'
+main.websocket.disable.button: 'Désactiver'
+main.websocket.enable.successful: 'Support WebSocket activé'
+main.websocket.disable.successful: 'Support WebSocket désactivé'
+main.websocket.confirm: 'Voulez-vous vraiment continuer ?'
+main.websocket.confirm.yes: 'Continuer'
+main.websocket.confirm.no: 'Annuler'
 flashmessages.saving: 'Enregistrement…'
 flashmessages.loading: 'Chargement…'
 flashmessages.resetting: 'Réinitialisation…'

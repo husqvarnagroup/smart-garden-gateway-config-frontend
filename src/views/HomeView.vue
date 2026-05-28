@@ -5,6 +5,8 @@ import WifiInfo from '@/components/WifiInfo.vue';
 import HomekitInfo from '@/components/HomekitInfo.vue';
 import GatewayVersion from '@/components/GatewayVersion.vue';
 import LogoutButton from '@/components/LogoutButton.vue';
+import WebsocketToggle from '@/components/WebsocketToggle.vue';
+import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
 </script>
 
 <template>
@@ -15,6 +17,9 @@ import LogoutButton from '@/components/LogoutButton.vue';
       <HomekitInfo />
       <LogoutButton />
       <GatewayVersion />
+      <AdvancedFeatures>
+        <WebsocketToggle />
+      </AdvancedFeatures>
     </section>
   </BaseLayout>
 </template>
