@@ -111,7 +111,7 @@ export const handlers = [
     return HttpResponse.json({});
   }),
 
-  http.put(url('/websocket_api'), async ({ request }) => {
+  http.put(('/websocket_api'), async ({ request }) => {
     await delay(300);
     const denied = requireSession(request);
     if (denied) return denied;
