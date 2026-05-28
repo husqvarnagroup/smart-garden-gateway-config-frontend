@@ -21,13 +21,13 @@ const onChevronClick = () => {
       &#8250;
     </button>
     <BaseCard v-if="state === 'confirming'">
-      <p>{{ t('main.websocket.label') }} &mdash; {{ t('main.websocket.confirm') }}</p>
+      <p>{{ t('main.advanced.label') }} &mdash; {{ t('main.advanced.confirm') }}</p>
       <div class="actions">
         <StyledButton type="button" variant="secondary" @click="state = 'hidden'">
-          {{ t('main.websocket.confirm.no') }}
+          {{ t('main.advanced.confirm.no') }}
         </StyledButton>
         <StyledButton type="button" variant="primary" @click="state = 'open'">
-          {{ t('main.websocket.confirm.yes') }}
+          {{ t('main.advanced.confirm.yes') }}
         </StyledButton>
       </div>
     </BaseCard>
