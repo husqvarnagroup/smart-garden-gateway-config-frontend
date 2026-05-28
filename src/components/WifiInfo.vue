@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { getCurrentWifi, wifiScan, setWifi, type WifiNetwork } from '@/services/wifi';
-import { useLoading } from '@/composables/useLoading';
+import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import WifiSignal from '@/components/WifiSignal.vue';
@@ -11,7 +11,8 @@ import WifiLockIcon from '@/components/WifiLockIcon.vue';
 
 const { t } = useTranslation();
 
-const { withLoading, loading, error } = useLoading();
+const { loading, load } = useAsync();
+const error = ref<string | null>(null);
 const selectedSsid = ref<string>('');
 const currentSecurity = ref<string>('');
 const scannedNetworks = ref<WifiNetwork[]>([]);
@@ -21,12 +22,16 @@ const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
 const normaliseSsid = (ssid: string) => (isHidden(ssid) ? HIDDEN_WIFI_LABEL : ssid);
 
-const fetchCurrentWifi = () =>
-  withLoading(async () => {
+const fetchCurrentWifi = () => {
+  error.value = null;
+  return load(async () => {
     const wifiConfig = await getCurrentWifi();
     selectedSsid.value = normaliseSsid(wifiConfig.ssid);
     currentSecurity.value = wifiConfig.key_mgmt;
+  }).catch((e) => {
+    error.value = e instanceof Error ? e.message : 'Unknown error';
   });
+};
 
 const scanWifiNetworks = async (): Promise<string[]> => {
   const networks = await wifiScan();
@@ -62,9 +67,7 @@ const isSecured = (security: string | null | undefined): boolean => {
 const getOptionSecurity = (ssid: string) =>
   scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
 
-onMounted(() => {
-  fetchCurrentWifi().catch(() => {});
-});
+onMounted(fetchCurrentWifi);
 </script>
 
 <template>
@@ -75,7 +78,7 @@ onMounted(() => {
 
     <template v-else-if="error">
       <p>Failed to load wifi data: {{ error }}</p>
-      <button @click="fetchCurrentWifi().catch(() => {})">Retry</button>
+      <button @click="fetchCurrentWifi()">Retry</button>
     </template>
 
     <template v-else>

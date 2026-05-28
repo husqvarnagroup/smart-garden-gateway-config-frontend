@@ -3,18 +3,18 @@ import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { setWebsocketEnabled } from '@/services/websocket';
-import { useLoading } from '@/composables/useLoading';
+import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
-const { withLoading } = useLoading();
+const { load } = useAsync();
 
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 
 const apply = (enable: boolean) =>
-  withLoading(async () => {
+  load(async () => {
     errorMessage.value = null;
     successMessage.value = null;
     try {

@@ -1,17 +1,13 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
-import { useLoading } from '@/composables/useLoading';
+import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 
-const { withLoading } = useLoading();
-const version = ref<GatewayVersion | null>(null);
+const { load, data: version } = useAsync<GatewayVersion | null>(null);
 
-const fetchSystem = () =>
-  withLoading(async () => {
-    version.value = await getGatewayVersion();
-  });
+const fetchSystem = () => load(getGatewayVersion);
 
 onMounted(() => {
   fetchSystem().catch(() => {});

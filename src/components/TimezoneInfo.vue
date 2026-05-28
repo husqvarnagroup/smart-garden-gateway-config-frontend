@@ -4,21 +4,26 @@ import { useTranslation } from 'i18next-vue';
 
 import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
 
-import { useLoading } from '@/composables/useLoading';
+import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 
 const { t } = useTranslation();
 
-const { withLoading, loading, error } = useLoading();
+const { loading, load } = useAsync();
+const error = ref<string | null>(null);
 const selectedTimezone = ref<string>('');
 const changeError = ref<string | null>(null);
 
-const fetchData = () =>
-  withLoading(async () => {
+const fetchData = () => {
+  error.value = null;
+  return load(async () => {
     const timezoneConfig = await getCurrentTimezone();
     selectedTimezone.value = timezoneConfig.timezone;
+  }).catch((e) => {
+    error.value = e instanceof Error ? e.message : 'Unknown error';
   });
+};
 
 const onTimezoneChange = async (value: string) => {
   const previousTimezone = selectedTimezone.value;
@@ -32,9 +37,7 @@ const onTimezoneChange = async (value: string) => {
   }
 };
 
-onMounted(() => {
-  fetchData().catch(() => {});
-});
+onMounted(fetchData);
 </script>
 
 <template>
@@ -45,7 +48,7 @@ onMounted(() => {
 
     <template v-else-if="error">
       <p>Failed to load timezone data: {{ error }}</p>
-      <button @click="fetchData().catch(() => {})">Retry</button>
+      <button @click="fetchData()">Retry</button>
     </template>
 
     <template v-else>

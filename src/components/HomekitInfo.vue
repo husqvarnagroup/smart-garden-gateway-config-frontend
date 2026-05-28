@@ -2,15 +2,15 @@
 import { useTranslation } from 'i18next-vue';
 
 import { resetHomekit } from '@/services/system';
-import { useLoading } from '@/composables/useLoading';
+import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
-const { withLoading } = useLoading();
+const { load } = useAsync();
 
 const resetPairings = () =>
-  withLoading(async () => {
+  load(async () => {
     await resetHomekit();
   });
 </script>
