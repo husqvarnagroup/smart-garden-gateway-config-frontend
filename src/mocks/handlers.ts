@@ -64,6 +64,7 @@ export const handlers = [
     if (denied) return denied;
     return HttpResponse.json([
       { ssid: 'HomeNetwork', signal: -45, security: 'WPA2' },
+      { ssid: '', signal: -15, security: 'WPA2' },
       { ssid: 'GuestNetwork', signal: -70, security: 'WPA2' },
       { ssid: 'OpenNetwork', signal: -80, security: 'none' },
     ]);

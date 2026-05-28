@@ -6,9 +6,9 @@ const props = defineProps<{ signal?: number }>();
 const level = computed(() => {
   const dBm = props.signal;
   if (dBm == null) return 'none';
-  if (dBm > -55) {
+  if (dBm >= -55) {
     return 'strong';
-  } else if (dBm < -55 && dBm > -75) {
+  } else if (dBm < -55 && dBm >= -75) {
     return 'medium';
   } else if (dBm < -75 && dBm > -85) {
     return 'weak';

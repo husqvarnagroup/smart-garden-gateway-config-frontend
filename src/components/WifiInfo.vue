@@ -36,11 +36,15 @@ const scanWifiNetworks = async (): Promise<string[]> => {
 
 const onWifiChange = async (ssid: string) => {
   const previous = selectedSsid.value;
-  const network = scannedNetworks.value.find((network) => network.ssid === ssid);
-  const security = network?.security ?? '';
+  const security =
+    scannedNetworks.value.find((network) => normaliseSsid(network.ssid) === ssid)?.security ?? '';
   changeError.value = null;
   try {
-    await setWifi(ssid, security, '');
+    if (ssid === HIDDEN_WIFI_LABEL) {
+      // TODO:  SA-3020: handle hidden network selection
+    } else {
+      await setWifi(ssid, security, '');
+    }
     selectedSsid.value = ssid;
     currentSecurity.value = security || 'none';
   } catch (e) {
@@ -50,15 +54,13 @@ const onWifiChange = async (ssid: string) => {
 };
 
 const getSignal = (ssid: string) =>
-  scannedNetworks.value.find((network) => network.ssid === ssid)?.signal;
+  scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.signal;
 const isSecured = (security: string | null | undefined): boolean => {
-  if (security === null || security === undefined) {
-    return false;
-  }
+  if (security === null || security === undefined) return false;
   return security !== 'none';
 };
-const getOptionSecurity = (option: string) =>
-  scannedNetworks.value.find((network) => normaliseSsid(network.ssid) === option)?.security;
+const getOptionSecurity = (ssid: string) =>
+  scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
 
 onMounted(() => {
   fetchCurrentWifi().catch(() => {});
