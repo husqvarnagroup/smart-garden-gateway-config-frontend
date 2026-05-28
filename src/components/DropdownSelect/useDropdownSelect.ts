@@ -104,6 +104,8 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
       e.preventDefault();
       const prev = opts[Math.max(idx - 1, 0)];
       if (prev) highlighted.value = prev;
+    } else if (e.key === 'Tab') {
+      if (highlighted.value) select(highlighted.value);
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       if (highlighted.value) select(highlighted.value);
