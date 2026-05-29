@@ -26,14 +26,12 @@ const onTimezoneChange = (value: string) => {
 
 const saveTimezone = async () => {
   if (!data.value?.timezone) return;
-  const previous = data.value;
   changeError.value = null;
   saving.value = true;
   try {
     await setTimezone(data.value.timezone);
   } catch (e) {
     changeError.value = e instanceof Error ? e.message : 'Failed to update timezone';
-    data.value = previous;
   } finally {
     saving.value = false;
   }
@@ -49,7 +47,7 @@ onMounted(() => load(getCurrentTimezone));
     <p v-if="loading">Loading…</p>
 
     <template v-else>
-      <div class="timezone-actions">
+      <div class="actions">
         <DropdownSelect
           :model-value="data?.timezone ?? 'No Timezone Found'"
           :load-options="listTimezones"
@@ -65,7 +63,7 @@ onMounted(() => load(getCurrentTimezone));
 </template>
 
 <style scoped>
-.timezone-actions {
+.actions {
   display: flex;
   flex-direction: column;
   gap: 8px;
