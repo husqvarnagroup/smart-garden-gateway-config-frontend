@@ -19,6 +19,10 @@
   --text-xl: 1.375rem; /* 22px */
   --text-2xl: 1.75rem; /* 28px */
 
+  /* BORDER WIDTHS */
+  --border-sm: 1px;
+  --border-md: 2px;
+
   /* BORDER RADIUS */
   --radius-sm: 4px;
   --radius-md: 8px;

@@ -48,7 +48,7 @@ const emit = defineEmits<{
   right: 0;
   padding: var(--space-1) 0;
   background: var(--color-white);
-  border: 1px solid var(--color-shadow-md);
+  border: var(--border-sm) solid var(--color-shadow-md);
   border-radius: var(--radius-sm);
   box-shadow: 0 var(--space-1) var(--space-3) var(--color-overlay-sm);
   max-height: var(--layout-dropdown-max-height);
@@ -96,7 +96,7 @@ button {
   font-size: var(--text-sm);
   padding: var(--border-md) var(--space-2);
   cursor: pointer;
-  border: 1px solid var(--color-red-600);
+  border: var(--border-sm) solid var(--color-red-600);
   border-radius: var(--radius-sm);
   background: transparent;
   color: var(--color-red-600);

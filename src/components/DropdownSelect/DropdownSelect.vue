@@ -75,7 +75,7 @@ button {
   padding: var(--space-2);
   font-size: var(--text-base);
   background: var(--color-white);
-  border: 1px solid var(--color-shadow-md);
+  border: var(--border-sm) solid var(--color-shadow-md);
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;

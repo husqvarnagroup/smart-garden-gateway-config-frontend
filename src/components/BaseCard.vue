@@ -8,7 +8,7 @@
 .card {
   background: var(--color-white);
   box-shadow: 0 1px 2px 0 var(--color-shadow-sm);
-  border: 1px solid var(--color-shadow-sm);
+  border: var(--border-sm) solid var(--color-shadow-sm);
   padding: var(--space-4);
   margin: var(--space-4) 0;
   border-radius: 0;
