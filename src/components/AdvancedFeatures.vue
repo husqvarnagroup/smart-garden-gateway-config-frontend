@@ -16,19 +16,13 @@ const onChevronClick = () => {
 </script>
 
 <template>
-  <div class="advanced-features">
-    <button
-      class="chevron-btn"
-      :class="{ 'chevron-btn--open': state !== 'hidden' }"
-      @click="onChevronClick"
-    >
+  <div>
+    <button class="chevron" :class="{ open: state !== 'hidden' }" @click="onChevronClick">
       &#8250;
     </button>
     <BaseCard v-if="state === 'confirming'">
-      <p class="confirm-text">
-        {{ t('main.websocket.label') }} &mdash; {{ t('main.websocket.confirm') }}
-      </p>
-      <div class="confirm-actions">
+      <p>{{ t('main.websocket.label') }} &mdash; {{ t('main.websocket.confirm') }}</p>
+      <div class="actions">
         <StyledButton type="button" variant="secondary" @click="state = 'hidden'">
           {{ t('main.websocket.confirm.no') }}
         </StyledButton>
@@ -42,15 +36,7 @@ const onChevronClick = () => {
 </template>
 
 <style scoped>
-.advanced-features {
-  text-align: center;
-}
-
-:deep(.card) {
-  text-align: left;
-}
-
-.chevron-btn {
+.chevron {
   background: none;
   border: none;
   color: var(--color-grey-300);
@@ -59,27 +45,28 @@ const onChevronClick = () => {
   padding: var(--space-2) var(--space-4);
   line-height: 1;
   display: inline-block;
+  text-align: center;
   transform: rotate(90deg);
   transition:
     transform 0.2s ease,
     color 0.2s ease;
 }
 
-.chevron-btn--open {
+.chevron.open {
   transform: rotate(-90deg);
 }
 
-.chevron-btn:hover {
+.chevron:hover {
   color: var(--color-grey-300);
 }
 
-.confirm-text {
+p {
   margin: 0 0 var(--space-2);
   font-size: var(--text-sm);
   color: var(--color-grey-400);
 }
 
-.confirm-actions {
+.actions {
   display: flex;
   gap: var(--space-2);
 }

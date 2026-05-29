@@ -74,16 +74,16 @@ onMounted(() => load(getCurrentWifi));
         @change="onWifiChange"
       >
         <template #value="{ value }">
-          <div class="wifi-option">
+          <div class="option">
             <WifiSignal :signal="getSignal(value)" />
-            <span class="wifi-option__name">{{ value }}</span>
+            <span class="name">{{ value }}</span>
             <WifiLockIcon :locked="isSecured(data?.key_mgmt)" />
           </div>
         </template>
         <template #option="{ option }">
-          <div class="wifi-option">
+          <div class="option">
             <WifiSignal :signal="getSignal(option)" />
-            <span class="wifi-option__name">{{ option }}</span>
+            <span class="name">{{ option }}</span>
             <WifiLockIcon :locked="isSecured(getOptionSecurity(option))" />
           </div>
         </template>
@@ -94,14 +94,14 @@ onMounted(() => load(getCurrentWifi));
 </template>
 
 <style scoped>
-.wifi-option {
+.option {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
-.wifi-option__name {
+.name {
   flex: 1;
   text-align: center;
   overflow: hidden;

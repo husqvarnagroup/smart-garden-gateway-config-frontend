@@ -11,7 +11,7 @@ import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
 
 <template>
   <BaseLayout>
-    <section class="content">
+    <section>
       <TimezoneInfo />
       <WifiInfo />
       <HomekitInfo />

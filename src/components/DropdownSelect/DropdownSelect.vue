@@ -26,20 +26,19 @@ const {
 </script>
 
 <template>
-  <div class="base-select" :class="{ 'base-select--disabled': disabled }">
+  <div :class="{ disabled }">
     <button
       ref="triggerRef"
       type="button"
-      class="base-select__trigger"
       :aria-expanded="open"
       :disabled="disabled"
       @click="toggle"
       @keydown="onKeydown"
     >
-      <span class="base-select__value">
+      <span class="value">
         <slot name="value" :value="modelValue">{{ selectedLabel }}</slot>
       </span>
-      <span class="base-select__arrow" aria-hidden="true">&#9660;</span>
+      <span class="arrow" aria-hidden="true">&#9660;</span>
     </button>
 
     <OptionsList
@@ -61,13 +60,13 @@ const {
 </template>
 
 <style scoped>
-.base-select {
+div {
   position: relative;
   width: 100%;
   font-size: var(--text-base);
 }
 
-.base-select__trigger {
+button {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,12 +81,12 @@ const {
   text-align: left;
 }
 
-.base-select--disabled .base-select__trigger {
+.disabled button {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.base-select__value {
+.value {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -95,7 +94,7 @@ const {
   min-width: 0;
 }
 
-.base-select__arrow {
+.arrow {
   flex-shrink: 0;
   margin-left: var(--space-2);
   font-size: var(--text-xs);

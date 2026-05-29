@@ -7,9 +7,7 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
 <template>
   <BaseLayout>
     <div class="container">
-      <div class="logo-container">
-        <img src="/GARDENA-smart-system.png" alt="GARDENA smart system" class="logo" />
-      </div>
+      <img src="/GARDENA-smart-system.png" alt="GARDENA smart system" />
       <LoginForm />
       <GatewayVersion />
     </div>
@@ -19,14 +17,13 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
 <style scoped>
 .container {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
 }
 
-.logo-container {
-  text-align: center;
-  padding: var(--space-4) 0;
-}
-
-.logo {
+img {
   width: 240px;
   height: auto;
 }

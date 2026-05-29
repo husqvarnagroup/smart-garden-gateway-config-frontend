@@ -9,14 +9,14 @@ defineProps<{
 </script>
 
 <template>
-  <button :class="['btn', `btn--${variant}`]" :disabled="disabled || loading">
+  <button :class="variant" :disabled="disabled || loading">
     <Spinner v-if="loading" />
     <slot v-else />
   </button>
 </template>
 
 <style scoped>
-.btn {
+button {
   width: 100%;
   text-align: center;
   cursor: pointer;
@@ -30,16 +30,16 @@ defineProps<{
   box-sizing: border-box;
 }
 
-.btn--primary {
+.primary {
   background-color: var(--color-orange-500);
   color: var(--color-white);
 }
 
-.btn--primary:hover:not(:disabled) {
+.primary:hover:not(:disabled) {
   background-color: var(--color-orange-600);
 }
 
-.btn--secondary {
+.secondary {
   background: var(--color-white);
   color: var(--color-overlay-md);
   box-shadow:
@@ -47,11 +47,11 @@ defineProps<{
     0 0 0 0 var(--color-shadow-sm) inset;
 }
 
-.btn--secondary:hover:not(:disabled) {
+.secondary:hover:not(:disabled) {
   color: var(--color-overlay-lg);
 }
 
-.btn:disabled {
+button:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
