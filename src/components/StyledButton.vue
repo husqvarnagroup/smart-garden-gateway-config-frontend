@@ -1,13 +1,17 @@
 <script setup lang="ts">
+import Spinner from '@/components/LoadingSpinner.vue';
+
 defineProps<{
   variant?: 'primary' | 'secondary';
   disabled?: boolean;
+  loading?: boolean;
 }>();
 </script>
 
 <template>
-  <button :class="['btn', `btn--${variant}`]" :disabled="disabled">
-    <slot />
+  <button :class="['btn', `btn--${variant}`]" :disabled="disabled || loading">
+    <Spinner v-if="loading" />
+    <slot v-else />
   </button>
 </template>
 
@@ -19,6 +23,12 @@ defineProps<{
   border: none;
   padding: 11px 21px;
   border-radius: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.5;
+  min-height: calc(1.5em + 22px);
+  box-sizing: border-box;
 }
 
 .btn--primary {

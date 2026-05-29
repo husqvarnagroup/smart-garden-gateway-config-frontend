@@ -51,7 +51,7 @@ export const handlers = [
   }),
 
   http.put('/timezone', async ({ request }) => {
-    await delay(300);
+    await delay(600);
     const denied = requireSession(request);
     if (denied) return denied;
     const body = (await request.json()) as { timezone?: string };

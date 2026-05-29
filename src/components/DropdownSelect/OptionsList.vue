@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
+
 defineProps<{
   options: string[];
   loading: boolean;
@@ -16,7 +18,7 @@ const emit = defineEmits<{
 <template>
   <div role="listbox" tabindex="-1" class="base-select__list">
     <div v-if="loading" class="base-select__status">
-      <span class="base-select__spinner" aria-label="Loading" />
+      <LoadingSpinner />
     </div>
     <div v-else-if="error" class="base-select__status base-select__status--error">
       <span>{{ error }}</span>
@@ -88,22 +90,6 @@ const emit = defineEmits<{
   align-items: center;
   justify-content: center;
   gap: 8px;
-}
-
-.base-select__spinner {
-  display: block;
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(0, 0, 0, 0.12);
-  border-top-color: #555;
-  border-radius: 50%;
-  animation: base-select-spin 0.7s linear infinite;
-}
-
-@keyframes base-select-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .base-select__status--error {
