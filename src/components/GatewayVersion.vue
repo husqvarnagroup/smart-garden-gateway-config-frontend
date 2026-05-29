@@ -26,6 +26,6 @@ onMounted(() => {
 <style scoped>
 p {
   text-align: center;
-  margin: 32px 0;
+  margin: var(--space-8) 0;
 }
 </style>

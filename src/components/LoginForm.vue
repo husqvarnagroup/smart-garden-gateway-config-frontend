@@ -44,11 +44,11 @@ form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .error {
-  color: #b42318;
+  color: var(--color-red-700);
   margin: 0;
 }
 </style>

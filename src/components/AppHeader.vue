@@ -13,12 +13,12 @@ const { t } = useTranslation();
 header {
   width: 100%;
   text-align: center;
-  background-color: #fff;
-  padding: 16px 0;
+  background-color: var(--color-white);
+  padding: var(--space-4) 0;
 }
 
 h1 {
-  font-size: 28px;
+  font-size: var(--text-2xl);
   font-weight: 300;
   margin: 0;
 }

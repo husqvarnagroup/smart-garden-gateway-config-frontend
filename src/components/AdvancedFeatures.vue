@@ -53,10 +53,10 @@ const onChevronClick = () => {
 .chevron-btn {
   background: none;
   border: none;
-  color: #bbb;
-  font-size: 22px;
+  color: var(--color-grey-300);
+  font-size: var(--text-xl);
   cursor: pointer;
-  padding: 8px 16px;
+  padding: var(--space-2) var(--space-4);
   line-height: 1;
   display: inline-block;
   transform: rotate(90deg);
@@ -70,17 +70,17 @@ const onChevronClick = () => {
 }
 
 .chevron-btn:hover {
-  color: #999;
+  color: var(--color-grey-300);
 }
 
 .confirm-text {
-  margin: 0 0 10px;
-  font-size: 13px;
-  color: #666;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-grey-400);
 }
 
 .confirm-actions {
   display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 </style>

@@ -45,19 +45,19 @@ const apply = async (enable: boolean) => {
 .actions {
   display: flex;
   flex-direction: row;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .feedback {
-  margin: 10px 0 0;
-  font-size: 13px;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
 }
 
 .feedback--success {
-  color: #2d8a4e;
+  color: var(--color-green-600);
 }
 
 .feedback--error {
-  color: #c0392b;
+  color: var(--color-red-600);
 }
 </style>

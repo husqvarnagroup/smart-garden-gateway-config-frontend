@@ -23,7 +23,7 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
 
 .logo-container {
   text-align: center;
-  padding: 1rem 0;
+  padding: var(--space-4) 0;
 }
 
 .logo {

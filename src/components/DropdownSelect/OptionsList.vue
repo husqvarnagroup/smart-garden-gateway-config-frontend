@@ -50,19 +50,19 @@ const emit = defineEmits<{
   top: calc(100% + 2px);
   left: 0;
   right: 0;
-  padding: 4px 0;
-  background: #fff;
-  border: 1px solid rgba(34, 36, 38, 0.35);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-  max-height: 240px;
+  padding: var(--space-1) 0;
+  background: var(--color-white);
+  border: 1px solid var(--color-shadow-md);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px var(--color-overlay-sm);
+  max-height: var(--layout-dropdown-max-height);
   overflow-y: auto;
   z-index: 100;
-  font-size: 1rem;
+  font-size: var(--text-base);
 }
 
 .base-select__option {
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
@@ -70,43 +70,43 @@ const emit = defineEmits<{
 }
 
 .base-select__option:hover {
-  background: #f0f4ff;
+  background: var(--color-blue-50);
 }
 
 .base-select__option--selected {
   font-weight: 600;
-  background: #e8eeff;
+  background: var(--color-blue-100);
 }
 
 .base-select__option--highlighted {
-  background: #f0f4ff;
+  background: var(--color-blue-50);
 }
 
 .base-select__status {
-  padding: 8px 12px;
-  color: #666;
-  font-size: 0.9rem;
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-grey-400);
+  font-size: var(--text-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .base-select__status--error {
-  color: #c0392b;
+  color: var(--color-red-600);
 }
 
 .base-select__retry {
-  font-size: 0.85rem;
-  padding: 2px 8px;
+  font-size: var(--text-sm);
+  padding: var(--border-md) var(--space-2);
   cursor: pointer;
-  border: 1px solid #c0392b;
-  border-radius: 3px;
+  border: 1px solid var(--color-red-600);
+  border-radius: var(--radius-sm);
   background: transparent;
-  color: #c0392b;
+  color: var(--color-red-600);
 }
 
 .base-select__retry:hover {
-  background: #fdf0ef;
+  background: var(--color-red-50);
 }
 </style>

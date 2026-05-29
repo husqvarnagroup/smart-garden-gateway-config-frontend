@@ -31,7 +31,7 @@ const id = useId();
 .field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 label {
@@ -39,16 +39,16 @@ label {
 }
 
 input {
-  padding: 12px 16px;
-  border: 1px solid #d4d4d4;
-  border-radius: 4px;
-  background: #fff;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-grey-200);
+  border-radius: var(--radius-sm);
+  background: var(--color-white);
   font: inherit;
   width: 100%;
   box-sizing: border-box;
 }
 
 input::placeholder {
-  color: #aaa;
+  color: var(--color-grey-300);
 }
 </style>

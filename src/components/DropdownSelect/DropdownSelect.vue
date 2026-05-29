@@ -64,7 +64,7 @@ const {
 .base-select {
   position: relative;
   width: 100%;
-  font-size: 1rem;
+  font-size: var(--text-base);
 }
 
 .base-select__trigger {
@@ -73,11 +73,11 @@ const {
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding: 6px 8px;
-  font-size: 1rem;
-  background: #fff;
-  border: 1px solid rgba(34, 36, 38, 0.35);
-  border-radius: 4px;
+  padding: var(--space-2);
+  font-size: var(--text-base);
+  background: var(--color-white);
+  border: 1px solid var(--color-shadow-md);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;
 }
@@ -97,8 +97,8 @@ const {
 
 .base-select__arrow {
   flex-shrink: 0;
-  margin-left: 8px;
-  font-size: 0.7rem;
-  color: #666;
+  margin-left: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-grey-400);
 }
 </style>

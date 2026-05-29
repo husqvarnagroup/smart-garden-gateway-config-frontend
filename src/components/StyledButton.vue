@@ -21,38 +21,34 @@ defineProps<{
   text-align: center;
   cursor: pointer;
   border: none;
-  padding: 11px 21px;
-  border-radius: 32px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1.5;
-  min-height: calc(1.5em + 22px);
   box-sizing: border-box;
 }
 
 .btn--primary {
-  background-color: #f15922;
-  color: #fff;
+  background-color: var(--color-orange-500);
+  color: var(--color-white);
 }
 
 .btn--primary:hover:not(:disabled) {
-  background-color: #f64404;
+  background-color: var(--color-orange-600);
 }
 
 .btn--secondary {
-  background: #fff;
-  color: rgba(0, 0, 0, 0.6);
-  -webkit-box-shadow:
-    0 0 0 1px rgba(34, 36, 38, 0.35) inset,
-    0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+  background: var(--color-white);
+  color: var(--color-overlay-md);
   box-shadow:
-    0 0 0 1px rgba(34, 36, 38, 0.35) inset,
-    0 0 0 0 rgba(34, 36, 38, 0.15) inset;
+    0 0 0 1px var(--color-shadow-md) inset,
+    0 0 0 0 var(--color-shadow-sm) inset;
 }
 
 .btn--secondary:hover:not(:disabled) {
-  color: rgba(0, 0, 0, 0.8);
+  color: var(--color-overlay-lg);
 }
 
 .btn:disabled {

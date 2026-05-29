@@ -15,16 +15,16 @@ import AppHeader from '@/components/AppHeader.vue';
 .container {
   min-height: 100%;
   width: 100%;
-  background-color: #ececec;
+  background-color: var(--color-grey-100);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 main {
-  max-width: 450px;
+  max-width: var(--layout-max-width);
   width: 100%;
-  padding: 0 14px;
+  padding: 0 var(--space-4);
   box-sizing: border-box;
 }
 </style>

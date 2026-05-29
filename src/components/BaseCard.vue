@@ -6,12 +6,11 @@
 
 <style scoped>
 .card {
-  background: #fff;
-  -webkit-box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
-  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
-  border: 1px solid rgba(34, 36, 38, 0.15);
-  padding: 16px;
-  margin: 16px 0;
+  background: var(--color-white);
+  box-shadow: 0 1px 2px 0 var(--color-shadow-sm);
+  border: 1px solid var(--color-shadow-sm);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
   border-radius: 0;
 }
 
