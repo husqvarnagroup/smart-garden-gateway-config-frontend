@@ -55,10 +55,10 @@ pnpm code:fix
 
 ## Environment Variables
 
-| Variable | Description |
-|---|---|
+| Variable            | Description                                                                                                                                                                                                                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_API_BASE_URL` | Backend origin the browser calls. Use `https://localhost` when the app runs on the gateway itself (production or on-device testing). Use the gateway's IP (e.g. `http://192.168.1.100`) to develop against a real gateway on the same local network. Required in all modes. |
-| `VITE_USE_MOCK_API` | Set to `true` to enable MSW mock interception. Defaults to `false`. |
+| `VITE_USE_MOCK_API` | Set to `true` to enable MSW mock interception. Defaults to `false`.                                                                                                                                                                                                         |
 
 Defaults are in `.env.development` (dev server) and `.env.test` (unit tests).
 

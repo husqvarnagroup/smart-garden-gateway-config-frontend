@@ -13,4 +13,3 @@ const { logout } = useAuth();
     {{ t('main.logout.button') }}
   </StyledButton>
 </template>
-

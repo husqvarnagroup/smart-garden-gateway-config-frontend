@@ -1,4 +1,4 @@
-pipeline/lint-test-stage.ymlstages:
+stages:
   - stage: lint_test
     displayName: 'lint, type-check, test and build'
 

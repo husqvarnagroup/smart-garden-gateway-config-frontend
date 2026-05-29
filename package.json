@@ -18,8 +18,8 @@
     "lint:oxlint:fix": "oxlint . --fix",
     "lint:eslint": "eslint . --cache",
     "lint:eslint:fix": "eslint . --fix --cache",
-    "format": "prettier --check --experimental-cli src/",
-    "format:fix": "prettier --write --experimental-cli src/",
+    "format": "prettier --check --experimental-cli .",
+    "format:fix": "prettier --write --experimental-cli .",
     "msw:init": "msw init public/ --save",
     "code": "run-s format lint type-check",
     "code:fix": "run-s format:fix lint:fix type-check"
