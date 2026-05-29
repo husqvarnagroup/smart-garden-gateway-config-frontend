@@ -4,14 +4,12 @@ import LoadingSpinner from '@/components/LoadingSpinner.vue';
 defineProps<{
   options: string[];
   loading: boolean;
-  error: string | null;
   modelValue: string;
   highlighted: string;
 }>();
 
 const emit = defineEmits<{
   select: [value: string];
-  retry: [];
 }>();
 </script>
 
@@ -20,10 +18,7 @@ const emit = defineEmits<{
     <div v-if="loading" class="status">
       <LoadingSpinner />
     </div>
-    <div v-else-if="error" class="status error">
-      <span>{{ error }}</span>
-      <button type="button" @click="emit('retry')">Retry</button>
-    </div>
+    <div v-else-if="options.length === 0" class="status">No options</div>
     <template v-else>
       <div
         v-for="option in options"
@@ -86,23 +81,5 @@ const emit = defineEmits<{
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-}
-
-.status.error {
-  color: var(--color-red-600);
-}
-
-button {
-  font-size: var(--text-sm);
-  padding: var(--border-md) var(--space-2);
-  cursor: pointer;
-  border: var(--border-sm) solid var(--color-red-600);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  color: var(--color-red-600);
-}
-
-button:hover {
-  background: var(--color-red-50);
 }
 </style>

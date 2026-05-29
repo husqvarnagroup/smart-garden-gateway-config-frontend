@@ -17,9 +17,7 @@ const {
   resolvedOptions,
   selectedLabel,
   listLoading,
-  listError,
   toggle,
-  retry,
   select,
   onKeydown,
 } = useDropdownSelect(props, emit);
@@ -46,11 +44,9 @@ const {
       ref="listRef"
       :options="resolvedOptions"
       :loading="listLoading"
-      :error="listError"
       :model-value="modelValue"
       :highlighted="highlighted"
       @select="select"
-      @retry="retry"
     >
       <template v-if="$slots.option" #option="{ option }">
         <slot name="option" :option="option" />

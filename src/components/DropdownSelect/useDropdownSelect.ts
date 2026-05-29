@@ -1,4 +1,5 @@
 import { ref, computed, onMounted, onBeforeUnmount, type ComponentPublicInstance } from 'vue';
+import { useToast } from '@/composables/useToast';
 
 export interface DropdownSelectProps {
   options?: string[];
@@ -13,6 +14,7 @@ export type DropdownSelectEmits = {
 };
 
 export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSelectEmits) {
+  const toast = useToast();
   const open = ref(false);
   const highlighted = ref('');
   const triggerRef = ref<HTMLButtonElement | null>(null);
@@ -20,7 +22,6 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
 
   const loadedOptions = ref<string[] | null>(null);
   const listLoading = ref(false);
-  const listError = ref<string | null>(null);
 
   const resolvedOptions = computed(() => {
     if (props.loadOptions) return loadedOptions.value ?? [];
@@ -32,11 +33,11 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
   const fetchOptions = async () => {
     if (!props.loadOptions) return;
     listLoading.value = true;
-    listError.value = null;
     try {
       loadedOptions.value = await props.loadOptions();
     } catch (error) {
-      listError.value = error instanceof Error ? error.message : 'Failed to load options';
+      console.error(error);
+      toast.error('Failed to load options');
     } finally {
       listLoading.value = false;
     }
@@ -57,11 +58,6 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
     } else {
       await openList();
     }
-  };
-
-  const retry = async () => {
-    loadedOptions.value = null;
-    await openList();
   };
 
   const select = (option: string) => {
@@ -124,9 +120,7 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
     resolvedOptions,
     selectedLabel,
     listLoading,
-    listError,
     toggle,
-    retry,
     select,
     onKeydown,
   };
