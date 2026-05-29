@@ -35,8 +35,8 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
     listError.value = null;
     try {
       loadedOptions.value = await props.loadOptions();
-    } catch (e) {
-      listError.value = e instanceof Error ? e.message : 'Failed to load options';
+    } catch (error) {
+      listError.value = error instanceof Error ? error.message : 'Failed to load options';
     } finally {
       listLoading.value = false;
     }

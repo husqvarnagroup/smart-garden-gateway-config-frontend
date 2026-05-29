@@ -10,16 +10,17 @@ import {
   type WifiNetwork,
 } from '@/services/wifi';
 import { useAsync } from '@/composables/useAsync';
+import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import WifiSignal from '@/components/WifiSignal.vue';
 import WifiLockIcon from '@/components/WifiLockIcon.vue';
 
 const { t } = useTranslation();
+const toast = useToast();
 
 const { loading, data, load } = useAsync<WifiConfig>();
 const scannedNetworks = ref<WifiNetwork[]>([]);
-const changeError = ref<string | null>(null);
 
 const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
@@ -35,7 +36,6 @@ const onWifiChange = async (ssid: string) => {
   const previous = data.value;
   const security =
     scannedNetworks.value.find((network) => normaliseSsid(network.ssid) === ssid)?.security ?? '';
-  changeError.value = null;
   try {
     if (ssid === HIDDEN_WIFI_LABEL) {
       // TODO: SA-3020: handle hidden network selection
@@ -43,9 +43,10 @@ const onWifiChange = async (ssid: string) => {
       await setWifi(ssid, security, '');
     }
     data.value = { ssid, key_mgmt: security || 'none' };
-  } catch (e) {
-    changeError.value = e instanceof Error ? e.message : 'Failed to connect to network';
+  } catch (error) {
+    console.error(error);
     data.value = previous;
+    toast.error('Failed to connect to network');
   }
 };
 
@@ -58,7 +59,14 @@ const isSecured = (security: string | null | undefined): boolean => {
 const getOptionSecurity = (ssid: string) =>
   scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
 
-onMounted(() => load(getCurrentWifi));
+onMounted(async () => {
+  try {
+    await load(getCurrentWifi);
+  } catch (error) {
+    console.error(error);
+    toast.error(t('main.networks.loading.failed'));
+  }
+});
 </script>
 
 <template>
@@ -88,7 +96,6 @@ onMounted(() => load(getCurrentWifi));
           </div>
         </template>
       </DropdownSelect>
-      <p v-if="changeError">Failed to connect: {{ changeError }}</p>
     </template>
   </BaseCard>
 </template>

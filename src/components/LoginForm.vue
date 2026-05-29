@@ -18,8 +18,8 @@ const onSubmit = async () => {
   try {
     await login(password.value);
     await router.push('/');
-  } catch (error) {
-    console.error('Failed to login:', error);
+  } catch {
+    // authState.error is set by useAuth and shown inline
   }
 };
 </script>

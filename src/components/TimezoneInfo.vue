@@ -10,15 +10,16 @@ import {
 } from '@/services/timezone';
 
 import { useAsync } from '@/composables/useAsync';
+import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
+const toast = useToast();
 
 const { loading, data, load } = useAsync<TimezoneConfig>();
 const saving = ref(false);
-const changeError = ref<string | null>(null);
 
 const onTimezoneChange = (value: string) => {
   data.value = { timezone: value };
@@ -26,18 +27,26 @@ const onTimezoneChange = (value: string) => {
 
 const saveTimezone = async () => {
   if (!data.value?.timezone) return;
-  changeError.value = null;
   saving.value = true;
   try {
     await setTimezone(data.value.timezone);
-  } catch (e) {
-    changeError.value = e instanceof Error ? e.message : 'Failed to update timezone';
+    toast.success(t('main.timezone.save.successful'));
+  } catch (error) {
+    console.error(error);
+    toast.error(t('main.timezone.save.failed'));
   } finally {
     saving.value = false;
   }
 };
 
-onMounted(() => load(getCurrentTimezone));
+onMounted(async () => {
+  try {
+    await load(getCurrentTimezone);
+  } catch (error) {
+    console.error(error);
+    toast.error(t('main.timezone.loading.failed'));
+  }
+});
 </script>
 
 <template>
@@ -57,7 +66,6 @@ onMounted(() => load(getCurrentTimezone));
           {{ t('main.timezone.save.button') }}
         </StyledButton>
       </div>
-      <p v-if="changeError" class="error">Failed to update timezone: {{ changeError }}</p>
     </template>
   </BaseCard>
 </template>
@@ -67,10 +75,5 @@ onMounted(() => load(getCurrentTimezone));
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.error {
-  margin-top: 8px;
-  margin-bottom: 0;
 }
 </style>

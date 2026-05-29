@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import I18NextVue from 'i18next-vue';
 
+import { mockToastError, resetToastMocks } from './helpers/mockUseToast';
 import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import StyledButton from '@/components/StyledButton.vue';
@@ -26,6 +27,7 @@ describe('TimezoneInfo', () => {
   beforeEach(() => {
     vi.mocked(timezoneService.getCurrentTimezone).mockResolvedValue({ timezone: 'UTC' });
     vi.mocked(timezoneService.listTimezones).mockResolvedValue([]);
+    resetToastMocks();
   });
 
   it('saves the selected timezone when the save button is clicked', async () => {
@@ -39,7 +41,7 @@ describe('TimezoneInfo', () => {
     await flushPromises();
 
     expect(timezoneService.setTimezone).toHaveBeenCalledWith('Europe/Berlin');
-    expect(wrapper.find('.error').exists()).toBe(false);
+    expect(mockToastError).not.toHaveBeenCalled();
   });
 
   it('shows an error message when saving the timezone fails', async () => {
@@ -52,7 +54,6 @@ describe('TimezoneInfo', () => {
     await wrapper.findComponent(StyledButton).trigger('click');
     await flushPromises();
 
-    expect(wrapper.find('.error').exists()).toBe(true);
-    expect(wrapper.find('.error').text()).toContain('Network error');
+    expect(mockToastError).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('timezone'));
   });
 });

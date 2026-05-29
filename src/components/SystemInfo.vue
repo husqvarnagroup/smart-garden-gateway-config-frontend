@@ -3,11 +3,20 @@ import { onMounted } from 'vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
 import { useAsync } from '@/composables/useAsync';
+import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 
+const toast = useToast();
 const { data: version, load } = useAsync<GatewayVersion | null>(null);
 
-onMounted(() => load(getGatewayVersion));
+onMounted(async () => {
+  try {
+    await load(getGatewayVersion);
+  } catch (error) {
+    console.error(error);
+    toast.error('Failed to load system info');
+  }
+});
 </script>
 
 <template>

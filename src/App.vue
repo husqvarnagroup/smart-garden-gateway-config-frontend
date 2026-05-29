@@ -2,6 +2,7 @@
 import { watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
+import ToastContainer from '@/components/ToastContainer.vue';
 
 const router = useRouter();
 const route = useRoute();
@@ -16,4 +17,5 @@ watch(isAuthenticated, (authenticated) => {
 
 <template>
   <RouterView />
+  <ToastContainer />
 </template>

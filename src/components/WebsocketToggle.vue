@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { setWebsocketEnabled } from '@/services/websocket';
+import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
-
-const errorMessage = ref<string | null>(null);
-const successMessage = ref<string | null>(null);
+const toast = useToast();
 
 const apply = async (enable: boolean) => {
-  errorMessage.value = null;
-  successMessage.value = null;
   try {
     await setWebsocketEnabled(enable);
-    successMessage.value = enable
-      ? t('main.action.enable.successful', { feature: t('main.websocket.title') })
-      : t('main.action.disable.successful', { feature: t('main.websocket.title') });
+    toast.success(
+      enable
+        ? t('main.action.enable.successful', { feature: t('main.websocket.title') })
+        : t('main.action.disable.successful', { feature: t('main.websocket.title') }),
+    );
   } catch {
-    errorMessage.value = t('main.action.save.failed', { feature: t('main.websocket.title') });
+    toast.error(t('main.action.save.failed', { feature: t('main.websocket.title') }));
   }
 };
 </script>
@@ -36,8 +34,6 @@ const apply = async (enable: boolean) => {
         {{ t('main.action.enable') }}
       </StyledButton>
     </div>
-    <p v-if="successMessage" class="feedback feedback--success">{{ successMessage }}</p>
-    <p v-if="errorMessage" class="feedback feedback--error">{{ errorMessage }}</p>
   </BaseCard>
 </template>
 
@@ -46,18 +42,5 @@ const apply = async (enable: boolean) => {
   display: flex;
   flex-direction: row;
   gap: var(--space-2);
-}
-
-.feedback {
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-sm);
-}
-
-.feedback--success {
-  color: var(--color-green-600);
-}
-
-.feedback--error {
-  color: var(--color-red-600);
 }
 </style>
