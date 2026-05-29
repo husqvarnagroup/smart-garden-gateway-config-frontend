@@ -3,29 +3,26 @@ import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { setWebsocketEnabled } from '@/services/websocket';
-import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
-const { load } = useAsync();
 
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 
-const apply = (enable: boolean) =>
-  load(async () => {
-    errorMessage.value = null;
-    successMessage.value = null;
-    try {
-      await setWebsocketEnabled(enable);
-      successMessage.value = enable
-        ? t('main.websocket.enable.successful')
-        : t('main.websocket.disable.successful');
-    } catch {
-      errorMessage.value = t('main.websocket.save.failed');
-    }
-  });
+const apply = async (enable: boolean) => {
+  errorMessage.value = null;
+  successMessage.value = null;
+  try {
+    await setWebsocketEnabled(enable);
+    successMessage.value = enable
+      ? t('main.websocket.enable.successful')
+      : t('main.websocket.disable.successful');
+  } catch {
+    errorMessage.value = t('main.websocket.save.failed');
+  }
+};
 </script>
 
 <template>
