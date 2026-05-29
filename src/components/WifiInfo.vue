@@ -2,7 +2,13 @@
 import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
-import { getCurrentWifi, wifiScan, setWifi, type WifiNetwork } from '@/services/wifi';
+import {
+  getCurrentWifi,
+  wifiScan,
+  setWifi,
+  type WifiConfig,
+  type WifiNetwork,
+} from '@/services/wifi';
 import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
@@ -11,27 +17,13 @@ import WifiLockIcon from '@/components/WifiLockIcon.vue';
 
 const { t } = useTranslation();
 
-const { loading, load } = useAsync();
-const error = ref<string | null>(null);
-const selectedSsid = ref<string>('');
-const currentSecurity = ref<string>('');
+const { loading, data, load } = useAsync<WifiConfig>();
 const scannedNetworks = ref<WifiNetwork[]>([]);
 const changeError = ref<string | null>(null);
 
 const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
 const normaliseSsid = (ssid: string) => (isHidden(ssid) ? HIDDEN_WIFI_LABEL : ssid);
-
-const fetchCurrentWifi = () => {
-  error.value = null;
-  return load(async () => {
-    const wifiConfig = await getCurrentWifi();
-    selectedSsid.value = normaliseSsid(wifiConfig.ssid);
-    currentSecurity.value = wifiConfig.key_mgmt;
-  }).catch((e) => {
-    error.value = e instanceof Error ? e.message : 'Unknown error';
-  });
-};
 
 const scanWifiNetworks = async (): Promise<string[]> => {
   const networks = await wifiScan();
@@ -40,21 +32,20 @@ const scanWifiNetworks = async (): Promise<string[]> => {
 };
 
 const onWifiChange = async (ssid: string) => {
-  const previous = selectedSsid.value;
+  const previous = data.value;
   const security =
     scannedNetworks.value.find((network) => normaliseSsid(network.ssid) === ssid)?.security ?? '';
   changeError.value = null;
   try {
     if (ssid === HIDDEN_WIFI_LABEL) {
-      // TODO:  SA-3020: handle hidden network selection
+      // TODO: SA-3020: handle hidden network selection
     } else {
       await setWifi(ssid, security, '');
     }
-    selectedSsid.value = ssid;
-    currentSecurity.value = security || 'none';
+    data.value = { ssid, key_mgmt: security || 'none' };
   } catch (e) {
     changeError.value = e instanceof Error ? e.message : 'Failed to connect to network';
-    selectedSsid.value = previous;
+    data.value = previous;
   }
 };
 
@@ -67,7 +58,7 @@ const isSecured = (security: string | null | undefined): boolean => {
 const getOptionSecurity = (ssid: string) =>
   scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
 
-onMounted(fetchCurrentWifi);
+onMounted(() => load(getCurrentWifi));
 </script>
 
 <template>
@@ -76,14 +67,9 @@ onMounted(fetchCurrentWifi);
 
     <p v-if="loading">Loading…</p>
 
-    <template v-else-if="error">
-      <p>Failed to load wifi data: {{ error }}</p>
-      <button @click="fetchCurrentWifi()">Retry</button>
-    </template>
-
     <template v-else>
       <DropdownSelect
-        v-model="selectedSsid"
+        :model-value="normaliseSsid(data?.ssid ?? '')"
         :load-options="scanWifiNetworks"
         @change="onWifiChange"
       >
@@ -91,7 +77,7 @@ onMounted(fetchCurrentWifi);
           <div class="wifi-option">
             <WifiSignal :signal="getSignal(value)" />
             <span class="wifi-option__name">{{ value }}</span>
-            <WifiLockIcon :locked="isSecured(currentSecurity)" />
+            <WifiLockIcon :locked="isSecured(data?.key_mgmt)" />
           </div>
         </template>
         <template #option="{ option }">

@@ -9,10 +9,7 @@ import StyledButton from '@/components/StyledButton.vue';
 const { t } = useTranslation();
 const { load } = useAsync();
 
-const resetPairings = () =>
-  load(async () => {
-    await resetHomekit();
-  });
+const resetPairings = () => load(resetHomekit);
 </script>
 
 <template>

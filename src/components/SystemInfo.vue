@@ -5,13 +5,9 @@ import { getGatewayVersion, type GatewayVersion } from '@/services/system';
 import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
 
-const { load, data: version } = useAsync<GatewayVersion | null>(null);
+const { data: version, load } = useAsync<GatewayVersion | null>(null);
 
-const fetchSystem = () => load(getGatewayVersion);
-
-onMounted(() => {
-  fetchSystem().catch(() => {});
-});
+onMounted(() => load(getGatewayVersion));
 </script>
 
 <template>

@@ -2,7 +2,12 @@
 import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
-import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
+import {
+  type TimezoneConfig,
+  getCurrentTimezone,
+  listTimezones,
+  setTimezone,
+} from '@/services/timezone';
 
 import { useAsync } from '@/composables/useAsync';
 import BaseCard from '@/components/BaseCard.vue';
@@ -10,34 +15,22 @@ import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 
 const { t } = useTranslation();
 
-const { loading, load } = useAsync();
-const error = ref<string | null>(null);
-const selectedTimezone = ref<string>('');
+const { loading, data, load } = useAsync<TimezoneConfig>();
 const changeError = ref<string | null>(null);
 
-const fetchData = () => {
-  error.value = null;
-  return load(async () => {
-    const timezoneConfig = await getCurrentTimezone();
-    selectedTimezone.value = timezoneConfig.timezone;
-  }).catch((e) => {
-    error.value = e instanceof Error ? e.message : 'Unknown error';
-  });
-};
-
 const onTimezoneChange = async (value: string) => {
-  const previousTimezone = selectedTimezone.value;
+  const previous = data.value;
   changeError.value = null;
   try {
     await setTimezone(value);
-    selectedTimezone.value = value;
+    data.value = { timezone: value };
   } catch (e) {
     changeError.value = e instanceof Error ? e.message : 'Failed to update timezone';
-    selectedTimezone.value = previousTimezone;
+    data.value = previous;
   }
 };
 
-onMounted(fetchData);
+onMounted(() => load(getCurrentTimezone));
 </script>
 
 <template>
@@ -46,14 +39,9 @@ onMounted(fetchData);
 
     <p v-if="loading">Loading…</p>
 
-    <template v-else-if="error">
-      <p>Failed to load timezone data: {{ error }}</p>
-      <button @click="fetchData()">Retry</button>
-    </template>
-
     <template v-else>
       <DropdownSelect
-        v-model="selectedTimezone"
+        :model-value="data?.timezone ?? 'No Timezone Found'"
         :load-options="listTimezones"
         @change="onTimezoneChange"
       />
