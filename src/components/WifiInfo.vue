@@ -46,7 +46,7 @@ const onWifiChange = async (ssid: string) => {
   } catch (error) {
     console.error(error);
     data.value = previous;
-    toast.error('Failed to connect to network');
+    toast.error(t('main.networks.connect.failed'));
   }
 };
 

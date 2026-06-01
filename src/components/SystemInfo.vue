@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
+import { useTranslation } from 'i18next-vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
 import { useAsync } from '@/composables/useAsync';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 
+const { t } = useTranslation();
 const toast = useToast();
 const { data: version, load } = useAsync<GatewayVersion | null>(null);
 
@@ -14,7 +16,7 @@ onMounted(async () => {
     await load(getGatewayVersion);
   } catch (error) {
     console.error(error);
-    toast.error('Failed to load system info');
+    toast.error(t('main.system.loading.failed'));
   }
 });
 </script>

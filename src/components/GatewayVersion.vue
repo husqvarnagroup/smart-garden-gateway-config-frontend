@@ -16,7 +16,7 @@ onMounted(async () => {
     await load(getGatewayVersion);
   } catch (error) {
     console.error(error);
-    toast.error('Failed to load gateway version');
+    toast.error(t('main.version.loading.failed'));
   }
 });
 </script>
