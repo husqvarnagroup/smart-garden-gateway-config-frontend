@@ -46,7 +46,7 @@ const onWifiChange = async (ssid: string) => {
   } catch (error) {
     console.error(error);
     data.value = previous;
-    toast.error(t('main.networks.connect.failed'));
+    toast.error(t('error.connect', { feature: t('network.label') }));
   }
 };
 
@@ -64,14 +64,14 @@ onMounted(async () => {
     await load(getCurrentWifi);
   } catch (error) {
     console.error(error);
-    toast.error(t('main.networks.loading.failed'));
+    toast.error(t('error.load', { feature: t('network.label') }));
   }
 });
 </script>
 
 <template>
   <BaseCard>
-    <h2>{{ t('main.networks.network.label') }}</h2>
+    <h2>{{ t('network.label') }}</h2>
 
     <p v-if="loading">Loading…</p>
 

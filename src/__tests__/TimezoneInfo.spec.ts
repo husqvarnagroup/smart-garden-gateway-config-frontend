@@ -54,6 +54,6 @@ describe('TimezoneInfo', () => {
     await wrapper.findComponent(StyledButton).trigger('click');
     await flushPromises();
 
-    expect(mockToastError).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('timezone'));
+    expect(mockToastError).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('Timezone'));
   });
 });

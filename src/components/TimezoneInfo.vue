@@ -30,10 +30,10 @@ const saveTimezone = async () => {
   saving.value = true;
   try {
     await setTimezone(data.value.timezone);
-    toast.success(t('main.timezone.save.successful'));
+    toast.success(t('success.save'));
   } catch (error) {
     console.error(error);
-    toast.error(t('main.timezone.save.failed'));
+    toast.error(t('error.update', { feature: t('timezone.label') }));
   } finally {
     saving.value = false;
   }
@@ -44,14 +44,14 @@ onMounted(async () => {
     await load(getCurrentTimezone);
   } catch (error) {
     console.error(error);
-    toast.error(t('main.timezone.loading.failed'));
+    toast.error(t('error.load', { feature: t('timezone.label') }));
   }
 });
 </script>
 
 <template>
   <BaseCard>
-    <h2>{{ t('main.timezone.label') }}</h2>
+    <h2>{{ t('timezone.label') }}</h2>
 
     <p v-if="loading">Loading…</p>
 
@@ -63,7 +63,7 @@ onMounted(async () => {
           @change="onTimezoneChange"
         />
         <StyledButton type="button" variant="primary" :loading="saving" @click="saveTimezone()">
-          {{ t('main.timezone.save.button') }}
+          {{ t('actions.save') }}
         </StyledButton>
       </div>
     </template>

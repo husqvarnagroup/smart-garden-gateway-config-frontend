@@ -10,6 +10,6 @@ const { logout } = useAuth();
 
 <template>
   <StyledButton type="button" variant="primary" @click="logout">
-    {{ t('main.logout.button') }}
+    {{ t('actions.logout') }}
   </StyledButton>
 </template>

@@ -21,13 +21,13 @@ const onChevronClick = () => {
       &#8250;
     </button>
     <BaseCard v-if="state === 'confirming'">
-      <p>{{ t('main.advanced.label') }} &mdash; {{ t('main.advanced.confirm') }}</p>
+      <p>{{ t('advanced.label') }} &mdash; {{ t('advanced.confirm') }}</p>
       <div class="actions">
         <StyledButton type="button" variant="secondary" @click="state = 'hidden'">
-          {{ t('main.advanced.confirm.no') }}
+          {{ t('actions.cancel') }}
         </StyledButton>
         <StyledButton type="button" variant="primary" @click="state = 'open'">
-          {{ t('main.advanced.confirm.yes') }}
+          {{ t('actions.continue') }}
         </StyledButton>
       </div>
     </BaseCard>

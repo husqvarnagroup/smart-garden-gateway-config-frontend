@@ -14,24 +14,24 @@ const apply = async (enable: boolean) => {
     await setWebsocketEnabled(enable);
     toast.success(
       enable
-        ? t('main.action.enable.successful', { feature: t('main.websocket.title') })
-        : t('main.action.disable.successful', { feature: t('main.websocket.title') }),
+        ? t('success.enable', { feature: t('websocket.label') })
+        : t('success.disable', { feature: t('websocket.label') }),
     );
   } catch {
-    toast.error(t('main.action.save.failed', { feature: t('main.websocket.title') }));
+    toast.error(t('error.update', { feature: t('websocket.label') }));
   }
 };
 </script>
 
 <template>
   <BaseCard>
-    <h2>{{ t('main.websocket.title') }}</h2>
+    <h2>{{ t('websocket.label') }}</h2>
     <div class="actions">
       <StyledButton type="button" variant="secondary" @click="apply(false)">
-        {{ t('main.action.disable') }}
+        {{ t('actions.disable') }}
       </StyledButton>
       <StyledButton type="button" variant="primary" @click="apply(true)">
-        {{ t('main.action.enable') }}
+        {{ t('actions.enable') }}
       </StyledButton>
     </div>
   </BaseCard>
