@@ -29,6 +29,7 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
               '/homekit',
               '/websocket_api',
               '/ssh_access_enable',
+              '/ssh_access_credentials',
             ].map((path) => [
               path,
               { target: env.VITE_API_BASE_URL, changeOrigin: true, secure: false },

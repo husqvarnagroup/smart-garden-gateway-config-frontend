@@ -124,4 +124,11 @@ export const handlers = [
     if (denied) return denied;
     return new HttpResponse(null, { status: 204 });
   }),
+
+  http.post('/ssh_access_credentials', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return new HttpResponse(null, { status: 204 });
+  }),
 ];
