@@ -9,11 +9,11 @@ import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { load } = useAsync();
+const { run: runHomekitReset } = useAsync();
 
 const resetPairings = async () => {
   try {
-    await load(resetHomekit);
+    await runHomekitReset(resetHomekit);
     toast.success(t('success.reset', { feature: t('homekit.label') }));
   } catch (error) {
     console.error(error);

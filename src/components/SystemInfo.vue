@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
@@ -9,11 +9,12 @@ import BaseCard from '@/components/BaseCard.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { data: version, load } = useAsync<GatewayVersion | null>(null);
+const { run } = useAsync();
+const gatewayVersion = ref<GatewayVersion | null>(null);
 
 onMounted(async () => {
   try {
-    await load(getGatewayVersion);
+    gatewayVersion.value = await run(getGatewayVersion);
   } catch (error) {
     console.error(error);
     toast.error(t('error.load', { feature: 'system info' }));
@@ -24,6 +25,6 @@ onMounted(async () => {
 <template>
   <BaseCard>
     <h2>System</h2>
-    <p>Version: {{ version?.gateway_version ?? '…' }}</p>
+    <p>Version: {{ gatewayVersion?.gateway_version ?? '…' }}</p>
   </BaseCard>
 </template>

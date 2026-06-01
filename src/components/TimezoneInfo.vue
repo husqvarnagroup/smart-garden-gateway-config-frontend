@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import {
@@ -10,6 +10,7 @@ import {
 } from '@/services/timezone';
 
 import { useAsync } from '@/composables/useAsync';
+import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
@@ -18,30 +19,32 @@ import StyledButton from '@/components/StyledButton.vue';
 const { t } = useTranslation();
 const toast = useToast();
 
-const { loading, data, load } = useAsync<TimezoneConfig>();
-const saving = ref(false);
-
-const onTimezoneChange = (value: string) => {
-  data.value = { timezone: value };
-};
+const { pending: timezoneLoading, run: runTimezoneLoad } = useAsync();
+const {
+  current: currentTimezone,
+  saving: timezoneSaving,
+  init: initTimezone,
+  change: changeTimezone,
+  saveWithRollback: saveTimezoneWithRollback,
+} = useOptimisticSubmit<TimezoneConfig>();
 
 const saveTimezone = async () => {
-  if (!data.value?.timezone) return;
-  saving.value = true;
+  const timezone = currentTimezone.value?.timezone;
+  if (!timezone) return;
+
   try {
-    await setTimezone(data.value.timezone);
+    await saveTimezoneWithRollback(() => setTimezone(timezone));
     toast.success(t('success.save'));
   } catch (error) {
     console.error(error);
     toast.error(t('error.update', { feature: t('timezone.label') }));
-  } finally {
-    saving.value = false;
   }
 };
 
 onMounted(async () => {
   try {
-    await load(getCurrentTimezone);
+    const timezone = await runTimezoneLoad(getCurrentTimezone);
+    initTimezone(timezone);
   } catch (error) {
     console.error(error);
     toast.error(t('error.load', { feature: t('timezone.label') }));
@@ -53,16 +56,21 @@ onMounted(async () => {
   <BaseCard>
     <h2>{{ t('timezone.label') }}</h2>
 
-    <p v-if="loading">Loading…</p>
+    <p v-if="timezoneLoading">Loading…</p>
 
     <template v-else>
       <div class="actions">
         <DropdownSelect
-          :model-value="data?.timezone ?? 'No Timezone Found'"
+          :model-value="currentTimezone?.timezone ?? 'No Timezone Found'"
           :load-options="listTimezones"
-          @change="onTimezoneChange"
+          @change="changeTimezone({ timezone: $event })"
         />
-        <StyledButton type="button" variant="primary" :loading="saving" @click="saveTimezone()">
+        <StyledButton
+          type="button"
+          variant="primary"
+          :loading="timezoneSaving"
+          @click="saveTimezone()"
+        >
           {{ t('actions.save') }}
         </StyledButton>
       </div>

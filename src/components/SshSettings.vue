@@ -3,19 +3,21 @@ import { ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { addSshKey, setSshEnabled } from '@/services/ssh';
+import { useAsync } from '@/composables/useAsync';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
+const { run: runSshChange } = useAsync();
+const { run: runAddSshKey, pending: savingSshKey } = useAsync();
 
 const publicKey = ref('');
-const submitting = ref(false);
 
 const apply = async (enable: boolean) => {
   try {
-    await setSshEnabled(enable);
+    await runSshChange(() => setSshEnabled(enable));
     toast.success(
       enable
         ? t('success.enable', { feature: t('ssh.label') })
@@ -27,16 +29,12 @@ const apply = async (enable: boolean) => {
 };
 
 const submitKey = async () => {
-  if (submitting.value) return;
-  submitting.value = true;
   try {
-    await addSshKey(publicKey.value);
+    await runAddSshKey(() => addSshKey(publicKey.value));
     toast.success(t('success.add', { feature: t('ssh.key.label') }));
     publicKey.value = '';
   } catch {
     toast.error(t('error.add', { feature: t('ssh.key.label') }));
-  } finally {
-    submitting.value = false;
   }
 };
 </script>
@@ -64,7 +62,7 @@ const submitKey = async () => {
         type="button"
         variant="primary"
         data-testid="add-ssh-key"
-        :disabled="!publicKey.trim() || submitting"
+        :disabled="!publicKey.trim() || savingSshKey"
         @click="submitKey"
       >
         {{ t('actions.add', { feature: t('ssh.key.label') }) }}

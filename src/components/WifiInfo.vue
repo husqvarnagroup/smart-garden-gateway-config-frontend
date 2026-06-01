@@ -10,6 +10,7 @@ import {
   type WifiNetwork,
 } from '@/services/wifi';
 import { useAsync } from '@/composables/useAsync';
+import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
@@ -19,49 +20,58 @@ import WifiLockIcon from '@/components/WifiLockIcon.vue';
 const { t } = useTranslation();
 const toast = useToast();
 
-const { loading, data, load } = useAsync<WifiConfig>();
-const scannedNetworks = ref<WifiNetwork[]>([]);
+const { pending: wifiLoading, run: runWifiLoad } = useAsync();
+const { run: runWifiScan } = useAsync();
+const {
+  current: currentWifiConfig,
+  init: initWifiConfig,
+  change: changeWifiConfig,
+  saveWithRollback: saveWifiConfigWithRollback,
+} = useOptimisticSubmit<WifiConfig>();
+const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 
 const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
 const normaliseSsid = (ssid: string) => (isHidden(ssid) ? HIDDEN_WIFI_LABEL : ssid);
 
 const scanWifiNetworks = async (): Promise<string[]> => {
-  const networks = await wifiScan();
-  scannedNetworks.value = networks;
+  const networks = await runWifiScan(wifiScan);
+  scannedWifiNetworks.value = networks;
   return networks.map((network) => normaliseSsid(network.ssid));
 };
 
 const onWifiChange = async (ssid: string) => {
-  const previous = data.value;
   const security =
-    scannedNetworks.value.find((network) => normaliseSsid(network.ssid) === ssid)?.security ?? '';
+    scannedWifiNetworks.value.find((network) => normaliseSsid(network.ssid) === ssid)?.security ??
+    '';
+
   try {
     if (ssid === HIDDEN_WIFI_LABEL) {
       // TODO: SA-3020: handle hidden network selection
     } else {
-      await setWifi(ssid, security, '');
+      changeWifiConfig({ ssid, key_mgmt: security || 'none' });
+      await saveWifiConfigWithRollback(() => setWifi(ssid, security, ''));
+      toast.success(t('success.save'));
     }
-    data.value = { ssid, key_mgmt: security || 'none' };
   } catch (error) {
     console.error(error);
-    data.value = previous;
     toast.error(t('error.connect', { feature: t('network.label') }));
   }
 };
 
 const getSignal = (ssid: string) =>
-  scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.signal;
+  scannedWifiNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.signal;
 const isSecured = (security: string | null | undefined): boolean => {
   if (security === null || security === undefined) return false;
   return security !== 'none';
 };
 const getOptionSecurity = (ssid: string) =>
-  scannedNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
+  scannedWifiNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
 
 onMounted(async () => {
   try {
-    await load(getCurrentWifi);
+    const wifi = await runWifiLoad(getCurrentWifi);
+    initWifiConfig(wifi);
   } catch (error) {
     console.error(error);
     toast.error(t('error.load', { feature: t('network.label') }));
@@ -73,11 +83,11 @@ onMounted(async () => {
   <BaseCard>
     <h2>{{ t('network.label') }}</h2>
 
-    <p v-if="loading">Loading…</p>
+    <p v-if="wifiLoading">Loading…</p>
 
     <template v-else>
       <DropdownSelect
-        :model-value="normaliseSsid(data?.ssid ?? '')"
+        :model-value="normaliseSsid(currentWifiConfig?.ssid ?? '')"
         :load-options="scanWifiNetworks"
         @change="onWifiChange"
       >
@@ -85,7 +95,7 @@ onMounted(async () => {
           <div class="option">
             <WifiSignal :signal="getSignal(value)" />
             <span class="name">{{ value }}</span>
-            <WifiLockIcon :locked="isSecured(data?.key_mgmt)" />
+            <WifiLockIcon :locked="isSecured(currentWifiConfig?.key_mgmt)" />
           </div>
         </template>
         <template #option="{ option }">

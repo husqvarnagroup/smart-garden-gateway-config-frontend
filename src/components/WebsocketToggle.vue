@@ -2,16 +2,18 @@
 import { useTranslation } from 'i18next-vue';
 
 import { setWebsocketEnabled } from '@/services/websocket';
+import { useAsync } from '@/composables/useAsync';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
+const { run: runWebsocketChange } = useAsync();
 
 const apply = async (enable: boolean) => {
   try {
-    await setWebsocketEnabled(enable);
+    await runWebsocketChange(() => setWebsocketEnabled(enable));
     toast.success(
       enable
         ? t('success.enable', { feature: t('websocket.label') })

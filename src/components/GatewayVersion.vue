@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
@@ -9,11 +9,12 @@ import { useToast } from '@/composables/useToast';
 const { t } = useTranslation();
 const toast = useToast();
 
-const { data, load } = useAsync<GatewayVersion | null>(null);
+const { run } = useAsync();
+const gatewayVersion = ref<GatewayVersion | null>(null);
 
 onMounted(async () => {
   try {
-    await load(getGatewayVersion);
+    gatewayVersion.value = await run(getGatewayVersion);
   } catch (error) {
     console.error(error);
     toast.error(t('error.load', { feature: 'gateway version' }));
@@ -22,8 +23,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <p v-if="data?.gateway_version">
-    {{ t('version') }} {{ data.gateway_version }} / <a href="/licenses">{{ t('licenses') }}</a>
+  <p v-if="gatewayVersion?.gateway_version">
+    {{ t('version') }} {{ gatewayVersion.gateway_version }} /
+    <a href="/licenses">{{ t('licenses') }}</a>
   </p>
 </template>
 
