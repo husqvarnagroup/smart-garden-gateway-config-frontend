@@ -26,6 +26,7 @@ const toast = useToast();
 
 const { pending: wifiLoading, run: runWifiLoad } = useAsync();
 const { run: runWifiScan } = useAsync();
+const { pending: resettingWifi, run: runWifiReset } = useAsync();
 const {
   current: currentWifiConfig,
   saving: isWifiSaving,
@@ -36,7 +37,6 @@ const {
 const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 
 const password = ref('');
-const resettingWifi = ref(false);
 const hiddenNetworkName = ref('');
 
 const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
@@ -125,17 +125,14 @@ const saveWifi = async () => {
 };
 
 const resetWifiConfig = async () => {
-  resettingWifi.value = true;
   try {
-    await resetWifi();
+    await runWifiReset(resetWifi);
     hiddenNetworkName.value = '';
     password.value = '';
     toast.success(t('success.reset', { feature: t('network.label') }));
   } catch (error) {
     console.error(error);
     toast.error(t('error.reset', { feature: t('network.label') }));
-  } finally {
-    resettingWifi.value = false;
   }
 };
 </script>
