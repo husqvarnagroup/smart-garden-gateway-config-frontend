@@ -13,4 +13,4 @@ export const getCurrentTimezone = (): Promise<TimezoneConfig> =>
   apiFetch<string>('/timezone', 'GET').then((tz) => ({ timezone: tz }));
 
 export const setTimezone = (timezone: string): Promise<TimezoneConfig> =>
-  apiFetch<TimezoneConfig>('/timezone', 'PUT', { timezone });
+  apiFetch<string>('/timezone', 'PUT', timezone).then((tz) => ({ timezone: tz }));

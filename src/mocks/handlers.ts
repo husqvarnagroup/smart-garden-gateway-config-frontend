@@ -54,8 +54,8 @@ export const handlers = [
     await delay(600);
     const denied = requireSession(request);
     if (denied) return denied;
-    const body = (await request.json()) as { timezone?: string };
-    return HttpResponse.json({ timezone: body.timezone ?? 'UTC' });
+    const timezone = (await request.json()) as string;
+    return HttpResponse.json(timezone);
   }),
 
   http.get('/wifi_list', async ({ request }) => {
