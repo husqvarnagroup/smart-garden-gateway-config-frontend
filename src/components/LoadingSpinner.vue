@@ -5,8 +5,9 @@
 <style scoped>
 .spinner {
   display: block;
-  width: 1em;
-  height: 1em;
+  width: 1.5em;
+  height: 1.5em;
+  box-sizing: border-box;
   border: 2px solid rgba(128, 128, 128, 0.35);
   border-top-color: currentColor;
   border-radius: 50%;
