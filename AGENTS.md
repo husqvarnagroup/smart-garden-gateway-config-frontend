@@ -17,16 +17,19 @@ const emit = defineEmits<{ change: [value: string] }>();
 ```
 
 - Props/emits always typed with generics — no runtime declarations (`{ type: String }`)
-- Complex logic → extract to `useComponentName.ts` in same directory (see `DropdownSelect/useDropdownSelect.ts`)
+- `defineModel` is fine for simple field-style components
+- Extract logic to `useComponentName.ts` in the same directory when it is reused, hard to scan inline, or easier to test in isolation (see `DropdownSelect/useDropdownSelect.ts`)
 - Translations: `const { t } = useTranslation()` from `i18next-vue`
 - Async state: `useAsync` from `@/composables/useAsync` — required when loading state or fetched data is exposed in the template; plain `async` functions are fine for fire-and-forget operations that only update local refs
-- Auth state: `useAuth` from `@/composables/useAuth`
+- Editable fetched config flows: prefer `useOptimisticSubmit` when the UI needs optimistic local state with rollback on save failure
+- User-visible async feedback: use `useToast` for success/error messages triggered by user actions
+- Auth state in components: use `useAuth` from `@/composables/useAuth`
 
 ---
 
 ## CSS Custom Properties
 
-All design tokens live in `src/styles/global.css` as CSS custom properties on `:root`. Use them always — no raw hex, rgba, px, or rem values in component styles.
+All design tokens live in `src/styles/global.css` as CSS custom properties on `:root`. In component styles, prefer existing tokens over raw values. Do not introduce new raw hex, rgba, px, or rem values when an existing token expresses the same value.
 
 ```css
 /* wrong */
@@ -38,15 +41,19 @@ padding: var(--space-4);
 color: var(--color-grey-400);
 ```
 
+`src/styles/global.css` is the place where raw token primitives are defined, so raw values there are expected.
+
+When touching existing component styles that still use legacy raw values, prefer migrating them to tokens as part of the same change when it stays small and clear.
+
 Available token groups: `--space-*`, `--text-*`, `--radius-*`, `--layout-*`, `--color-*`.
 
 Color subgroups: `grey`, `orange`, `blue`, `green`, `red`, `shadow`, `overlay`.
 
 ---
 
-## Class Naming in Scoped CSS
+## Class Naming In Scoped CSS
 
-All component styles use `<style scoped>`. Scoped CSS provides isolation — no prefixing needed.
+Use `<style scoped>` in component files. Scoped CSS provides isolation, so no component-name prefixing is needed.
 
 ### 1. Use element selectors for unique elements
 
@@ -166,4 +173,6 @@ Name what the element IS, not where it comes from.
 - Components: `PascalCase.vue`
 - Composables: `useCamelCase.ts`
 - i18n keys: `src/i18n/locales/en.yaml` is source of truth; other locales mirror structure
-- State: shared reactive state in `src/state/`; wrap access in composables, never import state directly in components
+- State: shared reactive state lives in `src/state/`
+- Components should not import state directly; wrap component access in composables
+- Outside components, direct state imports are acceptable for shared infrastructure such as API/session plumbing, but prefer composables as the public interface when that keeps the call site clearer

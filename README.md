@@ -7,6 +7,15 @@ Frontend for the Smart Garden Gateway configuration interface.
 - Install [Git](https://git-scm.com/)
 - Install [nvm](https://github.com/creationix/nvm#install-script)
 - Configure [NPM Artifactory Registry](https://confluence-husqvarna.riada.se/display/SGS/Artifactory#Artifactory-Setup). Verify with `pnpm ping`
+- Use Node `^20.19.0 || >=22.12.0`
+
+## What The App Does
+
+- Authenticated gateway configuration UI with a separate login view
+- Manage timezone and Wi-Fi settings
+- Reset HomeKit pairings
+- Show the current gateway version
+- Advanced features for websocket API access and SSH access
 
 ## Setup
 
@@ -61,10 +70,12 @@ pnpm code:fix
 
 ## Environment Variables
 
-| Variable            | Description                                                                                                                                                                                                                                                                 |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_API_BASE_URL` | Backend origin the browser calls. Use `https://localhost` when the app runs on the gateway itself (production or on-device testing). Use the gateway's IP (e.g. `http://192.168.1.100`) to develop against a real gateway on the same local network. Required in all modes. |
-| `VITE_USE_MOCK_API` | Set to `true` to enable MSW mock interception. Defaults to `false`.                                                                                                                                                                                                         |
+Use `https` for gateway URLs.
+
+| Variable            | Description                                                                                                                                                                                                                                                                                                                      |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_BASE_URL` | Backend origin for the Vite dev/test proxy. The app itself uses relative API paths such as `/login` and `/wifi`. Use `https://localhost` when the app runs on the gateway itself during local development, or the gateway's IP (for example `https://192.168.1.100`) when developing against a real gateway on the same network. |
+| `VITE_USE_MOCK_API` | Set to `true` to enable MSW mock interception. Defaults to `false`.                                                                                                                                                                                                                                                              |
 
 Defaults are in `.env.development` (dev server) and `.env.test` (unit tests).
 
@@ -79,6 +90,10 @@ pnpm dev:mock
 ```
 
 This sets `VITE_USE_MOCK_API=true`, which makes `src/main.ts` start the MSW worker from `src/mocks/browser.ts` before the Vue app is mounted.
+
+Mock login credentials:
+
+- Password: `pass1234`
 
 The worker script is checked in at `public/mockServiceWorker.js`. If MSW is re-initialized, run:
 
