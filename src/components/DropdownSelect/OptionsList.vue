@@ -38,18 +38,19 @@ const emit = defineEmits<{
 <style scoped>
 [role='listbox'] {
   position: absolute;
-  top: calc(100% + var(--space-1));
+  top: 100%;
   left: 0;
   right: 0;
   padding: var(--space-1) 0;
   background: var(--color-white);
-  border: var(--border-sm) solid var(--color-shadow-md);
-  border-radius: var(--radius-sm);
+  border: var(--border-sm) solid var(--color-grey-200);
+  border-top: none;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   box-shadow: 0 var(--space-1) var(--space-3) var(--color-overlay-sm);
   max-height: var(--layout-dropdown-max-height);
   overflow-y: auto;
   z-index: 100;
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
 [role='option'] {

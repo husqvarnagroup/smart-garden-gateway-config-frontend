@@ -24,7 +24,7 @@ const {
 </script>
 
 <template>
-  <div :class="{ disabled }">
+  <div :class="{ disabled, open }">
     <button
       ref="triggerRef"
       type="button"
@@ -60,7 +60,7 @@ const {
 div {
   position: relative;
   width: 100%;
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
 }
 
 button {
@@ -69,18 +69,27 @@ button {
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--space-2);
-  font-size: var(--text-base);
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: lighter;
   background: var(--color-white);
-  border: var(--border-sm) solid var(--color-shadow-md);
+  border: var(--border-sm) solid var(--color-grey-200);
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;
+  height: 2.8rem;
+  padding: 0 var(--space-3);
 }
 
 .disabled button {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.open button {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom-color: var(--color-white);
 }
 
 .value {
