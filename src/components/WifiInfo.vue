@@ -74,7 +74,7 @@ const scanWifiNetworks = async (): Promise<string[]> => {
   return networks.map((network) => normaliseSsid(network.ssid));
 };
 
-const onWifiChange = async (ssid: string) => {
+const onWifiChange = (ssid: string) => {
   const security = scannedWifiNetworks.value.find(
     (network) => normaliseSsid(network.ssid) === ssid,
   )?.security;
