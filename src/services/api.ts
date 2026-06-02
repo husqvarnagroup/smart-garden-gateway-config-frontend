@@ -24,9 +24,11 @@ export const apiFetch = async <T>(
 ): Promise<T> => {
   const url = path;
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const headers: Record<string, string> = {};
+
+  if (body !== undefined) {
+    headers['Content-Type'] = 'application/json';
+  }
 
   if (!skipAuth && authState.session) {
     headers['X-Session'] = authState.session;
