@@ -8,6 +8,7 @@ defineProps<{
   label: string;
   placeholder?: string;
   autocomplete?: 'current-password' | 'new-password';
+  disabled?: boolean;
 }>();
 
 const id = useId();
@@ -29,11 +30,13 @@ const toggleVisibility = () => {
         :placeholder="placeholder"
         name="password"
         :autocomplete="autocomplete"
+        :disabled="disabled"
         required
       />
       <button
         type="button"
         :aria-label="isVisible ? 'Hide password' : 'Show password'"
+        :disabled="disabled"
         @click="toggleVisibility"
       >
         <PasswordVisibilityIcon :visible="isVisible" />
@@ -89,5 +92,10 @@ button {
 
 button:hover {
   color: var(--color-grey-700);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  color: var(--color-grey-300);
 }
 </style>

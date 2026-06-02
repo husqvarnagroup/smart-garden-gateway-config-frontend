@@ -1,16 +1,18 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
 import { getGatewayVersion, type GatewayVersion } from '@/services/system';
 import { useAsync } from '@/composables/useAsync';
 import { useToast } from '@/composables/useToast';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
 
-const { run } = useAsync();
+const { pending: loading, run } = useAsync();
 const gatewayVersion = ref<GatewayVersion | null>(null);
+const version = computed(() => gatewayVersion.value?.gateway_version ?? null);
 
 onMounted(async () => {
   try {
@@ -23,14 +25,24 @@ onMounted(async () => {
 </script>
 
 <template>
-  <p v-if="gatewayVersion?.gateway_version">
-    {{ t('version') }} {{ gatewayVersion.gateway_version }} /
-    <a href="/licenses">{{ t('licenses') }}</a>
-  </p>
+  <div
+    v-if="loading || version"
+    :aria-busy="loading"
+    :aria-label="loading ? 'Loading gateway version' : undefined"
+  >
+    <SkeletonBlock v-if="loading" width="100%" height="var(--space-5)" />
+    <template v-else>
+      {{ t('version') }} {{ version }} /
+      <a href="/licenses">{{ t('licenses') }}</a>
+    </template>
+  </div>
 </template>
 
 <style scoped>
-p {
+div {
+  width: 100%;
+  min-height: var(--space-5);
+  font-size: var(--text-sm);
   text-align: center;
   margin: var(--space-8) 0;
 }

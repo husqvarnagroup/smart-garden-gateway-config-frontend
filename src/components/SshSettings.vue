@@ -10,7 +10,7 @@ import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { run: runSshChange } = useAsync();
+const { run: runSshChange, pending: savingSshSetting } = useAsync();
 const { run: runAddSshKey, pending: savingSshKey } = useAsync();
 
 const publicKey = ref('');
@@ -43,10 +43,22 @@ const submitKey = async () => {
   <BaseCard>
     <h2>{{ t('ssh.label') }}</h2>
     <div class="actions">
-      <StyledButton type="button" variant="secondary" @click="apply(false)">
+      <StyledButton
+        type="button"
+        variant="secondary"
+        :disabled="savingSshSetting"
+        :loading="savingSshSetting"
+        @click="apply(false)"
+      >
         {{ t('actions.disable') }}
       </StyledButton>
-      <StyledButton type="button" variant="primary" @click="apply(true)">
+      <StyledButton
+        type="button"
+        variant="primary"
+        :disabled="savingSshSetting"
+        :loading="savingSshSetting"
+        @click="apply(true)"
+      >
         {{ t('actions.enable') }}
       </StyledButton>
     </div>
@@ -63,6 +75,7 @@ const submitKey = async () => {
         variant="primary"
         data-testid="add-ssh-key"
         :disabled="!publicKey.trim() || savingSshKey"
+        :loading="savingSshKey"
         @click="submitKey"
       >
         {{ t('actions.add', { feature: t('ssh.key.label') }) }}

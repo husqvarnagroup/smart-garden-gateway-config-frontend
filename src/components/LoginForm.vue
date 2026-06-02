@@ -28,18 +28,22 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <form @submit.prevent="onSubmit">
+  <form :aria-busy="authState.loading" @submit.prevent="onSubmit">
     <PasswordField
       v-model="password"
       :label="t('login.password.label')"
       :placeholder="t('login.password.placeholder')"
       autocomplete="current-password"
+      :disabled="authState.loading"
     />
-    <p v-if="authState.error" class="error">{{ authState.error }}</p>
+    <p class="error" :class="{ visible: Boolean(authState.error) }">
+      {{ authState.error ?? '' }}
+    </p>
     <StyledButton
       type="submit"
       variant="primary"
       :disabled="authState.loading || password.length === 0"
+      :loading="authState.loading"
     >
       {{ authState.loading ? t('actions.signingIn') : t('actions.login') }}
     </StyledButton>
@@ -55,7 +59,13 @@ form {
 }
 
 .error {
+  min-height: calc(var(--text-sm) * 1.5);
   color: var(--color-red-700);
   margin: 0;
+  visibility: hidden;
+}
+
+.error.visible {
+  visibility: visible;
 }
 </style>

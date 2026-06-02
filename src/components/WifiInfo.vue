@@ -14,6 +14,8 @@ import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import WifiSignal from '@/components/WifiSignal.vue';
 import WifiLockIcon from '@/components/WifiLockIcon.vue';
 
@@ -24,6 +26,7 @@ const { pending: wifiLoading, run: runWifiLoad } = useAsync();
 const { run: runWifiScan } = useAsync();
 const {
   current: currentWifiConfig,
+  saving: wifiSaving,
   init: initWifiConfig,
   change: changeWifiConfig,
   saveWithRollback: saveWifiConfigWithRollback,
@@ -82,31 +85,36 @@ onMounted(async () => {
 <template>
   <BaseCard>
     <h2>{{ t('network.label') }}</h2>
-
-    <p v-if="wifiLoading">Loading…</p>
-
-    <template v-else>
-      <DropdownSelect
-        :model-value="normaliseSsid(currentWifiConfig?.ssid ?? '')"
-        :load-options="scanWifiNetworks"
-        @change="onWifiChange"
-      >
-        <template #value="{ value }">
-          <div class="option">
-            <WifiSignal :signal="getSignal(value)" />
+    <DropdownSelect
+      :disabled="wifiLoading || wifiSaving"
+      :model-value="normaliseSsid(currentWifiConfig?.ssid ?? '')"
+      :load-options="scanWifiNetworks"
+      @change="onWifiChange"
+    >
+      <template #value="{ value }">
+        <div class="option">
+          <WifiSignal :loading="wifiLoading && !currentWifiConfig" :signal="getSignal(value)" />
+          <SkeletonBlock
+            v-if="wifiLoading && !currentWifiConfig"
+            class="name-skeleton"
+            width="45%"
+            height="var(--text-lg)"
+          />
+          <template v-else>
             <span class="name">{{ value }}</span>
-            <WifiLockIcon :locked="isSecured(currentWifiConfig?.key_mgmt)" />
-          </div>
-        </template>
-        <template #option="{ option }">
-          <div class="option">
-            <WifiSignal :signal="getSignal(option)" />
-            <span class="name">{{ option }}</span>
-            <WifiLockIcon :locked="isSecured(getOptionSecurity(option))" />
-          </div>
-        </template>
-      </DropdownSelect>
-    </template>
+            <LoadingSpinner v-if="wifiSaving" class="saving" />
+            <WifiLockIcon v-else :locked="isSecured(currentWifiConfig?.key_mgmt)" />
+          </template>
+        </div>
+      </template>
+      <template #option="{ option }">
+        <div class="option">
+          <WifiSignal :signal="getSignal(option)" />
+          <span class="name">{{ option }}</span>
+          <WifiLockIcon :locked="isSecured(getOptionSecurity(option))" />
+        </div>
+      </template>
+    </DropdownSelect>
   </BaseCard>
 </template>
 
@@ -124,5 +132,14 @@ onMounted(async () => {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.name-skeleton {
+  flex: 1;
+  max-width: 100%;
+}
+
+.saving {
+  flex-shrink: 0;
 }
 </style>

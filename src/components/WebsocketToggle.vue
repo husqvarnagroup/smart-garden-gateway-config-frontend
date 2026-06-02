@@ -9,7 +9,7 @@ import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { run: runWebsocketChange } = useAsync();
+const { run: runWebsocketChange, pending: websocketChanging } = useAsync();
 
 const apply = async (enable: boolean) => {
   try {
@@ -29,10 +29,22 @@ const apply = async (enable: boolean) => {
   <BaseCard>
     <h2>{{ t('websocket.label') }}</h2>
     <div class="actions">
-      <StyledButton type="button" variant="secondary" @click="apply(false)">
+      <StyledButton
+        type="button"
+        variant="secondary"
+        :disabled="websocketChanging"
+        :loading="websocketChanging"
+        @click="apply(false)"
+      >
         {{ t('actions.disable') }}
       </StyledButton>
-      <StyledButton type="button" variant="primary" @click="apply(true)">
+      <StyledButton
+        type="button"
+        variant="primary"
+        :disabled="websocketChanging"
+        :loading="websocketChanging"
+        @click="apply(true)"
+      >
         {{ t('actions.enable') }}
       </StyledButton>
     </div>

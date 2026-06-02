@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BaseLayout from '@/layouts/BaseLayout.vue';
+import LoginLogo from '@/components/LoginLogo.vue';
 import LoginForm from '@/components/LoginForm.vue';
 import GatewayVersion from '@/components/GatewayVersion.vue';
 </script>
@@ -7,7 +8,7 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
 <template>
   <BaseLayout>
     <div class="container">
-      <img src="/GARDENA-smart-system.png" alt="GARDENA smart system" />
+      <LoginLogo />
       <LoginForm />
       <GatewayVersion />
     </div>
@@ -21,10 +22,5 @@ import GatewayVersion from '@/components/GatewayVersion.vue';
   flex-direction: column;
   align-items: center;
   gap: var(--space-4);
-}
-
-img {
-  width: 240px;
-  height: auto;
 }
 </style>

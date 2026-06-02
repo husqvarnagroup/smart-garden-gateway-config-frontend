@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 
-const props = defineProps<{ signal?: number }>();
+const props = defineProps<{
+  signal?: number;
+  loading?: boolean;
+}>();
 
 const level = computed(() => {
   const dBm = props.signal;
@@ -25,20 +29,16 @@ const opacity = computed(() => ({
 </script>
 
 <template>
-  <!--
-    Signal bar icon: 3 vertical bars, shortest left → tallest right
-    All bars grey for "none", filling left-to-right per signal level
-  -->
+  <SkeletonBlock v-if="loading" class="skeleton" width="16px" height="16px" />
   <svg
+    v-else
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 16 16"
     width="16"
     height="16"
     aria-hidden="true"
   >
-    <!-- short bar (weak) -->
     <rect x="2" y="10" width="3" height="5" rx="0.75" fill="currentColor" :opacity="opacity.bar1" />
-    <!-- medium bar -->
     <rect
       x="6.5"
       y="6"
@@ -48,7 +48,6 @@ const opacity = computed(() => ({
       fill="currentColor"
       :opacity="opacity.bar2"
     />
-    <!-- tall bar (strong) -->
     <rect
       x="11"
       y="2"
@@ -60,3 +59,10 @@ const opacity = computed(() => ({
     />
   </svg>
 </template>
+
+<style scoped>
+.skeleton {
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+}
+</style>

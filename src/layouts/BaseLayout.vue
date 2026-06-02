@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import AppHeader from '@/components/AppHeader.vue';
+
+defineProps<{
+  disabled?: boolean;
+}>();
 </script>
 
 <template>
   <div>
     <AppHeader />
-    <main>
+    <main :aria-busy="disabled">
       <slot />
     </main>
   </div>
@@ -27,5 +31,10 @@ main {
   padding: 0 var(--space-4);
   margin-top: var(--space-4);
   box-sizing: border-box;
+}
+
+main[aria-busy='true'] {
+  opacity: 0.5;
+  pointer-events: none;
 }
 </style>

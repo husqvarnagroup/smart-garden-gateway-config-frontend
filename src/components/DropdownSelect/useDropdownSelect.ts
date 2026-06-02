@@ -80,6 +80,7 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
   const onKeydown = async (e: KeyboardEvent) => {
     if (!open.value) {
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        if (props.disabled) return;
         e.preventDefault();
         await openList();
       }

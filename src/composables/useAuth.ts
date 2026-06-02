@@ -21,6 +21,8 @@ const login = async (password: string) => {
 };
 
 const logout = async () => {
+  authState.loading = true;
+
   try {
     await logoutRequest();
   } finally {

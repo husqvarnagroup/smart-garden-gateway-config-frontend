@@ -14,6 +14,7 @@ import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
@@ -56,25 +57,32 @@ onMounted(async () => {
   <BaseCard>
     <h2>{{ t('timezone.label') }}</h2>
 
-    <p v-if="timezoneLoading">Loading…</p>
-
-    <template v-else>
-      <div class="actions">
-        <DropdownSelect
-          :model-value="currentTimezone?.timezone ?? 'No Timezone Found'"
-          :load-options="listTimezones"
-          @change="changeTimezone({ timezone: $event })"
-        />
-        <StyledButton
-          type="button"
-          variant="primary"
-          :loading="timezoneSaving"
-          @click="saveTimezone()"
-        >
-          {{ t('actions.save') }}
-        </StyledButton>
-      </div>
-    </template>
+    <div class="actions">
+      <DropdownSelect
+        :disabled="timezoneLoading || timezoneSaving"
+        :model-value="currentTimezone?.timezone ?? ''"
+        :load-options="listTimezones"
+        @change="changeTimezone({ timezone: $event })"
+      >
+        <template #value>
+          <SkeletonBlock
+            v-if="timezoneLoading && !currentTimezone"
+            width="100%"
+            height="var(--text-lg)"
+          />
+          <span v-else>{{ currentTimezone?.timezone ?? 'No Timezone Found' }}</span>
+        </template>
+      </DropdownSelect>
+      <StyledButton
+        type="button"
+        variant="primary"
+        :disabled="timezoneLoading || !currentTimezone?.timezone"
+        :loading="timezoneSaving"
+        @click="saveTimezone()"
+      >
+        {{ t('actions.save') }}
+      </StyledButton>
+    </div>
   </BaseCard>
 </template>
 
@@ -82,6 +90,6 @@ onMounted(async () => {
 .actions {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 </style>

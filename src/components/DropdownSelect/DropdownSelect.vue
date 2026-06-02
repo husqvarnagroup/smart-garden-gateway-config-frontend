@@ -29,6 +29,7 @@ const {
       ref="triggerRef"
       type="button"
       :aria-expanded="open"
+      :aria-busy="listLoading"
       :disabled="disabled"
       @click="toggle"
       @keydown="onKeydown"

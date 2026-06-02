@@ -9,7 +9,7 @@ import StyledButton from '@/components/StyledButton.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { run: runHomekitReset } = useAsync();
+const { run: runHomekitReset, pending: resettingHomekit } = useAsync();
 
 const resetPairings = async () => {
   try {
@@ -26,7 +26,13 @@ const resetPairings = async () => {
   <BaseCard>
     <h2>{{ t('homekit.label') }}</h2>
     <p>{{ t('homekit.description') }}</p>
-    <StyledButton type="button" variant="secondary" @click="resetPairings">
+    <StyledButton
+      type="button"
+      variant="secondary"
+      :disabled="resettingHomekit"
+      :loading="resettingHomekit"
+      @click="resetPairings"
+    >
       {{ t('actions.reset', { feature: t('homekit.label') }) }}
     </StyledButton>
   </BaseCard>

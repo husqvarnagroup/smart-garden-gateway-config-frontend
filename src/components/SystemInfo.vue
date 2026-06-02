@@ -6,10 +6,11 @@ import { getGatewayVersion, type GatewayVersion } from '@/services/system';
 import { useAsync } from '@/composables/useAsync';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { run } = useAsync();
+const { pending: loading, run } = useAsync();
 const gatewayVersion = ref<GatewayVersion | null>(null);
 
 onMounted(async () => {
@@ -25,6 +26,22 @@ onMounted(async () => {
 <template>
   <BaseCard>
     <h2>System</h2>
-    <p>Version: {{ gatewayVersion?.gateway_version ?? '…' }}</p>
+    <div class="row">
+      <span class="label">Version</span>
+      <SkeletonBlock v-if="loading" width="var(--space-10)" height="var(--text-sm)" />
+      <span v-else>{{ gatewayVersion?.gateway_version ?? 'Unavailable' }}</span>
+    </div>
   </BaseCard>
 </template>
+
+<style scoped>
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.label {
+  font-weight: 700;
+}
+</style>
