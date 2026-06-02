@@ -57,10 +57,7 @@ const isSaveButtonDisabled = computed(() => {
 });
 
 const isHiddenNetworkSelected = computed(() => {
-  if (currentWifiConfig.value === undefined) {
-    return false;
-  }
-  return currentWifiConfig.value.ssid === HIDDEN_WIFI_LABEL;
+  return currentWifiConfig.value?.ssid === HIDDEN_WIFI_LABEL;
 });
 
 const isPasswordFieldVisible = computed(() => {
