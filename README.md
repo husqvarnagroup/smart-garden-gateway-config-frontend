@@ -33,6 +33,12 @@ Create a production build:
 pnpm build
 ```
 
+Production builds inject the current short git commit hash into `dist/index.html` as:
+
+```html
+<meta name="git-commit" content="abc1234" />
+```
+
 ## Quality Checks
 
 Run unit tests:
