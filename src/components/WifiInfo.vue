@@ -39,7 +39,7 @@ const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 const password = ref('');
 const hiddenNetworkName = ref('');
 
-const HIDDEN_WIFI_LABEL = 'Hidden Wifi';
+const HIDDEN_WIFI_LABEL = t('network.hidden.label');
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
 const normaliseSsid = (ssid: string) => (isHidden(ssid) ? HIDDEN_WIFI_LABEL : ssid);
 

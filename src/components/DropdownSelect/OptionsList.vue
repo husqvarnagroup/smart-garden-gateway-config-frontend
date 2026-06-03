@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { useTranslation } from 'i18next-vue';
+
+const { t } = useTranslation();
 
 defineProps<{
   options: string[];
@@ -18,7 +21,7 @@ const emit = defineEmits<{
     <div v-if="loading" class="status">
       <LoadingSpinner />
     </div>
-    <div v-else-if="options.length === 0" class="status">No options</div>
+    <div v-else-if="options.length === 0" class="status">{{ t('dropdown.empty') }}</div>
     <template v-else>
       <div
         v-for="option in options"

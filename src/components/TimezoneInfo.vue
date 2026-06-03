@@ -70,7 +70,7 @@ onMounted(async () => {
             width="100%"
             height="var(--text-lg)"
           />
-          <span v-else>{{ currentTimezone?.timezone ?? 'No Timezone Found' }}</span>
+          <span v-else>{{ currentTimezone?.timezone ?? t('timezone.notfound') }}</span>
         </template>
       </DropdownSelect>
       <StyledButton

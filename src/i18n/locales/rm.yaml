@@ -40,7 +40,9 @@ network.password.placeholder: 'Endatar il pled-clav'
 network.divider: 'u'
 network.reset: 'Stizzar parameters da WLAN'
 timezone.label: "Zona d'urari"
+timezone.notfound: "Nagina zona d'urari chattada"
 websocket.label: 'Sustegn WebSocket'
 ssh.label: 'Access SSH'
 ssh.key.label: 'Clav publitga'
 ssh.key.placeholder: 'Metta si la clav publitga SSH qua'
+dropdown.empty: 'Nagins elements disponibels'
