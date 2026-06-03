@@ -1,25 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
-import { addSshKey, setSshEnabled } from '@/services/ssh';
+import { addSshKey, getSshEnabled, setSshEnabled } from '@/services/ssh';
 import { useAsync } from '@/composables/useAsync';
+import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import StyledButton from '@/components/StyledButton.vue';
+import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { run: runSshChange, pending: savingSshSetting } = useAsync();
+const { pending: loading, run: runLoad } = useAsync();
+const { current: enabled, saving, init, change, saveWithRollback } = useOptimisticSubmit<boolean>();
 const { run: runAddSshKey, pending: savingSshKey } = useAsync();
 
 const publicKey = ref('');
 
-const apply = async (enable: boolean) => {
+const toggle = async (newValue: boolean) => {
+  change(newValue);
   try {
-    await runSshChange(() => setSshEnabled(enable));
+    await saveWithRollback(() => setSshEnabled(newValue));
     toast.success(
-      enable
+      newValue
         ? t('success.enable', { feature: t('ssh.label') })
         : t('success.disable', { feature: t('ssh.label') }),
     );
@@ -37,36 +42,37 @@ const submitKey = async () => {
     toast.error(t('error.add', { feature: t('ssh.key.label') }));
   }
 };
+
+onMounted(async () => {
+  try {
+    const config = await runLoad(getSshEnabled);
+    init(config.enabled);
+  } catch {
+    init(false);
+    toast.error(t('error.load', { feature: t('ssh.label') }));
+  }
+});
 </script>
 
 <template>
   <BaseCard>
-    <h2>{{ t('ssh.label') }}</h2>
-    <div class="actions">
-      <StyledButton
-        type="button"
-        variant="secondary"
-        :disabled="savingSshSetting"
-        :loading="savingSshSetting"
-        @click="apply(false)"
-      >
-        {{ t('actions.disable') }}
-      </StyledButton>
-      <StyledButton
-        type="button"
-        variant="primary"
-        :disabled="savingSshSetting"
-        :loading="savingSshSetting"
-        @click="apply(true)"
-      >
-        {{ t('actions.enable') }}
-      </StyledButton>
+    <div class="row">
+      <h2>{{ t('ssh.label') }}</h2>
+      <SkeletonBlock v-if="loading" width="44px" height="24px" />
+      <ToggleSwitch
+        v-else
+        :label="t('ssh.label')"
+        :model-value="enabled ?? false"
+        :loading="saving"
+        @update:model-value="toggle"
+      />
     </div>
     <div class="key">
-      <label for="ssh-key-input">{{ t('ssh.key.label') }}</label>
+      <h3>{{ t('ssh.key.label') }}</h3>
       <textarea
         id="ssh-key-input"
         v-model="publicKey"
+        :aria-label="t('ssh.key.label')"
         :placeholder="t('ssh.key.placeholder')"
         rows="3"
       />
@@ -85,20 +91,24 @@ const submitKey = async () => {
 </template>
 
 <style scoped>
-.actions {
+.row {
   display: flex;
-  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
 }
 
 .key {
-  margin-top: var(--space-4);
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
-label {
+h3 {
+  font-size: var(--text-sm);
   font-weight: 700;
+  margin: 0;
+  color: var(--color-grey-400);
 }
 
 textarea {

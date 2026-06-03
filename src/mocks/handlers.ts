@@ -5,6 +5,9 @@ const MOCK_USER = {
   session: 'mock-session-123',
 };
 
+let websocketEnabled = false;
+let sshEnabled = false;
+
 const requireSession = (request: Request) => {
   const session = request.headers.get('X-Session');
   if (session !== MOCK_USER.session) {
@@ -111,17 +114,35 @@ export const handlers = [
     return HttpResponse.json({});
   }),
 
+  http.get('/websocket_api', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: websocketEnabled });
+  }),
+
   http.put('/websocket_api', async ({ request }) => {
     await delay(300);
     const denied = requireSession(request);
     if (denied) return denied;
+    const body = (await request.json()) as { enable: boolean };
+    websocketEnabled = body.enable;
     return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/ssh_access_enable', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: sshEnabled });
   }),
 
   http.put('/ssh_access_enable', async ({ request }) => {
     await delay(300);
     const denied = requireSession(request);
     if (denied) return denied;
+    const body = (await request.json()) as { enable: boolean };
+    sshEnabled = body.enable;
     return new HttpResponse(null, { status: 204 });
   }),
 
