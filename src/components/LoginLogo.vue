@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import gardenaLogo from '@/assets/GARDENA-smart-system.png';
 import SkeletonBlock from '@/components/SkeletonBlock.vue';
 
 const logoLoaded = ref(false);
@@ -14,7 +15,7 @@ const onLoad = () => {
   <div class="logo" :aria-busy="!logoLoaded">
     <SkeletonBlock v-if="!logoLoaded" class="placeholder" width="100%" height="100%" />
     <img
-      src="/GARDENA-smart-system.png"
+      :src="gardenaLogo"
       alt="GARDENA smart system"
       width="4025"
       height="1466"
