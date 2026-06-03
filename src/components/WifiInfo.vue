@@ -99,7 +99,7 @@ onMounted(async () => {
     initWifiConfig(wifi);
   } catch (error) {
     console.error(error);
-    toast.error(t('error.update', { feature: t('network.label') }));
+    toast.error(t('error.load', { feature: t('network.label') }));
   }
 });
 
@@ -107,6 +107,7 @@ const saveWifi = async () => {
   const ssid = currentWifiConfig?.value?.ssid;
   const security = currentWifiConfig.value?.key_mgmt;
   if (!ssid || !security) {
+    toast.error(t('error.update', { feature: t('network.label') }));
     return;
   }
   try {
@@ -120,7 +121,7 @@ const saveWifi = async () => {
     toast.success(t('success.save'));
   } catch (error) {
     console.error(error);
-    toast.error(t('error.connect', { feature: t('network.label') }));
+    toast.error(t('error.update', { feature: t('network.label') }));
   }
 };
 
