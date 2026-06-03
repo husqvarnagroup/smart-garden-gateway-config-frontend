@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:mock": "VITE_USE_MOCK_API=true vite",
+    "dev:mock": "pnpm run msw:init && VITE_USE_MOCK_API=true pnpm run dev",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test": "vitest",
@@ -20,7 +20,7 @@
     "lint:eslint:fix": "eslint . --fix --cache",
     "format": "prettier --check --experimental-cli .",
     "format:fix": "prettier --write --experimental-cli .",
-    "msw:init": "msw init public/ --save",
+    "msw:init": "msw init",
     "code": "run-s format lint type-check",
     "code:fix": "run-s format:fix lint:fix type-check"
   },

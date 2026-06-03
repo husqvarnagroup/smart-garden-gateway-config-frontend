@@ -95,7 +95,7 @@ Mock login credentials:
 
 - Password: `pass1234`
 
-The worker script is checked in at `public/mockServiceWorker.js`. If MSW is re-initialized, run:
+The worker script (`public/mockServiceWorker.js`) is gitignored and auto-generated when `dev:mock` runs. To regenerate it manually:
 
 ```bash
 pnpm msw:init
