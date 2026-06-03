@@ -28,7 +28,7 @@ const { pending: wifiLoading, run: runWifiLoad } = useAsync();
 const { run: runWifiScan } = useAsync();
 const {
   current: currentWifiConfig,
-  saving: wifiSaving,
+  saving: isWifiSaving,
   init: initWifiConfig,
   change: changeWifiConfig,
   saveWithRollback: saveWifiConfigWithRollback,
@@ -36,7 +36,6 @@ const {
 const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 
 const password = ref('');
-const savingWifi = ref(false);
 const resettingWifi = ref(false);
 const hiddenNetworkName = ref('');
 
@@ -111,7 +110,6 @@ const saveWifi = async () => {
     return;
   }
   try {
-    savingWifi.value = true;
     await saveWifiConfigWithRollback(() =>
       setWifi(
         isHiddenNetworkSelected.value ? hiddenNetworkName.value : ssid,
@@ -123,8 +121,6 @@ const saveWifi = async () => {
   } catch (error) {
     console.error(error);
     toast.error(t('error.connect', { feature: t('network.label') }));
-  } finally {
-    savingWifi.value = false;
   }
 };
 
@@ -149,7 +145,7 @@ const resetWifiConfig = async () => {
     <h2>{{ t('network.label') }}</h2>
     <div class="wifi">
       <DropdownSelect
-        :disabled="wifiLoading || wifiSaving"
+        :disabled="wifiLoading || isWifiSaving"
         :model-value="normaliseSsid(currentWifiConfig?.ssid ?? '')"
         :load-options="scanWifiNetworks"
         @change="onWifiChange"
@@ -183,7 +179,7 @@ const resetWifiConfig = async () => {
           type="text"
           v-model="hiddenNetworkName"
           :placeholder="t('network.name.placeholder')"
-          :disabled="wifiLoading || wifiSaving"
+          :disabled="wifiLoading || isWifiSaving"
         />
       </div>
       <div v-if="isPasswordFieldVisible">
@@ -191,14 +187,14 @@ const resetWifiConfig = async () => {
           v-model="password"
           :label="t('login.password.label')"
           :placeholder="t('network.password.placeholder')"
-          :disabled="wifiLoading || wifiSaving"
+          :disabled="wifiLoading || isWifiSaving"
           autocomplete="new-password"
         />
       </div>
       <StyledButton
         type="button"
         variant="primary"
-        :loading="savingWifi"
+        :loading="isWifiSaving"
         @click="saveWifi()"
         :disabled="isSaveButtonDisabled"
       >
