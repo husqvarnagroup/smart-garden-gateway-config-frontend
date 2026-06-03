@@ -79,6 +79,23 @@ Use `https` for gateway URLs.
 
 Defaults are in `.env.development` (dev server) and `.env.test` (unit tests).
 
+### Pointing The Dev Server At A Real Gateway
+
+Put your gateway IP in `.env.development.local`:
+
+```dotenv
+VITE_API_BASE_URL=https://192.168.1.100
+```
+
+Vite reads these files literally and does **not** expand shell variables, so `https://$GW_IP` is taken verbatim and fails. Hardcode the IP, or pass it on the command line where the shell expands it:
+
+```bash
+GW_IP=192.168.1.100
+VITE_API_BASE_URL=https://$GW_IP pnpm dev
+```
+
+A command-line value overrides `.env.development.local`.
+
 ## Mocking With Mock Service Worker
 
 This project uses [Mock Service Worker](https://mswjs.io/) to intercept browser requests during local development.
@@ -102,3 +119,38 @@ pnpm msw:init
 ```
 
 Mock handlers live in `src/mocks/handlers.ts`.
+
+## Deploying To A Gateway
+
+SSH must be enabled on the gateway first (see [SSH Access](#ssh-access)).
+
+Set the gateway IP once per shell:
+
+```bash
+GW_IP=192.168.1.100
+```
+
+### Build
+
+The app uses relative API paths, so `VITE_API_BASE_URL` does not affect the production bundle — it only configures the dev/test proxy. A plain build is enough:
+
+```bash
+pnpm build
+```
+
+### Deploy
+
+Stream the build over SSH, clear the target, and unpack — no intermediate files on the gateway:
+
+```bash
+tar czf - -C dist . | ssh root@$GW_IP "rm -rf /usr/share/gateway-config-interface/www/* && tar xzf - -C /usr/share/gateway-config-interface/www"
+```
+
+## SSH Access
+
+SSH is disabled by default. Enable it from the config UI (Advanced features), which also lets you register a public key. Once enabled and your key is added:
+
+```bash
+GW_IP=192.168.1.100
+ssh root@$GW_IP
+```
