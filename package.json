@@ -8,6 +8,7 @@
     "dev": "vite",
     "dev:mock": "pnpm run msw:init && VITE_USE_MOCK_API=true pnpm run dev",
     "build": "run-p type-check \"build-only {@}\" --",
+    "postbuild": "node scripts/msw/remove-msw-worker.js",
     "preview": "vite preview",
     "test": "vitest",
     "build-only": "vite build",
@@ -65,5 +66,10 @@
     "workerDirectory": [
       "public"
     ]
+  },
+  "vite": {
+    "build": {
+      "outDir": "dist"
+    }
   }
 }
