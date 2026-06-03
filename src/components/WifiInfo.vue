@@ -2,17 +2,11 @@
 import { computed, onMounted, ref } from 'vue';
 import { useTranslation } from 'i18next-vue';
 
-import {
-  getCurrentWifi,
-  wifiScan,
-  setWifi,
-  type WifiConfig,
-  type WifiNetwork,
-  resetWifi,
-} from '@/services/wifi';
+import { setWifi, type WifiConfig, type WifiNetwork, resetWifi } from '@/services/wifi';
 import { useAsync } from '@/composables/useAsync';
 import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
+import { useWifiInfo } from '@/composables/useWifiInfo.ts';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import PasswordField from '@/components/PasswordField.vue';
@@ -26,6 +20,7 @@ const toast = useToast();
 
 const { pending: wifiLoading, run: runWifiLoad } = useAsync();
 const { run: runWifiScan } = useAsync();
+const { getNormalisedWifiInfo, getNormalisedNetworks } = useWifiInfo();
 const { pending: resettingWifi, run: runWifiReset } = useAsync();
 const {
   current: currentWifiConfig,
@@ -38,10 +33,6 @@ const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 
 const password = ref('');
 const hiddenNetworkName = ref('');
-
-const HIDDEN_WIFI_LABEL = t('network.hidden.label');
-const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
-const normaliseSsid = (ssid: string) => (isHidden(ssid) ? HIDDEN_WIFI_LABEL : ssid);
 
 const isSaveButtonDisabled = computed(() => {
   const selectedNetwork = currentWifiConfig.value;
@@ -56,7 +47,7 @@ const isSaveButtonDisabled = computed(() => {
 });
 
 const isHiddenNetworkSelected = computed(() => {
-  return currentWifiConfig.value?.ssid === HIDDEN_WIFI_LABEL;
+  return currentWifiConfig.value?.isHidden;
 });
 
 const isPasswordFieldVisible = computed(() => {
@@ -68,34 +59,34 @@ const isPasswordFieldVisible = computed(() => {
 });
 
 const scanWifiNetworks = async (): Promise<string[]> => {
-  const networks = await runWifiScan(wifiScan);
+  const networks = await runWifiScan(getNormalisedNetworks);
   scannedWifiNetworks.value = networks;
-  return networks.map((network) => normaliseSsid(network.ssid));
+  return networks.map((network) => network.ssid);
 };
 
 const onWifiChange = (ssid: string) => {
-  const security = scannedWifiNetworks.value.find(
-    (network) => normaliseSsid(network.ssid) === ssid,
-  )?.security;
+  const security = scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.security;
+  const isHidden = scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.isHidden;
   changeWifiConfig({
     ssid,
     key_mgmt: security || 'none',
+    isHidden,
   });
   password.value = '';
 };
 
 const getSignal = (ssid: string) =>
-  scannedWifiNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.signal;
+  scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.signal;
 const isSecured = (security: string | null | undefined): boolean => {
   if (security === null || security === undefined) return false;
   return security !== 'none';
 };
 const getOptionSecurity = (ssid: string) =>
-  scannedWifiNetworks.value.find((n) => normaliseSsid(n.ssid) === ssid)?.security;
+  scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.security;
 
 onMounted(async () => {
   try {
-    const wifi = await runWifiLoad(getCurrentWifi);
+    const wifi = await runWifiLoad(getNormalisedWifiInfo);
     initWifiConfig(wifi);
   } catch (error) {
     console.error(error);
@@ -144,7 +135,7 @@ const resetWifiConfig = async () => {
     <div class="wifi">
       <DropdownSelect
         :disabled="wifiLoading || isWifiSaving"
-        :model-value="normaliseSsid(currentWifiConfig?.ssid ?? '')"
+        :model-value="currentWifiConfig?.ssid ?? ''"
         :load-options="scanWifiNetworks"
         @change="onWifiChange"
       >

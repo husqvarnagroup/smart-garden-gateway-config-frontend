@@ -11,17 +11,27 @@ import i18next from '@/i18n';
 import * as wifiService from '@/services/wifi';
 import type { WifiConfig, WifiNetwork } from '@/services/wifi';
 
+const { mockGetNormalisedWifiInfo, mockGetNormalisedNetworks } = vi.hoisted(() => ({
+  mockGetNormalisedWifiInfo: vi.fn<() => Promise<WifiConfig>>(),
+  mockGetNormalisedNetworks: vi.fn<() => Promise<WifiNetwork[]>>(),
+}));
+
+vi.mock('@/composables/useWifiInfo', () => ({
+  useWifiInfo: () => ({
+    getNormalisedWifiInfo: mockGetNormalisedWifiInfo,
+    getNormalisedNetworks: mockGetNormalisedNetworks,
+  }),
+}));
+
 vi.mock('@/services/wifi', () => ({
-  getCurrentWifi: vi.fn<() => Promise<WifiConfig>>(),
-  wifiScan: vi.fn<() => Promise<WifiNetwork[]>>(),
   setWifi: vi.fn<(ssid: string, security: string, password: string) => Promise<WifiConfig>>(),
   resetWifi: vi.fn<() => Promise<void>>(),
 }));
 
 const NETWORKS: WifiNetwork[] = [
-  { ssid: 'SecuredNetwork', signal: 80, security: 'WPA2' },
-  { ssid: 'OpenNetwork', signal: 60, security: '' },
-  { ssid: '', signal: 50, security: 'WPA2' }, // hidden network
+  { ssid: 'SecuredNetwork', signal: 80, security: 'WPA2', isHidden: false },
+  { ssid: 'OpenNetwork', signal: 60, security: '', isHidden: false },
+  { ssid: 'Hidden Wi-Fi', signal: 50, security: 'WPA2', isHidden: true },
 ];
 
 const mountWifiInfo = () =>
@@ -34,12 +44,17 @@ const mountWifiInfo = () =>
 describe('WifiInfo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(wifiService.getCurrentWifi).mockResolvedValue({
+    mockGetNormalisedWifiInfo.mockResolvedValue({
       ssid: 'CurrentNetwork',
       key_mgmt: 'WPA2',
+      isHidden: false,
     });
-    vi.mocked(wifiService.wifiScan).mockResolvedValue(NETWORKS);
-    vi.mocked(wifiService.setWifi).mockResolvedValue({ ssid: 'SecuredNetwork', key_mgmt: 'WPA2' });
+    mockGetNormalisedNetworks.mockResolvedValue(NETWORKS);
+    vi.mocked(wifiService.setWifi).mockResolvedValue({
+      ssid: 'SecuredNetwork',
+      key_mgmt: 'WPA2',
+      isHidden: false,
+    });
     vi.mocked(wifiService.resetWifi).mockResolvedValue(undefined);
     resetToastMocks();
   });
@@ -104,7 +119,11 @@ describe('WifiInfo', () => {
   });
 
   it('saves a hidden network after entering a network name and password', async () => {
-    vi.mocked(wifiService.setWifi).mockResolvedValue({ ssid: 'Hidden Wifi', key_mgmt: 'WPA2' });
+    vi.mocked(wifiService.setWifi).mockResolvedValue({
+      ssid: 'Hidden Wi-Fi',
+      key_mgmt: 'WPA2',
+      isHidden: true,
+    });
     const networkName = 'My Hidden Network';
     const password = 'supersecretpw123';
 
@@ -115,8 +134,8 @@ describe('WifiInfo', () => {
     await wrapper.findComponent(DropdownSelect).find('button').trigger('click');
     await flushPromises();
 
-    // Select the hidden network (displayed as 'Hidden Wifi')
-    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'Hidden Wifi');
+    // Select the hidden network (displayed as 'Hidden Wi-Fi')
+    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'Hidden Wi-Fi');
     await flushPromises();
 
     // Network name field should be visible for hidden networks

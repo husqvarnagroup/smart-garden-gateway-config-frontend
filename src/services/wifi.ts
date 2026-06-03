@@ -4,11 +4,13 @@ export type WifiNetwork = {
   ssid: string;
   signal?: number;
   security?: string;
+  isHidden: boolean | undefined;
 };
 
 export type WifiConfig = {
   ssid: string;
   key_mgmt: string;
+  isHidden: boolean | undefined;
 };
 
 export const wifiScan = (): Promise<WifiNetwork[]> => apiFetch<WifiNetwork[]>('/wifi_list', 'GET');
