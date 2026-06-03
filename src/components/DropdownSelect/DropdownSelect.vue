@@ -77,7 +77,7 @@ button {
   border-radius: var(--radius-sm);
   cursor: pointer;
   text-align: left;
-  height: 2.8rem;
+  height: 2.5rem;
   padding: 0 var(--space-3);
 }
 

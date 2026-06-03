@@ -43,9 +43,7 @@ const emit = defineEmits<{
   right: 0;
   padding: var(--space-1) 0;
   background: var(--color-white);
-  border: var(--border-sm) solid var(--color-grey-200);
   border-top: none;
-  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
   box-shadow: 0 var(--space-1) var(--space-3) var(--color-overlay-sm);
   max-height: var(--layout-dropdown-max-height);
   overflow-y: auto;
