@@ -27,7 +27,7 @@ success.enable: '{{feature}} activé'
 success.reset: 'Réinitialisation de {{feature}} réussie'
 success.add: '{{feature}} ajoutée avec succès'
 success.save: 'Enregistrement réussi'
-advanced.confirm: 'Voulez-vous vraiment continuer ?'
+advanced.confirm: "Continuez à vos risques et périls. La modification des paramètres avancés peut affecter le comportement de l'appareil et peut annuler la garantie."
 advanced.label: 'Avancé'
 homekit.description: "HomeKit ne permet d'établir qu'un seul appairage avec cette smart Gateway GARDENA. Si devez établir un nouvel appairage, réinitialisez les appairages existants."
 homekit.label: 'Apple HomeKit'
