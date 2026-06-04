@@ -9,6 +9,7 @@ defineProps<{
   placeholder?: string;
   autocomplete?: 'current-password' | 'new-password';
   disabled?: boolean;
+  error?: boolean;
 }>();
 
 const id = useId();
@@ -31,6 +32,7 @@ const toggleVisibility = () => {
         name="password"
         :autocomplete="autocomplete"
         :disabled="disabled"
+        :class="{ error }"
         required
       />
       <button
@@ -70,6 +72,10 @@ input {
   font: inherit;
   width: 100%;
   box-sizing: border-box;
+}
+
+input.error {
+  border-color: var(--color-red-600);
 }
 
 input::placeholder {

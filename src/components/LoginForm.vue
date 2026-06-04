@@ -35,10 +35,8 @@ const onSubmit = async () => {
       :placeholder="t('login.password.placeholder')"
       autocomplete="current-password"
       :disabled="authState.loading"
+      :error="Boolean(authState.error)"
     />
-    <p class="error" :class="{ visible: Boolean(authState.error) }">
-      {{ authState.error ?? '' }}
-    </p>
     <StyledButton
       type="submit"
       variant="primary"
@@ -55,17 +53,6 @@ form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
-}
-
-.error {
-  min-height: calc(var(--text-sm) * 1.5);
-  color: var(--color-red-700);
-  margin: 0;
-  visibility: hidden;
-}
-
-.error.visible {
-  visibility: visible;
+  gap: var(--space-2);
 }
 </style>
