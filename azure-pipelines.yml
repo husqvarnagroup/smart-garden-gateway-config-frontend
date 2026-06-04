@@ -1,6 +1,0 @@
-# SPDX-FileCopyrightText: 2026 GARDENA GmbH
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
-stages:
-  - template: pipeline/lint-test-stage.yml
