@@ -68,6 +68,12 @@ Apply formatting and lint fixes, then run type-checking:
 pnpm code:fix
 ```
 
+Sort the i18n locale files alphabetically by key (see [`scripts/translations/README.md`](./scripts/translations/README.md)):
+
+```bash
+pnpm translations:fix
+```
+
 ## Environment Variables
 
 Use `https` for gateway URLs.

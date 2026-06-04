@@ -23,7 +23,8 @@
     "format:fix": "prettier --write --experimental-cli .",
     "msw:init": "msw init",
     "code": "run-s format lint type-check",
-    "code:fix": "run-s format:fix lint:fix type-check"
+    "code:fix": "run-s format:fix lint:fix type-check",
+    "translations:fix": "node scripts/translations/sort-translations.js"
   },
   "dependencies": {
     "i18next": "^26.2.0",
