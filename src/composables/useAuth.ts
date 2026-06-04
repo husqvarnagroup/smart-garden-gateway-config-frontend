@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { computed, readonly } from 'vue';
 
 import { loginRequest, logoutRequest } from '@/services/auth';

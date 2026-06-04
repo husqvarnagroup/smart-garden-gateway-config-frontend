@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 GARDENA GmbH
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <script setup lang="ts">
 import { watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';

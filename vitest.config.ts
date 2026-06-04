@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { fileURLToPath } from 'node:url';
 import { mergeConfig, defineConfig, configDefaults } from 'vitest/config';
 import { createViteConfig } from './vite.config';

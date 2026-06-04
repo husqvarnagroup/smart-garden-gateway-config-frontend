@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 GARDENA GmbH
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 # AGENTS.md
 
 Rules for AI agents working in this repo. Follow exactly — no exceptions for "just this one case."

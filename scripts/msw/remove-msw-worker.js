@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { readFileSync, rmSync } from 'fs';
 
 if (process.env.VITE_USE_MOCK_API === 'true') process.exit(0);

@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import i18next from '@/i18n';
 import { getCurrentWifi, type WifiConfig, type WifiNetwork, wifiScan } from '@/services/wifi.ts';
 
