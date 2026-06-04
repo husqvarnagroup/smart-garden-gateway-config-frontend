@@ -2,13 +2,16 @@ import { ref } from 'vue';
 
 export const useAsync = (initialPendingState = false) => {
   const pending = ref(initialPendingState);
+  let pendingCount = 0;
 
   const run = async <R>(fn: () => Promise<R>): Promise<R> => {
+    pendingCount += 1;
     pending.value = true;
     try {
       return await fn();
     } finally {
-      pending.value = false;
+      pendingCount -= 1;
+      pending.value = pendingCount > 0;
     }
   };
 

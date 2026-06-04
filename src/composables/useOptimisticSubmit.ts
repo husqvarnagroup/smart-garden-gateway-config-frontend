@@ -12,13 +12,14 @@ export const useOptimisticSubmit = <T = undefined>(initial?: T) => {
   const deepCopy = <V>(value: V): V => structuredClone(toRaw(value));
 
   const init = (value: T) => {
-    current.value = value;
-    snapshot.value = deepCopy(value);
+    const copy = deepCopy(value);
+    current.value = copy;
+    snapshot.value = deepCopy(copy);
   };
 
   const change = (value: T) => {
     snapshot.value = deepCopy(current.value);
-    current.value = value;
+    current.value = deepCopy(value);
   };
 
   const saveWithRollback = async <R>(fn: () => Promise<R>): Promise<R> => {
@@ -27,7 +28,7 @@ export const useOptimisticSubmit = <T = undefined>(initial?: T) => {
       snapshot.value = deepCopy(current.value);
       return result;
     } catch (error) {
-      current.value = snapshot.value;
+      current.value = deepCopy(snapshot.value);
       throw error;
     }
   };
