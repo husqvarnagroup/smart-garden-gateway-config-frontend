@@ -130,6 +130,14 @@ pnpm msw:init
 
 Mock handlers live in `src/mocks/handlers.ts`.
 
+## Releasing
+
+A GitHub Release is published when `package.json` `version` changes on `main`.
+
+1. Bump on a branch: `pnpm version patch` (or `minor` / `major`)
+2. PR, review, merge to `main`
+3. [`release.yml`](.github/workflows/release.yml) tags `v<version>`, builds, and attaches `sg-gateway-config-frontend-v<version>.tar.gz` (contents of `dist/`).
+
 ## Deploying To A Gateway
 
 SSH must be enabled on the gateway first (see [SSH Access](#ssh-access)).
