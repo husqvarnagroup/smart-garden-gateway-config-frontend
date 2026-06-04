@@ -13,7 +13,7 @@ import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
-const { pending: loading, run: runLoad } = useAsync();
+const { pending: loading, run: runLoad } = useAsync(true);
 const { current: enabled, saving, init, change, saveWithRollback } = useOptimisticSubmit<boolean>();
 const { run: runAddSshKey, pending: savingSshKey } = useAsync();
 

@@ -7,6 +7,7 @@ import { resetToastMocks } from './helpers/mockUseToast';
 import { expectErrorToastFired, expectSuccessToastFired } from './helpers/assertErrorToast';
 import { deferred } from './helpers/asyncControl';
 import WebsocketToggle from '@/components/WebsocketToggle.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import i18next from '@/i18n';
 import * as websocketService from '@/services/websocket';
 
@@ -77,6 +78,29 @@ describe('WebsocketToggle', () => {
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
+    await flushPromises();
+
+    expectErrorToastFired();
+  });
+
+  it('shows a skeleton while the initial state is being loaded', async () => {
+    const pending = deferred<{ enabled: boolean }>();
+    vi.mocked(websocketService.getWebsocketEnabled).mockReturnValue(pending.promise);
+    const wrapper = mountWebsocketToggle();
+
+    expect(wrapper.findComponent(SkeletonBlock).exists()).toBe(true);
+    expect(wrapper.find('[role="switch"]').exists()).toBe(false);
+
+    pending.resolve({ enabled: false });
+    await flushPromises();
+
+    expect(wrapper.findComponent(SkeletonBlock).exists()).toBe(false);
+    expect(wrapper.find('[role="switch"]').exists()).toBe(true);
+  });
+
+  it('shows an error toast when loading the initial state fails', async () => {
+    vi.mocked(websocketService.getWebsocketEnabled).mockRejectedValue(new Error('Failed'));
+    mountWebsocketToggle();
     await flushPromises();
 
     expectErrorToastFired();

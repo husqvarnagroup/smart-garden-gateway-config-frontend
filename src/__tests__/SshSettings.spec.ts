@@ -7,6 +7,7 @@ import { resetToastMocks } from './helpers/mockUseToast';
 import { expectErrorToastFired, expectSuccessToastFired } from './helpers/assertErrorToast';
 import { deferred } from './helpers/asyncControl';
 import SshSettings from '@/components/SshSettings.vue';
+import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import i18next from '@/i18n';
 import * as sshService from '@/services/ssh';
 
@@ -77,6 +78,29 @@ describe('SshSettings', () => {
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
+    await flushPromises();
+
+    expectErrorToastFired();
+  });
+
+  it('shows a skeleton while the initial state is being loaded', async () => {
+    const pending = deferred<{ enabled: boolean }>();
+    vi.mocked(sshService.getSshEnabled).mockReturnValue(pending.promise);
+    const wrapper = mountSshSettings();
+
+    expect(wrapper.findComponent(SkeletonBlock).exists()).toBe(true);
+    expect(wrapper.find('[role="switch"]').exists()).toBe(false);
+
+    pending.resolve({ enabled: false });
+    await flushPromises();
+
+    expect(wrapper.findComponent(SkeletonBlock).exists()).toBe(false);
+    expect(wrapper.find('[role="switch"]').exists()).toBe(true);
+  });
+
+  it('shows an error toast when loading the initial state fails', async () => {
+    vi.mocked(sshService.getSshEnabled).mockRejectedValue(new Error('Failed'));
+    mountSshSettings();
     await flushPromises();
 
     expectErrorToastFired();
