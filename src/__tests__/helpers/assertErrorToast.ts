@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { expect } from 'vitest';
 import { mockToastError, mockToastSuccess } from './mockUseToast';
 import { getConsoleErrorSpy } from '../setup';

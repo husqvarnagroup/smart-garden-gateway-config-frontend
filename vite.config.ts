@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { execSync } from 'node:child_process';
 import { fileURLToPath, URL } from 'node:url';
 

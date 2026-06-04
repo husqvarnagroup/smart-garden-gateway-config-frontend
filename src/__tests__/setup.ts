@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { afterEach, beforeEach, vi } from 'vitest';
 
 let consoleErrorSpy: ReturnType<typeof vi.spyOn>;

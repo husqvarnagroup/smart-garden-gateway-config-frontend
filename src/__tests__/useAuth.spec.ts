@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useAuth } from '@/composables/useAuth';
 import { authState, resetAuthState } from '@/state/auth';

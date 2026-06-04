@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2026 GARDENA GmbH
+
+SPDX-License-Identifier: GPL-3.0-or-later
+-->
+
 <script setup lang="ts">
 import BaseLayout from '@/layouts/BaseLayout.vue';
 import LoginLogo from '@/components/LoginLogo.vue';

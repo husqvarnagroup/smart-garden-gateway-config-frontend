@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 import { createRouter, createWebHashHistory } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import HomeView from '@/views/HomeView.vue';

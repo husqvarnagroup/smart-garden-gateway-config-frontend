@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2026 GARDENA GmbH
+//
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 export type Deferred<T> = {
   promise: Promise<T>;
   resolve: (value: T) => void;
