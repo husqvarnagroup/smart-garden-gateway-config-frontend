@@ -18,7 +18,7 @@ import { getNormalisedNetworks, getNormalisedWifiInfo } from '@/utils/wifiUtils.
 const { t } = useTranslation();
 const toast = useToast();
 
-const { pending: wifiLoading, run: runWifiLoad } = useAsync();
+const { pending: wifiLoading, run: runWifiLoad } = useAsync(true);
 const { run: runWifiScan } = useAsync();
 const { pending: resettingWifi, run: runWifiReset } = useAsync();
 const {

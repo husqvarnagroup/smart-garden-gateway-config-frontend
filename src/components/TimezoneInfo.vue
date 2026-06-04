@@ -20,7 +20,7 @@ import StyledButton from '@/components/StyledButton.vue';
 const { t } = useTranslation();
 const toast = useToast();
 
-const { pending: timezoneLoading, run: runTimezoneLoad } = useAsync();
+const { pending: timezoneLoading, run: runTimezoneLoad } = useAsync(true);
 const {
   current: currentTimezone,
   saving: timezoneSaving,

@@ -10,7 +10,7 @@ import SkeletonBlock from '@/components/SkeletonBlock.vue';
 const { t } = useTranslation();
 const toast = useToast();
 
-const { pending: loading, run } = useAsync();
+const { pending: loading, run } = useAsync(true);
 const gatewayVersion = ref<GatewayVersion | null>(null);
 const version = computed(() => gatewayVersion.value?.gateway_version ?? null);
 
