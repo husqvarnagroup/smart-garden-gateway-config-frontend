@@ -1,15 +1,14 @@
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 
-export const useAsync = () => {
-  const count = ref(0);
-  const pending = computed(() => count.value > 0);
+export const useAsync = (initialPendingState = false) => {
+  const pending = ref(initialPendingState);
 
   const run = async <R>(fn: () => Promise<R>): Promise<R> => {
-    count.value++;
+    pending.value = true;
     try {
       return await fn();
     } finally {
-      count.value--;
+      pending.value = false;
     }
   };
 
