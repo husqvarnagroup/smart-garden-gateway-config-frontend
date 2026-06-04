@@ -2,11 +2,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import I18NextVue from 'i18next-vue';
 
+import { allowConsoleErrors, getConsoleErrorSpy } from './setup';
 import { mockToastError, mockToastSuccess, resetToastMocks } from './helpers/mockUseToast';
+import { expectSuccessToastFired } from './helpers/assertErrorToast';
+import { deferred } from './helpers/asyncControl';
 import WifiInfo from '@/components/WifiInfo.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import PasswordField from '@/components/PasswordField.vue';
-import StyledButton from '@/components/StyledButton.vue';
 import i18next from '@/i18n';
 import * as wifiService from '@/services/wifi';
 import type { WifiConfig, WifiNetwork } from '@/services/wifi';
@@ -39,6 +41,22 @@ const mountWifiInfo = () =>
     },
   });
 
+const getSaveButton = (wrapper: ReturnType<typeof mountWifiInfo>) =>
+  wrapper.find('[data-testid="save-wifi"]');
+const getResetButton = (wrapper: ReturnType<typeof mountWifiInfo>) =>
+  wrapper.find('[data-testid="reset-wifi"]');
+
+const selectWifi = async (wrapper: ReturnType<typeof mountWifiInfo>, label: string) => {
+  await wrapper.getComponent(DropdownSelect).get('button').trigger('click');
+  await flushPromises();
+
+  const option = wrapper.findAll('[role="option"]').find((node) => node.text().includes(label));
+  expect(option).toBeDefined();
+
+  await option!.trigger('mousedown');
+  await flushPromises();
+};
+
 describe('WifiInfo', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -61,59 +79,46 @@ describe('WifiInfo', () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    // Open the dropdown to trigger the wifi scan
-    await wrapper.findComponent(DropdownSelect).find('button').trigger('click');
-    await flushPromises();
+    await selectWifi(wrapper, 'SecuredNetwork');
 
-    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'SecuredNetwork');
-    await flushPromises();
+    await wrapper.getComponent(PasswordField).get('input').setValue('validpassword123');
 
-    await wrapper.findComponent(PasswordField).find('input').setValue('validpassword123');
-
-    await wrapper.findComponent(StyledButton).trigger('click');
+    await getSaveButton(wrapper).trigger('click');
     await flushPromises();
 
     expect(wifiService.setWifi).toHaveBeenCalledWith('SecuredNetwork', 'WPA2', 'validpassword123');
-    expect(mockToastSuccess).toHaveBeenCalledOnce();
-    expect(mockToastError).not.toHaveBeenCalled();
+    expectSuccessToastFired();
   });
 
   it('shows an error toast when saving the wifi config fails', async () => {
     vi.mocked(wifiService.setWifi).mockRejectedValue(new Error('Network error'));
+    allowConsoleErrors();
 
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    // Open the dropdown to trigger the wifi scan, populating scannedNetworks
-    await wrapper.findComponent(DropdownSelect).find('button').trigger('click');
+    await selectWifi(wrapper, 'SecuredNetwork');
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('SecuredNetwork');
+
+    await wrapper.getComponent(PasswordField).get('input').setValue('validpassword123');
+
+    await getSaveButton(wrapper).trigger('click');
     await flushPromises();
 
-    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'SecuredNetwork');
-    await flushPromises();
-
-    await wrapper.findComponent(PasswordField).find('input').setValue('validpassword123');
-
-    await wrapper.findComponent(StyledButton).trigger('click');
-    await flushPromises();
-
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('CurrentNetwork');
     expect(mockToastError).toHaveBeenCalledOnce();
     expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
   });
 
   it('hides the password field and enables the save button when a network with key_mgmt "none" is selected', async () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    // Open the dropdown to trigger the wifi scan, populating scannedNetworks
-    await wrapper.findComponent(DropdownSelect).find('button').trigger('click');
-    await flushPromises();
-
-    // OpenNetwork has security: '' which maps to key_mgmt: 'none'
-    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'OpenNetwork');
-    await flushPromises();
+    await selectWifi(wrapper, 'OpenNetwork');
 
     expect(wrapper.findComponent(PasswordField).exists()).toBe(false);
-    expect(wrapper.findComponent(StyledButton).props('disabled')).toBe(false);
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(false);
   });
 
   it('saves a hidden network after entering a network name and password', async () => {
@@ -128,55 +133,109 @@ describe('WifiInfo', () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    // Open the dropdown to trigger the wifi scan, populating scannedNetworks
-    await wrapper.findComponent(DropdownSelect).find('button').trigger('click');
-    await flushPromises();
+    await selectWifi(wrapper, 'Hidden Wi-Fi');
 
-    // Select the hidden network (displayed as 'Hidden Wi-Fi')
-    wrapper.findComponent(DropdownSelect).vm.$emit('change', 'Hidden Wi-Fi');
-    await flushPromises();
-
-    // Network name field should be visible for hidden networks
-    const nameInput = wrapper.find('.field input[type="text"]');
+    const nameInput = wrapper.find('[data-testid="hidden-network-name"]');
     expect(nameInput.exists()).toBe(true);
     await nameInput.setValue(networkName);
 
-    // Enter a valid password (hidden network has security: 'WPA2')
-    await wrapper.findComponent(PasswordField).find('input').setValue(password);
+    await wrapper.getComponent(PasswordField).get('input').setValue(password);
 
-    await wrapper.findComponent(StyledButton).trigger('click');
+    await getSaveButton(wrapper).trigger('click');
     await flushPromises();
 
     expect(wifiService.setWifi).toHaveBeenCalledWith(networkName, 'WPA2', password);
-    expect(mockToastSuccess).toHaveBeenCalledOnce();
-    expect(mockToastError).not.toHaveBeenCalled();
+    expectSuccessToastFired();
+  });
+
+  it('keeps the save button disabled for invalid secured-network passwords', async () => {
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await selectWifi(wrapper, 'SecuredNetwork');
+
+    await wrapper.getComponent(PasswordField).get('input').setValue('1234567');
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(true);
+
+    await wrapper.getComponent(PasswordField).get('input').setValue('12345678');
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(false);
+
+    await wrapper
+      .getComponent(PasswordField)
+      .get('input')
+      .setValue('1234567890123456789012345678901234567890123456789012345678901234');
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it('shows a load error when fetching the current wifi config fails', async () => {
+    mockGetNormalisedWifiInfo.mockRejectedValue(new Error('load failed'));
+    allowConsoleErrors();
+
+    mountWifiInfo();
+    await flushPromises();
+
+    expect(mockToastError).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('Wi-Fi'));
+    expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
+  });
+
+  it('shows an error toast when scanning wifi networks fails', async () => {
+    mockGetNormalisedNetworks.mockRejectedValue(new Error('scan failed'));
+    allowConsoleErrors();
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await wrapper.getComponent(DropdownSelect).get('button').trigger('click');
+    await flushPromises();
+
+    // todo: replace with translation after PR 28271
+    expect(mockToastError).toHaveBeenCalledExactlyOnceWith('Failed to load options');
+    expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
   });
 
   it('shows a success toast when resetting the wifi config succeeds', async () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    const resetButton = wrapper.findAllComponents(StyledButton)[1];
-    await resetButton?.trigger('click');
+    await getResetButton(wrapper).trigger('click');
     await flushPromises();
 
     expect(wifiService.resetWifi).toHaveBeenCalledOnce();
-    expect(mockToastSuccess).toHaveBeenCalledOnce();
-    expect(mockToastError).not.toHaveBeenCalled();
+    expectSuccessToastFired();
   });
 
   it('shows an error toast when resetting the wifi config fails', async () => {
     vi.mocked(wifiService.resetWifi).mockRejectedValue(new Error('Reset failed'));
+    allowConsoleErrors();
 
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    const resetButton = wrapper.findAllComponents(StyledButton)[1];
-    await resetButton?.trigger('click');
+    await getResetButton(wrapper).trigger('click');
     await flushPromises();
 
     expect(wifiService.resetWifi).toHaveBeenCalledOnce();
     expect(mockToastError).toHaveBeenCalledOnce();
     expect(mockToastSuccess).not.toHaveBeenCalled();
+    expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
+  });
+
+  it('disables the save button while saving wifi settings', async () => {
+    const pending = deferred<WifiConfig>();
+    vi.mocked(wifiService.setWifi).mockReturnValue(pending.promise);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await selectWifi(wrapper, 'SecuredNetwork');
+    await wrapper.getComponent(PasswordField).get('input').setValue('validpassword123');
+    await getSaveButton(wrapper).trigger('click');
+
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(true);
+
+    pending.resolve({ ssid: 'SecuredNetwork', key_mgmt: 'WPA2', isHidden: false });
+    await flushPromises();
+
+    expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(false);
   });
 });

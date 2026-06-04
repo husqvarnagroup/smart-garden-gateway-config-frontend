@@ -166,6 +166,7 @@ const resetWifiConfig = async () => {
         <input
           type="text"
           v-model="hiddenNetworkName"
+          data-testid="hidden-network-name"
           :placeholder="t('network.name.placeholder')"
           :disabled="wifiLoading || isWifiSaving"
         />
@@ -180,6 +181,7 @@ const resetWifiConfig = async () => {
         />
       </div>
       <StyledButton
+        data-testid="save-wifi"
         type="button"
         variant="primary"
         :loading="isWifiSaving"
@@ -192,6 +194,7 @@ const resetWifiConfig = async () => {
         <span>{{ t('network.divider') }}</span>
       </div>
       <StyledButton
+        data-testid="reset-wifi"
         type="button"
         variant="secondary"
         :loading="resettingWifi"

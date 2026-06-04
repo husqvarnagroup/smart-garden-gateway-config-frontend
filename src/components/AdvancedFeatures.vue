@@ -17,17 +17,33 @@ const onChevronClick = () => {
 
 <template>
   <div>
-    <button class="chevron" :class="{ open: state !== 'hidden' }" @click="onChevronClick">
+    <button
+      aria-label="Toggle advanced features"
+      data-testid="advanced-toggle"
+      class="chevron"
+      :class="{ open: state !== 'hidden' }"
+      @click="onChevronClick"
+    >
       &#8250;
     </button>
     <BaseCard v-if="state === 'confirming'">
       <h2>{{ t('advanced.label') }}</h2>
       <p>{{ t('advanced.confirm') }}</p>
       <div class="actions">
-        <StyledButton type="button" variant="secondary" @click="state = 'hidden'">
+        <StyledButton
+          type="button"
+          variant="secondary"
+          data-testid="advanced-cancel"
+          @click="state = 'hidden'"
+        >
           {{ t('actions.cancel') }}
         </StyledButton>
-        <StyledButton type="button" variant="primary" @click="state = 'open'">
+        <StyledButton
+          type="button"
+          variant="primary"
+          data-testid="advanced-continue"
+          @click="state = 'open'"
+        >
           {{ t('actions.continue') }}
         </StyledButton>
       </div>

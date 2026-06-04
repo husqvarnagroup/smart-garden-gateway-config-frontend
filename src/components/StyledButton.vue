@@ -9,7 +9,7 @@ defineProps<{
 </script>
 
 <template>
-  <button :class="variant" :disabled="disabled || loading">
+  <button :class="variant" :disabled="disabled || loading" :aria-busy="loading || undefined">
     <Spinner v-if="loading" />
     <slot v-else />
   </button>

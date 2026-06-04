@@ -76,6 +76,7 @@ onMounted(async () => {
       <StyledButton
         type="button"
         variant="primary"
+        data-testid="save-timezone"
         :disabled="timezoneLoading || !currentTimezone?.timezone"
         :loading="timezoneSaving"
         @click="saveTimezone()"

@@ -1,35 +1,73 @@
-import { describe, it, expect, vi } from 'vitest';
+import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 
-import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { flushPromises, mount, type VueWrapper } from '@vue/test-utils';
 import I18NextVue from 'i18next-vue';
+import { authState, resetAuthState } from '@/state/auth';
 import App from '../App.vue';
 import router from '../router';
 import i18next from '../i18n';
+import * as systemService from '@/services/system';
 
 vi.mock('@/services/system', () => ({
-  getGatewayVersion: vi.fn<() => Promise<{ gateway_version: string }>>().mockResolvedValue({
-    gateway_version: '0.0.0',
-  }),
-  getHomekitStatus: vi
-    .fn<() => Promise<{ active: boolean }>>()
-    .mockResolvedValue({ active: false }),
   resetHomekit: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
 }));
 
+let wrapper: VueWrapper | null = null;
+const mountApp = () => {
+  wrapper = mount(App, {
+    global: {
+      plugins: [router, [I18NextVue, { i18next }]],
+      stubs: {
+        RouterView: true,
+        ToastContainer: true,
+      },
+    },
+  });
+  return wrapper;
+};
+
 describe('App', () => {
-  it('redirects unauthenticated users to login', async () => {
-    router.push('/');
+  beforeEach(async () => {
+    resetAuthState();
+    await router.replace('/login');
+  });
+
+  afterEach(() => {
+    wrapper?.unmount();
+    wrapper = null;
+  });
+
+  it('redirects from a protected route when authentication is lost after mount', async () => {
+    authState.session = 'token';
+    await router.replace('/');
     await router.isReady();
 
-    const wrapper = mount(App, {
-      global: {
-        plugins: [router, [I18NextVue, { i18next }]],
-      },
+    mountApp();
+    expect(router.currentRoute.value.name).toBe('home');
+
+    authState.session = null;
+    await flushPromises();
+
+    expect(router.currentRoute.value.name).toBe('login');
+  });
+
+  it('redirects to login when a service call clears the session (e.g. apiFetch 401)', async () => {
+    authState.session = 'token';
+    await router.replace('/');
+    await router.isReady();
+
+    mountApp();
+    expect(router.currentRoute.value.name).toBe('home');
+
+    // Mirrors apiFetch's 401 side-effect: clear session first, then throw.
+    vi.mocked(systemService.resetHomekit).mockImplementation(async () => {
+      authState.session = null;
+      throw new Error('Unauthorized');
     });
 
-    await nextTick();
+    await expect(systemService.resetHomekit()).rejects.toThrow('Unauthorized');
+    await flushPromises();
 
-    expect(wrapper.text()).toContain('Log in');
+    expect(router.currentRoute.value.name).toBe('login');
   });
 });
