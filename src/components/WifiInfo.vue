@@ -6,7 +6,6 @@ import { setWifi, type WifiConfig, type WifiNetwork, resetWifi } from '@/service
 import { useAsync } from '@/composables/useAsync';
 import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
-import { useWifiInfo } from '@/composables/useWifiInfo.ts';
 import BaseCard from '@/components/BaseCard.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import PasswordField from '@/components/PasswordField.vue';
@@ -14,13 +13,13 @@ import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import WifiSignal from '@/components/WifiSignal.vue';
 import WifiLockIcon from '@/components/WifiLockIcon.vue';
 import StyledButton from '@/components/StyledButton.vue';
+import { getNormalisedNetworks, getNormalisedWifiInfo } from '@/utils/wifiUtils.ts';
 
 const { t } = useTranslation();
 const toast = useToast();
 
 const { pending: wifiLoading, run: runWifiLoad } = useAsync();
 const { run: runWifiScan } = useAsync();
-const { getNormalisedWifiInfo, getNormalisedNetworks } = useWifiInfo();
 const { pending: resettingWifi, run: runWifiReset } = useAsync();
 const {
   current: currentWifiConfig,

@@ -16,11 +16,9 @@ const { mockGetNormalisedWifiInfo, mockGetNormalisedNetworks } = vi.hoisted(() =
   mockGetNormalisedNetworks: vi.fn<() => Promise<WifiNetwork[]>>(),
 }));
 
-vi.mock('@/composables/useWifiInfo', () => ({
-  useWifiInfo: () => ({
-    getNormalisedWifiInfo: mockGetNormalisedWifiInfo,
-    getNormalisedNetworks: mockGetNormalisedNetworks,
-  }),
+vi.mock('@/utils/wifiUtils', () => ({
+  getNormalisedWifiInfo: mockGetNormalisedWifiInfo,
+  getNormalisedNetworks: mockGetNormalisedNetworks,
 }));
 
 vi.mock('@/services/wifi', () => ({

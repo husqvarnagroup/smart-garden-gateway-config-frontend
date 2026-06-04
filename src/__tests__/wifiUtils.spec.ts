@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import { useWifiInfo } from '@/composables/useWifiInfo';
 import i18next from '@/i18n';
 import * as wifiService from '@/services/wifi';
 import type { WifiConfig, WifiNetwork } from '@/services/wifi';
+import { getNormalisedNetworks, getNormalisedWifiInfo } from '@/utils/wifiUtils.ts';
 
 vi.mock('@/services/wifi', () => ({
   getCurrentWifi: vi.fn<() => Promise<WifiConfig>>(),
   wifiScan: vi.fn<() => Promise<WifiNetwork[]>>(),
 }));
 
-describe('useWifiInfo', () => {
+describe('wifi utils', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -23,7 +23,6 @@ describe('useWifiInfo', () => {
         isHidden: undefined,
       });
 
-      const { getNormalisedWifiInfo } = useWifiInfo();
       const result = await getNormalisedWifiInfo();
 
       expect(result.ssid).toBe('MyNetwork');
@@ -37,7 +36,6 @@ describe('useWifiInfo', () => {
         isHidden: undefined,
       });
 
-      const { getNormalisedWifiInfo } = useWifiInfo();
       const result = await getNormalisedWifiInfo();
 
       expect(result.ssid).toBe(i18next.t('network.hidden.label'));
@@ -52,7 +50,6 @@ describe('useWifiInfo', () => {
         { ssid: '', signal: 50, security: 'WPA2', isHidden: undefined },
       ]);
 
-      const { getNormalisedNetworks } = useWifiInfo();
       const results = await getNormalisedNetworks();
 
       expect(results[0]!.ssid).toBe('VisibleNetwork');
