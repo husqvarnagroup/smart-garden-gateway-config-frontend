@@ -8,13 +8,6 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 Frontend for the Smart Garden Gateway configuration interface.
 
-## Prerequisites
-
-- Install [Git](https://git-scm.com/)
-- Install [nvm](https://github.com/creationix/nvm#install-script)
-- Configure [NPM Artifactory Registry](https://confluence-husqvarna.riada.se/display/SGS/Artifactory#Artifactory-Setup). Verify with `pnpm ping`
-- Use Node `^20.19.0 || >=22.12.0`
-
 ## What The App Does
 
 - Authenticated gateway configuration UI with a separate login view
@@ -22,6 +15,11 @@ Frontend for the Smart Garden Gateway configuration interface.
 - Reset HomeKit pairings
 - Show the current gateway version
 - Advanced features for websocket API access and SSH access
+
+## Prerequisites
+
+- Install [Git](https://git-scm.com/)
+- Install [nvm](https://github.com/creationix/nvm#install-script)
 
 ## Setup
 
