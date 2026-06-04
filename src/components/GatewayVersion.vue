@@ -25,16 +25,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    v-if="loading || version"
-    :aria-busy="loading"
-    :aria-label="loading ? 'Loading gateway version' : undefined"
-  >
-    <SkeletonBlock v-if="loading" width="100%" height="var(--space-5)" />
-    <template v-else>
-      {{ t('version') }} {{ version }} /
-      <a href="/licenses">{{ t('licenses') }}</a>
-    </template>
+  <div :aria-busy="loading" :aria-label="loading ? 'Loading gateway version' : undefined">
+    <SkeletonBlock v-if="loading" width="60%" height="var(--space-5)" />
+    <span v-else-if="version">{{ t('version') }} {{ version }}</span>
+    <a href="/licenses">{{ t('licenses') }}</a>
   </div>
 </template>
 
@@ -45,5 +39,9 @@ div {
   font-size: var(--text-sm);
   text-align: center;
   margin: var(--space-8) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
 }
 </style>
