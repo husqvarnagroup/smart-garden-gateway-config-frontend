@@ -13,13 +13,10 @@ import { useAsync } from '@/composables/useAsync';
 import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
-import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
-import PasswordField from '@/components/PasswordField.vue';
-import SkeletonBlock from '@/components/SkeletonBlock.vue';
-import WifiSignal from '@/components/WifiSignal.vue';
-import WifiLockIcon from '@/components/WifiLockIcon.vue';
 import StyledButton from '@/components/StyledButton.vue';
 import { getNormalisedNetworks, getNormalisedWifiInfo } from '@/utils/wifiUtils.ts';
+import WifiCredentialsForm from './WifiCredentialsForm.vue';
+import WifiNetworkSelect from './WifiNetworkSelect.vue';
 
 const { t } = useTranslation();
 const toast = useToast();
@@ -63,7 +60,7 @@ const isPasswordFieldVisible = computed(() => {
   return selectedNetwork.key_mgmt !== 'none';
 });
 
-const showLanInfo = computed(() => !wifiLoading.value && currentWifiConfig.value === undefined);
+const showNoWifi = computed(() => !wifiLoading.value && currentWifiConfig.value === undefined);
 
 const scanWifiNetworks = async (): Promise<string[]> => {
   const networks = await runWifiScan(getNormalisedNetworks);
@@ -72,24 +69,14 @@ const scanWifiNetworks = async (): Promise<string[]> => {
 };
 
 const onWifiChange = (ssid: string) => {
-  const security = scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.security;
-  const isHidden = scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.isHidden;
+  const selectedNetwork = scannedWifiNetworks.value.find((network) => network.ssid === ssid);
   changeWifiConfig({
     ssid,
-    key_mgmt: security || 'none',
-    isHidden,
+    key_mgmt: selectedNetwork?.security || 'none',
+    isHidden: selectedNetwork?.isHidden,
   });
   password.value = '';
 };
-
-const getSignal = (ssid: string) =>
-  scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.signal;
-const isSecured = (security: string | null | undefined): boolean => {
-  if (security === null || security === undefined) return false;
-  return security !== 'none';
-};
-const getOptionSecurity = (ssid: string) =>
-  scannedWifiNetworks.value.find((network) => network.ssid === ssid)?.security;
 
 onMounted(async () => {
   try {
@@ -142,55 +129,24 @@ const resetWifiConfig = async () => {
   <BaseCard>
     <h2>{{ t('network.label') }}</h2>
     <div class="wifi">
-      <DropdownSelect
+      <WifiNetworkSelect
         :disabled="wifiLoading || isWifiSaving"
         :model-value="currentWifiConfig?.ssid ?? ''"
+        :current-security="currentWifiConfig?.key_mgmt"
+        :networks="scannedWifiNetworks"
+        :loading="wifiLoading"
+        :has-current-wifi="Boolean(currentWifiConfig)"
         :load-options="scanWifiNetworks"
         @change="onWifiChange"
-      >
-        <template #value="{ value }">
-          <div class="option">
-            <WifiSignal :loading="wifiLoading && !currentWifiConfig" :signal="getSignal(value)" />
-            <SkeletonBlock
-              v-if="wifiLoading && !currentWifiConfig"
-              class="name-skeleton"
-              width="45%"
-              height="var(--text-lg)"
-            />
-            <template v-else>
-              <span class="name">{{ value }}</span>
-              <WifiLockIcon :locked="isSecured(currentWifiConfig?.key_mgmt)" />
-            </template>
-          </div>
-        </template>
-        <template #option="{ option }">
-          <div class="option">
-            <WifiSignal :signal="getSignal(option)" />
-            <span class="name">{{ option }}</span>
-            <WifiLockIcon :locked="isSecured(getOptionSecurity(option))" />
-          </div>
-        </template>
-      </DropdownSelect>
-      <div v-if="isHiddenNetworkSelected" class="field">
-        <label>{{ t('network.label') }}</label>
-        <input
-          type="text"
-          v-model="hiddenNetworkName"
-          data-testid="hidden-network-name"
-          :placeholder="t('network.name.placeholder')"
-          :disabled="wifiLoading || isWifiSaving"
-        />
-      </div>
-      <div v-if="isPasswordFieldVisible">
-        <PasswordField
-          v-model="password"
-          :label="t('login.password.label')"
-          :placeholder="t('network.password.placeholder')"
-          :disabled="wifiLoading || isWifiSaving"
-          autocomplete="new-password"
-        />
-      </div>
-      <p v-if="showLanInfo" class="info" data-testid="wifi-lan-info">{{ t('network.noWifi') }}</p>
+      />
+      <WifiCredentialsForm
+        v-model:hidden-network-name="hiddenNetworkName"
+        v-model:password="password"
+        :is-hidden-network-selected="isHiddenNetworkSelected"
+        :is-password-field-visible="isPasswordFieldVisible"
+        :disabled="wifiLoading || isWifiSaving"
+      />
+      <p v-if="showNoWifi" class="info" data-testid="wifi-lan-info">{{ t('network.noWifi') }}</p>
       <StyledButton
         v-else
         data-testid="save-wifi"
@@ -219,21 +175,6 @@ const resetWifiConfig = async () => {
 </template>
 
 <style scoped>
-.option {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: var(--space-1);
-}
-
-.name {
-  flex: 1;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .wifi {
   display: flex;
   flex-direction: column;
@@ -262,12 +203,6 @@ const resetWifiConfig = async () => {
   flex-shrink: 0;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
 .info {
   margin: 0;
   min-height: calc(var(--space-3) * 2 + var(--space-5) + var(--space-5));
@@ -279,32 +214,5 @@ const resetWifiConfig = async () => {
   justify-content: center;
   text-align: center;
   box-sizing: border-box;
-}
-
-.field label {
-  font-weight: 700;
-}
-
-.field input {
-  padding: var(--space-3) var(--space-4);
-  border: var(--border-sm) solid var(--color-grey-200);
-  border-radius: var(--radius-sm);
-  background: var(--color-white);
-  font: inherit;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.field input::placeholder {
-  color: var(--color-grey-300);
-}
-
-.name-skeleton {
-  flex: 1;
-  max-width: 100%;
-}
-
-.saving {
-  flex-shrink: 0;
 }
 </style>

@@ -6,11 +6,9 @@ SPDX-License-Identifier: GPL-3.0-or-later
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import SkeletonBlock from '@/components/SkeletonBlock.vue';
 
 const props = defineProps<{
   signal?: number;
-  loading?: boolean;
 }>();
 
 const level = computed(() => {
@@ -35,9 +33,7 @@ const opacity = computed(() => ({
 </script>
 
 <template>
-  <SkeletonBlock v-if="loading" class="skeleton" width="16px" height="16px" />
   <svg
-    v-else
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 16 16"
     width="16"
@@ -65,10 +61,3 @@ const opacity = computed(() => ({
     />
   </svg>
 </template>
-
-<style scoped>
-.skeleton {
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
-}
-</style>
