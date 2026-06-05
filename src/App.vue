@@ -9,6 +9,9 @@ import { watch } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuth } from '@/composables/useAuth';
 import ToastContainer from '@/components/ToastContainer.vue';
+import i18next from '@/i18n';
+
+document.documentElement.lang = i18next.resolvedLanguage ?? '';
 
 const router = useRouter();
 const route = useRoute();

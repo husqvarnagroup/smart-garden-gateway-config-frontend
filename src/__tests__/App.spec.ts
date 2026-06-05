@@ -34,11 +34,21 @@ describe('App', () => {
   beforeEach(async () => {
     resetAuthState();
     await router.replace('/login');
+    document.documentElement.lang = '';
   });
 
   afterEach(() => {
     wrapper?.unmount();
     wrapper = null;
+    document.documentElement.lang = '';
+  });
+
+  it('sets document.documentElement.lang to the resolved i18n language on mount', async () => {
+    mountApp();
+    await flushPromises();
+
+    expect(document.documentElement.lang).toBe(i18next.resolvedLanguage);
+    expect(document.documentElement.lang).not.toBe('');
   });
 
   it('redirects from a protected route when authentication is lost after mount', async () => {
