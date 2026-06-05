@@ -32,6 +32,7 @@ login.password.placeholder: "Pled-clav d'administraziun"
 network.divider: 'u'
 network.hidden.label: 'Wi-Fi zupientada'
 network.label: 'Rait da WLAN'
+network.noWifi: 'Nagina colliaziun Wi-Fi chattada. Sche ti vuls ta colliar via Wi-Fi, tscherna ina rait.'
 network.name.label: 'Num'
 network.name.placeholder: 'Num da la rait'
 network.password.placeholder: 'Endatar il pled-clav'

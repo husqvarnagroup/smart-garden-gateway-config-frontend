@@ -86,6 +86,15 @@ describe('services — transforms and contracts', () => {
       expect(result).toEqual(config);
     });
 
+    it('getCurrentWifi returns null when apiFetch returns null', async () => {
+      mockApiFetch.mockResolvedValue(null);
+
+      const result = await getCurrentWifi();
+
+      expect(mockApiFetch).toHaveBeenCalledWith('/wifi', 'GET');
+      expect(result).toBeNull();
+    });
+
     it('wifiScan returns the array of WifiNetworks returned by apiFetch', async () => {
       const networks = [
         { ssid: 'HomeNetwork', signal: 80, security: 'WPA2' },
