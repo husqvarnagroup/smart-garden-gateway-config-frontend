@@ -145,18 +145,31 @@ SSH must be enabled on the gateway first (see [SSH Access](#ssh-access)).
 Set the gateway IP once per shell:
 
 ```bash
-GW_IP=192.168.1.100
+GW_IP=192.168.1.100  # replace with your gateway's IP
 ```
 
-### Build
+### Using A GitHub Release
+
+Download a release tar from the [releases page](https://github.com/husqvarnagroup/smart-garden-gateway-config-frontend/releases) and stream it directly to the gateway.
+
+```bash
+VERSION=v1.2.3  # replace with the version you want
+```
+
+Then run:
+
+```bash
+curl -L https://github.com/husqvarnagroup/smart-garden-gateway-config-frontend/releases/download/$VERSION/sg-gateway-config-frontend-$VERSION.tar.gz \
+  | ssh root@$GW_IP "rm -rf /usr/share/gateway-config-interface/www/* && tar xzf - -C /usr/share/gateway-config-interface/www"
+```
+
+### Using A Local Build
 
 The app uses relative API paths, so `VITE_API_BASE_URL` does not affect the production bundle — it only configures the dev/test proxy. A plain build is enough:
 
 ```bash
 pnpm build
 ```
-
-### Deploy
 
 Stream the build over SSH, clear the target, and unpack — no intermediate files on the gateway:
 
