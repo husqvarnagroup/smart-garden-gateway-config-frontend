@@ -18,7 +18,7 @@ import * as wifiService from '@/services/wifi';
 import type { WifiConfig, WifiNetwork } from '@/services/wifi';
 
 const { mockGetNormalisedWifiInfo, mockGetNormalisedNetworks } = vi.hoisted(() => ({
-  mockGetNormalisedWifiInfo: vi.fn<() => Promise<WifiConfig>>(),
+  mockGetNormalisedWifiInfo: vi.fn<() => Promise<WifiConfig | undefined>>(),
   mockGetNormalisedNetworks: vi.fn<() => Promise<WifiNetwork[]>>(),
 }));
 
@@ -180,6 +180,30 @@ describe('WifiInfo', () => {
 
     expect(mockToastError).toHaveBeenCalledExactlyOnceWith(expect.stringContaining('Wi-Fi'));
     expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
+  });
+
+  it('renders without a load error when there is no current wifi config', async () => {
+    mockGetNormalisedWifiInfo.mockResolvedValue(undefined);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    expect(wrapper.text()).toContain(i18next.t('network.label'));
+    expect(wrapper.get('[data-testid="wifi-lan-info"]').text()).toBe(i18next.t('network.lanInfo'));
+    expect(mockToastError).not.toHaveBeenCalled();
+    expect(getSaveButton(wrapper).exists()).toBe(false);
+  });
+
+  it('keeps the wifi selector usable when the gateway is connected via LAN', async () => {
+    mockGetNormalisedWifiInfo.mockResolvedValue(undefined);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await selectWifi(wrapper, 'SecuredNetwork');
+
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('SecuredNetwork');
+    expect(wrapper.text()).not.toContain(i18next.t('network.lanInfo'));
   });
 
   it('shows an error toast when scanning wifi networks fails', async () => {

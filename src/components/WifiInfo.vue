@@ -63,6 +63,8 @@ const isPasswordFieldVisible = computed(() => {
   return selectedNetwork.key_mgmt !== 'none';
 });
 
+const showLanInfo = computed(() => !wifiLoading.value && currentWifiConfig.value === undefined);
+
 const scanWifiNetworks = async (): Promise<string[]> => {
   const networks = await runWifiScan(getNormalisedNetworks);
   scannedWifiNetworks.value = networks;
@@ -92,7 +94,9 @@ const getOptionSecurity = (ssid: string) =>
 onMounted(async () => {
   try {
     const wifi = await runWifiLoad(getNormalisedWifiInfo);
-    initWifiConfig(wifi);
+    if (wifi) {
+      initWifiConfig(wifi);
+    }
   } catch (error) {
     console.error(error);
     toast.error(t('error.load', { feature: t('network.label') }));
@@ -186,7 +190,9 @@ const resetWifiConfig = async () => {
           autocomplete="new-password"
         />
       </div>
+      <p v-if="showLanInfo" class="info" data-testid="wifi-lan-info">{{ t('network.noWifi') }}</p>
       <StyledButton
+        v-else
         data-testid="save-wifi"
         type="button"
         variant="primary"
@@ -260,6 +266,19 @@ const resetWifiConfig = async () => {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+.info {
+  margin: 0;
+  min-height: calc(var(--space-3) * 2 + var(--space-5) + var(--space-5));
+  padding: var(--space-3) 0;
+  color: var(--color-grey-400);
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .field label {

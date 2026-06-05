@@ -19,7 +19,8 @@ export type WifiConfig = {
 
 export const wifiScan = (): Promise<WifiNetwork[]> => apiFetch<WifiNetwork[]>('/wifi_list', 'GET');
 
-export const getCurrentWifi = (): Promise<WifiConfig> => apiFetch<WifiConfig>('/wifi', 'GET');
+export const getCurrentWifi = (): Promise<WifiConfig | null> =>
+  apiFetch<WifiConfig | null>('/wifi', 'GET');
 
 export const setWifi = (ssid: string, security: string, password: string): Promise<WifiConfig> =>
   apiFetch<WifiConfig>('/wifi', 'PUT', {

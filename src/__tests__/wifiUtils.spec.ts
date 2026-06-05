@@ -20,6 +20,12 @@ describe('wifi utils', () => {
   });
 
   describe('getNormalisedWifiInfo', () => {
+    it('returns undefined when the gateway is connected via LAN and /wifi returns null', async () => {
+      vi.mocked(wifiService.getCurrentWifi).mockResolvedValue(null as unknown as WifiConfig);
+
+      await expect(getNormalisedWifiInfo()).resolves.toBeUndefined();
+    });
+
     it('sets isHidden to false and keeps the ssid for a regular network', async () => {
       vi.mocked(wifiService.getCurrentWifi).mockResolvedValue({
         ssid: 'MyNetwork',
@@ -29,8 +35,8 @@ describe('wifi utils', () => {
 
       const result = await getNormalisedWifiInfo();
 
-      expect(result.ssid).toBe('MyNetwork');
-      expect(result.isHidden).toBe(false);
+      expect(result?.ssid).toBe('MyNetwork');
+      expect(result?.isHidden).toBe(false);
     });
 
     it('sets isHidden to true and replaces ssid with the hidden label when ssid is empty', async () => {
@@ -42,8 +48,8 @@ describe('wifi utils', () => {
 
       const result = await getNormalisedWifiInfo();
 
-      expect(result.ssid).toBe(i18next.t('network.hidden.label'));
-      expect(result.isHidden).toBe(true);
+      expect(result?.ssid).toBe(i18next.t('network.hidden.label'));
+      expect(result?.isHidden).toBe(true);
     });
   });
 

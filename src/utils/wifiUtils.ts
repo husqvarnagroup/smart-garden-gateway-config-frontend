@@ -8,8 +8,12 @@ import { getCurrentWifi, type WifiConfig, type WifiNetwork, wifiScan } from '@/s
 const isHidden = (ssid: string) => !ssid || [...ssid].every((c) => c.charCodeAt(0) === 0);
 const hiddenWifiLabel = () => i18next.t('network.hidden.label');
 
-export const getNormalisedWifiInfo = async (): Promise<WifiConfig> => {
+export const getNormalisedWifiInfo = async (): Promise<WifiConfig | undefined> => {
   const wifi = await getCurrentWifi();
+  if (!wifi) {
+    return undefined;
+  }
+
   if (isHidden(wifi.ssid)) {
     wifi.ssid = hiddenWifiLabel();
     wifi.isHidden = true;

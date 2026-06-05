@@ -32,6 +32,7 @@ login.password.placeholder: 'Κωδικός πρόσβασης διαχειρι�
 network.divider: 'ή'
 network.hidden.label: 'Κρυμμένο Wi-Fi'
 network.label: 'Δίκτυο Wi-Fi'
+network.noWifi: 'Δεν εντοπίστηκε σύνδεση Wi-Fi. Αν θέλετε να συνδεθείτε μέσω Wi-Fi, επιλέξτε ένα δίκτυο.'
 network.name.label: 'Ονομασία'
 network.name.placeholder: 'Ονομασία δικτύου'
 network.password.placeholder: 'Εισάγετε κωδικό πρόσβασης'
