@@ -10,7 +10,7 @@ import { allowConsoleErrors, getConsoleErrorSpy } from './setup';
 import { mockToastError, mockToastSuccess, resetToastMocks } from './helpers/mockUseToast';
 import { expectSuccessToastFired } from './helpers/assertErrorToast';
 import { deferred } from './helpers/asyncControl';
-import WifiInfo from '@/components/WifiInfo.vue';
+import WifiInfo from '@/components/WifiInfo/WifiInfo.vue';
 import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import PasswordField from '@/components/PasswordField.vue';
 import i18next from '@/i18n';
@@ -189,7 +189,7 @@ describe('WifiInfo', () => {
     await flushPromises();
 
     expect(wrapper.text()).toContain(i18next.t('network.label'));
-    expect(wrapper.get('[data-testid="wifi-lan-info"]').text()).toBe(i18next.t('network.lanInfo'));
+    expect(wrapper.get('[data-testid="wifi-lan-info"]').text()).toBe(i18next.t('network.noWifi'));
     expect(mockToastError).not.toHaveBeenCalled();
     expect(getSaveButton(wrapper).exists()).toBe(false);
   });
@@ -203,7 +203,7 @@ describe('WifiInfo', () => {
     await selectWifi(wrapper, 'SecuredNetwork');
 
     expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('SecuredNetwork');
-    expect(wrapper.text()).not.toContain(i18next.t('network.lanInfo'));
+    expect(wrapper.text()).not.toContain(i18next.t('network.noWifi'));
   });
 
   it('shows an error toast when scanning wifi networks fails', async () => {
