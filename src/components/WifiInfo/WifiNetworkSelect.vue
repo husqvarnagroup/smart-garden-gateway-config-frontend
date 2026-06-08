@@ -16,6 +16,7 @@ import WifiNetworkOption from './WifiNetworkOption.vue';
 const props = defineProps<{
   modelValue: string;
   currentSecurity?: string | null;
+  currentIsHidden?: boolean;
   networks: WifiNetwork[];
   loading: boolean;
   disabled: boolean;
@@ -58,6 +59,7 @@ const isSecured = (security: string | null | undefined): boolean => {
         :name="value"
         :signal="getSignal(value)"
         :locked="isSecured(currentSecurity)"
+        :hidden="currentIsHidden"
       />
     </template>
     <template #option="{ option }">
@@ -65,6 +67,7 @@ const isSecured = (security: string | null | undefined): boolean => {
         :name="option"
         :signal="getSignal(option)"
         :locked="isSecured(getOptionSecurity(option))"
+        :hidden="getScannedNetwork(option)?.isHidden"
       />
     </template>
   </DropdownSelect>
