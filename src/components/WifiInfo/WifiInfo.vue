@@ -133,6 +133,7 @@ const resetWifiConfig = async () => {
         :disabled="wifiLoading || isWifiSaving"
         :model-value="currentWifiConfig?.ssid ?? ''"
         :current-security="currentWifiConfig?.key_mgmt"
+        :current-is-hidden="currentWifiConfig?.isHidden"
         :networks="scannedWifiNetworks"
         :loading="wifiLoading"
         :has-current-wifi="Boolean(currentWifiConfig)"
