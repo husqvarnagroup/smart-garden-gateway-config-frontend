@@ -10,7 +10,7 @@ import { useTranslation } from 'i18next-vue';
 import PasswordField from '@/components/PasswordField.vue';
 
 defineProps<{
-  isHiddenNetworkSelected: boolean | undefined;
+  isHiddenNetworkSelected?: boolean;
   isPasswordFieldVisible: boolean;
   disabled: boolean;
 }>();
