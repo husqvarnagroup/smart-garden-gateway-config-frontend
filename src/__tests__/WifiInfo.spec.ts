@@ -33,9 +33,9 @@ vi.mock('@/services/wifi', () => ({
 }));
 
 const NETWORKS: WifiNetwork[] = [
-  { ssid: 'SecuredNetwork', signal: 80, security: 'WPA2', isHidden: false },
+  { ssid: 'SecuredNetwork', signal: 80, security: 'WPA-PSK', isHidden: false },
   { ssid: 'OpenNetwork', signal: 60, security: '', isHidden: false },
-  { ssid: 'Hidden Wi-Fi', signal: 50, security: 'WPA2', isHidden: true },
+  { ssid: '', signal: 50, security: 'WPA-PSK', isHidden: true },
 ];
 
 const mountWifiInfo = () =>
@@ -66,13 +66,13 @@ describe('WifiInfo', () => {
     vi.clearAllMocks();
     mockGetNormalisedWifiInfo.mockResolvedValue({
       ssid: 'CurrentNetwork',
-      key_mgmt: 'WPA2',
+      key_mgmt: 'WPA-PSK',
       isHidden: false,
     });
     mockGetNormalisedNetworks.mockResolvedValue(NETWORKS);
     vi.mocked(wifiService.setWifi).mockResolvedValue({
       ssid: 'SecuredNetwork',
-      key_mgmt: 'WPA2',
+      key_mgmt: 'WPA-PSK',
       isHidden: false,
     });
     vi.mocked(wifiService.resetWifi).mockResolvedValue(undefined);
@@ -90,7 +90,11 @@ describe('WifiInfo', () => {
     await getSaveButton(wrapper).trigger('click');
     await flushPromises();
 
-    expect(wifiService.setWifi).toHaveBeenCalledWith('SecuredNetwork', 'WPA2', 'validpassword123');
+    expect(wifiService.setWifi).toHaveBeenCalledWith(
+      'SecuredNetwork',
+      'WPA-PSK',
+      'validpassword123',
+    );
     expectSuccessToastFired();
   });
 
@@ -125,10 +129,10 @@ describe('WifiInfo', () => {
     expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(false);
   });
 
-  it('saves a hidden network after entering a network name and password', async () => {
+  it('saves a manually entered network after selecting the other-network option', async () => {
     vi.mocked(wifiService.setWifi).mockResolvedValue({
-      ssid: 'Hidden Wi-Fi',
-      key_mgmt: 'WPA2',
+      ssid: 'My Hidden Network',
+      key_mgmt: 'WPA-PSK',
       isHidden: true,
     });
     const networkName = 'My Hidden Network';
@@ -137,7 +141,7 @@ describe('WifiInfo', () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
 
-    await selectWifi(wrapper, 'Hidden Wi-Fi');
+    await selectWifi(wrapper, i18next.t('network.other.label'));
 
     const nameInput = wrapper.find('[data-testid="hidden-network-name"]');
     expect(nameInput.exists()).toBe(true);
@@ -148,8 +152,74 @@ describe('WifiInfo', () => {
     await getSaveButton(wrapper).trigger('click');
     await flushPromises();
 
-    expect(wifiService.setWifi).toHaveBeenCalledWith(networkName, 'WPA2', password);
+    expect(wifiService.setWifi).toHaveBeenCalledWith(networkName, 'WPA-PSK', password);
     expectSuccessToastFired();
+  });
+
+  it('defaults manual security to backend-supported WPA-PSK for secured hidden networks', async () => {
+    mockGetNormalisedNetworks.mockResolvedValue([
+      { ssid: 'SecuredNetwork', signal: 80, security: 'WPA-PSK', isHidden: false },
+      { ssid: '', signal: 50, security: 'WPA-PSK', isHidden: true },
+      { ssid: '', signal: 45, security: 'WPA-PSK', isHidden: true },
+      { ssid: '', signal: 40, security: 'WPA-PSK', isHidden: true },
+    ]);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await selectWifi(wrapper, i18next.t('network.other.label'));
+    await wrapper.find('[data-testid="hidden-network-name"]').setValue('ManualNetwork');
+    await wrapper.getComponent(PasswordField).get('input').setValue('validpassword123');
+    await getSaveButton(wrapper).trigger('click');
+    await flushPromises();
+
+    expect(wifiService.setWifi).toHaveBeenCalledWith(
+      'ManualNetwork',
+      'WPA-PSK',
+      'validpassword123',
+    );
+  });
+
+  it('shows the other-network option exactly once even with multiple hidden scan entries', async () => {
+    mockGetNormalisedNetworks.mockResolvedValue([
+      { ssid: 'SecuredNetwork', signal: 80, security: 'WPA-PSK', isHidden: false },
+      { ssid: 'OpenNetwork', signal: 60, security: 'none', isHidden: false },
+      { ssid: '', signal: 50, security: 'WPA-PSK', isHidden: true },
+      { ssid: '', signal: 45, security: 'WPA-PSK', isHidden: true },
+    ]);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await wrapper.getComponent(DropdownSelect).get('button').trigger('click');
+    await flushPromises();
+
+    const options = wrapper.findAll('[role="option"]');
+    const otherLabel = i18next.t('network.other.label');
+    const otherOptions = options.filter((option) => option.text().trim() === otherLabel);
+
+    expect(otherOptions).toHaveLength(1);
+    expect(options).toHaveLength(3);
+  });
+
+  it('appends hidden discovered securities once after base manual options and filters unsupported', async () => {
+    mockGetNormalisedNetworks.mockResolvedValue([
+      { ssid: 'SecuredNetwork', signal: 80, security: 'WPA-PSK', isHidden: false },
+      { ssid: '', signal: 50, security: 'WPA3', isHidden: true },
+      { ssid: '', signal: 45, security: 'WPA3', isHidden: true },
+      { ssid: '', signal: 40, security: 'unsupported', isHidden: true },
+    ]);
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await selectWifi(wrapper, i18next.t('network.other.label'));
+
+    const securitySelect = wrapper.findAllComponents(DropdownSelect)[1];
+    expect(securitySelect).toBeDefined();
+
+    const securityOptions = securitySelect!.props('options') as string[];
+    expect(securityOptions).toEqual(['WPA-PSK', 'none', 'WPA3']);
   });
 
   it('keeps the save button disabled for invalid secured-network passwords', async () => {
@@ -221,6 +291,21 @@ describe('WifiInfo', () => {
     expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
   });
 
+  it('still shows the other-network option when scanning wifi networks fails', async () => {
+    mockGetNormalisedNetworks.mockRejectedValue(new Error('scan failed'));
+    allowConsoleErrors();
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    await wrapper.getComponent(DropdownSelect).get('button').trigger('click');
+    await flushPromises();
+
+    const options = wrapper.findAll('[role="option"]');
+    expect(options).toHaveLength(1);
+    expect(options[0]!.text().trim()).toBe(i18next.t('network.other.label'));
+  });
+
   it('shows a success toast when resetting the wifi config succeeds', async () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
@@ -261,7 +346,7 @@ describe('WifiInfo', () => {
 
     expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(true);
 
-    pending.resolve({ ssid: 'SecuredNetwork', key_mgmt: 'WPA2', isHidden: false });
+    pending.resolve({ ssid: 'SecuredNetwork', key_mgmt: 'WPA-PSK', isHidden: false });
     await flushPromises();
 
     expect((getSaveButton(wrapper).element as HTMLButtonElement).disabled).toBe(false);

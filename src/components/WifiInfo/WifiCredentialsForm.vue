@@ -7,22 +7,30 @@ SPDX-License-Identifier: GPL-3.0-or-later
 <script setup lang="ts">
 import { useTranslation } from 'i18next-vue';
 
+import DropdownSelect from '@/components/DropdownSelect/DropdownSelect.vue';
 import PasswordField from '@/components/PasswordField.vue';
+import { OPEN_WIFI_SECURITY } from '@/components/WifiInfo/constants';
 
 defineProps<{
-  isHiddenNetworkSelected?: boolean;
+  showManualNetworkName: boolean;
+  showManualSecurity: boolean;
+  securityOptions: string[];
   isPasswordFieldVisible: boolean;
   disabled: boolean;
 }>();
 
 const hiddenNetworkName = defineModel<string>('hiddenNetworkName', { required: true });
+const security = defineModel<string>('security', { required: true });
 const password = defineModel<string>('password', { required: true });
 
 const { t } = useTranslation();
+
+const securityLabel = (value: string) =>
+  value === OPEN_WIFI_SECURITY ? t('network.security.none') : value;
 </script>
 
 <template>
-  <div v-if="isHiddenNetworkSelected" class="field">
+  <div v-if="showManualNetworkName" class="field">
     <label>{{ t('network.label') }}</label>
     <input
       v-model="hiddenNetworkName"
@@ -31,6 +39,18 @@ const { t } = useTranslation();
       :placeholder="t('network.name.placeholder')"
       :disabled="disabled"
     />
+  </div>
+  <div v-if="showManualSecurity" class="field">
+    <label>{{ t('network.security.label') }}</label>
+    <DropdownSelect
+      :model-value="security"
+      :options="securityOptions"
+      :disabled="disabled"
+      @change="security = $event"
+    >
+      <template #value="{ value }">{{ securityLabel(value) }}</template>
+      <template #option="{ option }">{{ securityLabel(option) }}</template>
+    </DropdownSelect>
   </div>
   <div v-if="isPasswordFieldVisible">
     <PasswordField

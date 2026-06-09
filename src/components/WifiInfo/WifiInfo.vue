@@ -15,6 +15,12 @@ import { useToast } from '@/composables/useToast';
 import BaseCard from '@/components/BaseCard.vue';
 import StyledButton from '@/components/StyledButton.vue';
 import { getNormalisedNetworks, getNormalisedWifiInfo } from '@/utils/wifiUtils.ts';
+import {
+  ALWAYS_MANUAL_SECURITIES,
+  OPEN_WIFI_SECURITY,
+  OTHER_WIFI_OPTION,
+  SECURED_WIFI_SECURITY,
+} from '@/components/WifiInfo/constants';
 import WifiCredentialsForm from './WifiCredentialsForm.vue';
 import WifiNetworkSelect from './WifiNetworkSelect.vue';
 
@@ -36,28 +42,78 @@ const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 const password = ref('');
 const hiddenNetworkName = ref('');
 
+const isManualNetworkSelected = computed(() => currentWifiConfig.value?.ssid === OTHER_WIFI_OPTION);
+
+const toBackendSecurity = (security?: string | null): string => {
+  const normalised = security?.trim();
+  if (!normalised || normalised === OPEN_WIFI_SECURITY) {
+    return OPEN_WIFI_SECURITY;
+  }
+  return SECURED_WIFI_SECURITY;
+};
+
+const hiddenDiscoveredSecurities = computed(() => {
+  return scannedWifiNetworks.value
+    .filter((network) => network.isHidden)
+    .map((network) => network.security?.trim())
+    .filter(
+      (security): security is string =>
+        Boolean(security) && security?.toLowerCase() !== 'unsupported',
+    );
+});
+
+const manualSecurityOptions = computed(() => {
+  return [...new Set([...ALWAYS_MANUAL_SECURITIES, ...hiddenDiscoveredSecurities.value])];
+});
+
+const defaultManualSecurity = computed(() => {
+  return SECURED_WIFI_SECURITY;
+});
+
+const resolveManualSecuritySelection = (security?: string | null): string => {
+  const value = security?.trim();
+  if (!value) {
+    return defaultManualSecurity.value;
+  }
+  const knownOptions = manualSecurityOptions.value;
+  if (knownOptions.includes(value)) {
+    return value;
+  }
+  return toBackendSecurity(value);
+};
+
+const selectedSecurity = computed(() => {
+  return currentWifiConfig.value?.key_mgmt ?? '';
+});
+
 const isSaveButtonDisabled = computed(() => {
   const selectedNetwork = currentWifiConfig.value;
   if (!selectedNetwork) {
     return true;
-  } else if (selectedNetwork.key_mgmt === 'none') {
-    return false;
-  } else if (password.value.length < 8 || password.value.length > 63) {
+  }
+
+  if (isManualNetworkSelected.value && hiddenNetworkName.value.trim().length === 0) {
     return true;
   }
+
+  const security = selectedSecurity.value;
+  if (!security) {
+    return true;
+  }
+
+  if (security === OPEN_WIFI_SECURITY) {
+    return false;
+  }
+
+  if (password.value.length < 8 || password.value.length > 63) {
+    return true;
+  }
+
   return false;
 });
 
-const isHiddenNetworkSelected = computed(() => {
-  return currentWifiConfig.value?.isHidden;
-});
-
 const isPasswordFieldVisible = computed(() => {
-  const selectedNetwork = currentWifiConfig.value;
-  if (!selectedNetwork) {
-    return false;
-  }
-  return selectedNetwork.key_mgmt !== 'none';
+  return Boolean(selectedSecurity.value && selectedSecurity.value !== OPEN_WIFI_SECURITY);
 });
 
 const showNoWifi = computed(() => !wifiLoading.value && currentWifiConfig.value === undefined);
@@ -65,24 +121,63 @@ const showNoWifi = computed(() => !wifiLoading.value && currentWifiConfig.value 
 const scanWifiNetworks = async (): Promise<string[]> => {
   const networks = await runWifiScan(getNormalisedNetworks);
   scannedWifiNetworks.value = networks;
-  return networks.map((network) => network.ssid);
+  return networks.filter((network) => !network.isHidden).map((network) => network.ssid);
 };
 
 const onWifiChange = (ssid: string) => {
+  if (ssid === OTHER_WIFI_OPTION) {
+    const security =
+      isManualNetworkSelected.value && currentWifiConfig.value
+        ? currentWifiConfig.value.key_mgmt
+        : resolveManualSecuritySelection();
+    changeWifiConfig({
+      ssid: OTHER_WIFI_OPTION,
+      key_mgmt: security,
+      isHidden: true,
+    });
+    password.value = '';
+    return;
+  }
+
   const selectedNetwork = scannedWifiNetworks.value.find((network) => network.ssid === ssid);
   changeWifiConfig({
     ssid,
-    key_mgmt: selectedNetwork?.security || 'none',
-    isHidden: selectedNetwork?.isHidden,
+    key_mgmt: toBackendSecurity(selectedNetwork?.security),
+    isHidden: false,
   });
   password.value = '';
 };
+
+const onSecurityChange = (security: string) => {
+  const selectedNetwork = currentWifiConfig.value;
+  if (!selectedNetwork) {
+    return;
+  }
+  changeWifiConfig({
+    ...selectedNetwork,
+    key_mgmt: security,
+  });
+  password.value = '';
+};
+
+const manualSecurityModel = computed({
+  get: () => currentWifiConfig.value?.key_mgmt ?? '',
+  set: onSecurityChange,
+});
 
 onMounted(async () => {
   try {
     const wifi = await runWifiLoad(getNormalisedWifiInfo);
     if (wifi) {
-      initWifiConfig(wifi);
+      if (wifi.isHidden) {
+        initWifiConfig({
+          ...wifi,
+          ssid: OTHER_WIFI_OPTION,
+          key_mgmt: resolveManualSecuritySelection(wifi.key_mgmt),
+        });
+      } else {
+        initWifiConfig(wifi);
+      }
     }
   } catch (error) {
     console.error(error);
@@ -91,20 +186,16 @@ onMounted(async () => {
 });
 
 const saveWifi = async () => {
-  const ssid = currentWifiConfig?.value?.ssid;
-  const security = currentWifiConfig.value?.key_mgmt;
+  const ssid = isManualNetworkSelected.value
+    ? hiddenNetworkName.value.trim()
+    : currentWifiConfig?.value?.ssid;
+  const security = selectedSecurity.value;
   if (!ssid || !security) {
     toast.error(t('error.update', { feature: t('network.label') }));
     return;
   }
   try {
-    await saveWifiConfigWithRollback(() =>
-      setWifi(
-        isHiddenNetworkSelected.value ? hiddenNetworkName.value : ssid,
-        security,
-        password.value,
-      ),
-    );
+    await saveWifiConfigWithRollback(() => setWifi(ssid, security, password.value));
     toast.success(t('success.save'));
   } catch (error) {
     console.error(error);
@@ -133,7 +224,6 @@ const resetWifiConfig = async () => {
         :disabled="wifiLoading || isWifiSaving"
         :model-value="currentWifiConfig?.ssid ?? ''"
         :current-security="currentWifiConfig?.key_mgmt"
-        :current-is-hidden="currentWifiConfig?.isHidden"
         :networks="scannedWifiNetworks"
         :loading="wifiLoading"
         :has-current-wifi="Boolean(currentWifiConfig)"
@@ -142,8 +232,11 @@ const resetWifiConfig = async () => {
       />
       <WifiCredentialsForm
         v-model:hidden-network-name="hiddenNetworkName"
+        v-model:security="manualSecurityModel"
         v-model:password="password"
-        :is-hidden-network-selected="isHiddenNetworkSelected"
+        :show-manual-network-name="isManualNetworkSelected"
+        :show-manual-security="isManualNetworkSelected"
+        :security-options="manualSecurityOptions"
         :is-password-field-visible="isPasswordFieldVisible"
         :disabled="wifiLoading || isWifiSaving"
       />

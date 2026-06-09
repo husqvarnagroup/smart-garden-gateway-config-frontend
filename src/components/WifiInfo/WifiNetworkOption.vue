@@ -12,14 +12,13 @@ defineProps<{
   name: string;
   signal?: number;
   locked: boolean;
-  hidden?: boolean;
 }>();
 </script>
 
 <template>
   <div class="option">
     <WifiSignal :signal="signal" />
-    <span class="name" :class="{ hidden }">{{ name }}</span>
+    <span class="name">{{ name }}</span>
     <WifiLockIcon :locked="locked" />
   </div>
 </template>
@@ -38,10 +37,5 @@ defineProps<{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.name.hidden {
-  color: var(--color-grey-400);
-  font-style: italic;
 }
 </style>
