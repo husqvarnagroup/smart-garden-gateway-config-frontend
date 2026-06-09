@@ -70,9 +70,9 @@ export const handlers = [
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json([
-      { ssid: 'HomeNetwork', signal: -45, security: 'WPA2' },
-      { ssid: '', signal: -15, security: 'WPA2' },
-      { ssid: 'GuestNetwork', signal: -70, security: 'WPA2' },
+      { ssid: 'HomeNetwork', signal: -45, security: 'WPA-PSK' },
+      { ssid: '', signal: -15, security: 'WPA-PSK' },
+      { ssid: 'GuestNetwork', signal: -70, security: 'WPA-PSK' },
       { ssid: 'OpenNetwork', signal: -80, security: 'none' },
     ]);
   }),
@@ -81,7 +81,7 @@ export const handlers = [
     await delay(200);
     const denied = requireSession(request);
     if (denied) return denied;
-    return HttpResponse.json({ ssid: 'HomeNetwork', key_mgmt: 'WPA2' });
+    return HttpResponse.json({ ssid: 'HomeNetwork', key_mgmt: 'WPA-PSK' });
   }),
 
   http.put('/wifi', async ({ request }) => {

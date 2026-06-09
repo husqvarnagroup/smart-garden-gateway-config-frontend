@@ -49,11 +49,11 @@ describe('services — transforms and contracts', () => {
 
   describe('wifi', () => {
     it('setWifi sends PUT /wifi with key_mgmt + psk for a secured network', async () => {
-      mockApiFetch.mockResolvedValue({ ssid: 'MyNet', key_mgmt: 'WPA2' });
-      await setWifi('MyNet', 'WPA2', 'password123');
+      mockApiFetch.mockResolvedValue({ ssid: 'MyNet', key_mgmt: 'WPA-PSK' });
+      await setWifi('MyNet', 'WPA-PSK', 'password123');
       expect(mockApiFetch).toHaveBeenCalledWith('/wifi', 'PUT', {
         ssid: 'MyNet',
-        key_mgmt: 'WPA2',
+        key_mgmt: 'WPA-PSK',
         psk: 'password123',
       });
     });
@@ -79,7 +79,7 @@ describe('services — transforms and contracts', () => {
     });
 
     it('getCurrentWifi returns the WifiConfig returned by apiFetch', async () => {
-      const config = { ssid: 'HomeNetwork', key_mgmt: 'WPA2' };
+      const config = { ssid: 'HomeNetwork', key_mgmt: 'WPA-PSK' };
       mockApiFetch.mockResolvedValue(config);
       const result = await getCurrentWifi();
       expect(mockApiFetch).toHaveBeenCalledWith('/wifi', 'GET');
@@ -97,7 +97,7 @@ describe('services — transforms and contracts', () => {
 
     it('wifiScan returns the array of WifiNetworks returned by apiFetch', async () => {
       const networks = [
-        { ssid: 'HomeNetwork', signal: 80, security: 'WPA2' },
+        { ssid: 'HomeNetwork', signal: 80, security: 'WPA-PSK' },
         { ssid: 'OpenNet', signal: 60 },
       ];
       mockApiFetch.mockResolvedValue(networks);
@@ -109,11 +109,11 @@ describe('services — transforms and contracts', () => {
     // Backend currently expects `psk` to be present on every PUT — even for
     // secured networks where the password was omitted. Lock that contract.
     it('setWifi always sends psk, defaulting to empty string', async () => {
-      mockApiFetch.mockResolvedValue({ ssid: 'MyNet', key_mgmt: 'WPA2' });
-      await setWifi('MyNet', 'WPA2', '');
+      mockApiFetch.mockResolvedValue({ ssid: 'MyNet', key_mgmt: 'WPA-PSK' });
+      await setWifi('MyNet', 'WPA-PSK', '');
       expect(mockApiFetch).toHaveBeenCalledWith('/wifi', 'PUT', {
         ssid: 'MyNet',
-        key_mgmt: 'WPA2',
+        key_mgmt: 'WPA-PSK',
         psk: '',
       });
     });
