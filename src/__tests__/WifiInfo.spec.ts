@@ -306,6 +306,27 @@ describe('WifiInfo', () => {
     expect(options[0]!.text().trim()).toBe(i18next.t('network.other.label'));
   });
 
+  it('retries wifi scan when reopening the dropdown after a previous scan failure', async () => {
+    mockGetNormalisedNetworks.mockRejectedValue(new Error('scan failed'));
+    allowConsoleErrors();
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    const selectTrigger = wrapper.getComponent(DropdownSelect).get('button');
+
+    await selectTrigger.trigger('click');
+    await flushPromises();
+    expect(mockGetNormalisedNetworks).toHaveBeenCalledTimes(1);
+
+    await selectTrigger.trigger('click');
+    await flushPromises();
+
+    await selectTrigger.trigger('click');
+    await flushPromises();
+    expect(mockGetNormalisedNetworks).toHaveBeenCalledTimes(2);
+  });
+
   it('shows a success toast when resetting the wifi config succeeds', async () => {
     const wrapper = mountWifiInfo();
     await flushPromises();
