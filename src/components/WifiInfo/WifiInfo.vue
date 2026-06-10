@@ -36,6 +36,7 @@ const {
   init: initWifiConfig,
   change: changeWifiConfig,
   saveWithRollback: saveWifiConfigWithRollback,
+  reset: resetWifiConfigState,
 } = useOptimisticSubmit<WifiConfig>();
 const scannedWifiNetworks = ref<WifiNetwork[]>([]);
 
@@ -202,6 +203,7 @@ const saveWifi = async () => {
 const resetWifiConfig = async () => {
   try {
     await runWifiReset(resetWifi);
+    resetWifiConfigState();
     hiddenNetworkName.value = '';
     password.value = '';
     toast.success(t('success.reset', { feature: t('network.label') }));
