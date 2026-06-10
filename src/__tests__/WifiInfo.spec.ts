@@ -339,6 +339,33 @@ describe('WifiInfo', () => {
     expectSuccessToastFired();
   });
 
+  it('resets the dropdown to empty on a successful wifi reset', async () => {
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('CurrentNetwork');
+
+    await getResetButton(wrapper).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('');
+  });
+
+  it('keeps the dropdown value when resetting the wifi config fails', async () => {
+    vi.mocked(wifiService.resetWifi).mockRejectedValue(new Error('Reset failed'));
+    allowConsoleErrors();
+
+    const wrapper = mountWifiInfo();
+    await flushPromises();
+
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('CurrentNetwork');
+
+    await getResetButton(wrapper).trigger('click');
+    await flushPromises();
+
+    expect(wrapper.getComponent(DropdownSelect).props('modelValue')).toBe('CurrentNetwork');
+  });
+
   it('shows an error toast when resetting the wifi config fails', async () => {
     vi.mocked(wifiService.resetWifi).mockRejectedValue(new Error('Reset failed'));
     allowConsoleErrors();

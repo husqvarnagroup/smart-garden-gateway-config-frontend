@@ -37,5 +37,10 @@ export const useOptimisticSubmit = <T = undefined>(initial?: T) => {
     }
   };
 
-  return { current, saving, init, change, saveWithRollback };
+  const reset = () => {
+    current.value = undefined;
+    snapshot.value = undefined;
+  };
+
+  return { current, saving, init, change, saveWithRollback, reset };
 };

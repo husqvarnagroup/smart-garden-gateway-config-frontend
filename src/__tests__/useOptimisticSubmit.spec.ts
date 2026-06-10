@@ -93,4 +93,21 @@ describe('useOptimisticSubmit', () => {
     );
     expect(current.value).toEqual({ timezone: 'UTC', meta: { source: 'device' } });
   });
+
+  it('reset clears current and snapshot to undefined', () => {
+    const { current, init, reset } = useOptimisticSubmit<string>();
+    init('UTC');
+    reset();
+    expect(current.value).toBeUndefined();
+  });
+
+  it('reset clears snapshot so a subsequent saveWithRollback cannot resurrect the old value', async () => {
+    const { current, init, reset, saveWithRollback } = useOptimisticSubmit<string>();
+    init('UTC');
+    reset();
+    init('Europe/Berlin');
+    // snapshot is now 'Europe/Berlin'; a rollback must NOT go back to 'UTC'
+    await expect(saveWithRollback(() => Promise.reject(new Error('fail')))).rejects.toThrow('fail');
+    expect(current.value).toBe('Europe/Berlin');
+  });
 });
