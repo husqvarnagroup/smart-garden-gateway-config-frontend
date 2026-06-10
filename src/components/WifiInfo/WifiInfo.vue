@@ -66,14 +66,10 @@ const manualSecurityOptions = computed(() => {
   return [...new Set([...ALWAYS_MANUAL_SECURITIES, ...hiddenDiscoveredSecurities.value])];
 });
 
-const defaultManualSecurity = computed(() => {
-  return SECURED_WIFI_SECURITY;
-});
-
 const resolveManualSecuritySelection = (security?: string | null): string => {
   const value = security?.trim();
   if (!value) {
-    return defaultManualSecurity.value;
+    return SECURED_WIFI_SECURITY;
   }
   const knownOptions = manualSecurityOptions.value;
   if (knownOptions.includes(value)) {

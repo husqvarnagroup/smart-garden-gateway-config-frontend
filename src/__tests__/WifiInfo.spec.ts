@@ -286,8 +286,9 @@ describe('WifiInfo', () => {
     await wrapper.getComponent(DropdownSelect).get('button').trigger('click');
     await flushPromises();
 
-    // todo: replace with translation after PR 28271
-    expect(mockToastError).toHaveBeenCalledExactlyOnceWith('Failed to load options');
+    expect(mockToastError).toHaveBeenCalledExactlyOnceWith(
+      i18next.t('error.load', { feature: i18next.t('network.label') }),
+    );
     expect(getConsoleErrorSpy()).toHaveBeenCalledOnce();
   });
 

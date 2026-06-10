@@ -53,7 +53,7 @@ const loadOptionsWithOther = async () => {
   } catch (error) {
     // Keep manual entry available even when scan/list loading fails.
     console.error(error);
-    toast.error('Failed to load options');
+    toast.error(t('error.load', { feature: t('network.label') }));
     return [OTHER_WIFI_OPTION];
   }
 };

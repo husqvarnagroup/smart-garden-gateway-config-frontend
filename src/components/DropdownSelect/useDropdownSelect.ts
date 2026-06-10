@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 import { ref, computed, onMounted, onBeforeUnmount, type ComponentPublicInstance } from 'vue';
+import { useTranslation } from 'i18next-vue';
 import { useToast } from '@/composables/useToast';
 
 export interface DropdownSelectProps {
@@ -19,6 +20,7 @@ export type DropdownSelectEmits = {
 };
 
 export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSelectEmits) {
+  const { t } = useTranslation();
   const toast = useToast();
   const open = ref(false);
   const highlighted = ref('');
@@ -42,7 +44,7 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
       loadedOptions.value = await props.loadOptions();
     } catch (error) {
       console.error(error);
-      toast.error('Failed to load options');
+      toast.error(t('dropdown.loadError'));
     } finally {
       listLoading.value = false;
     }
