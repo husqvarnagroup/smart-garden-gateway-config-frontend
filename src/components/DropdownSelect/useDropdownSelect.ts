@@ -10,6 +10,7 @@ export interface DropdownSelectProps {
   modelValue: string;
   disabled?: boolean;
   loadOptions?: () => Promise<string[]>;
+  reloadOnOpen?: boolean;
 }
 
 export type DropdownSelectEmits = {
@@ -50,7 +51,11 @@ export function useDropdownSelect(props: DropdownSelectProps, emit: DropdownSele
   const openList = async () => {
     open.value = true;
     highlighted.value = props.modelValue;
-    if (props.loadOptions && loadedOptions.value === null && !listLoading.value) {
+    const shouldFetch =
+      props.loadOptions &&
+      !listLoading.value &&
+      (loadedOptions.value === null || props.reloadOnOpen === true);
+    if (shouldFetch) {
       await fetchOptions();
     }
   };

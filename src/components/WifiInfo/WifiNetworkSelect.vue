@@ -69,6 +69,7 @@ const isSecured = (security: string | null | undefined): boolean => {
     :disabled="disabled"
     :model-value="modelValue"
     :load-options="loadOptionsWithOther"
+    :reload-on-open="true"
     @change="emit('change', $event)"
   >
     <template #value="{ value }">
