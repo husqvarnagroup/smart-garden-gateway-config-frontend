@@ -11,6 +11,7 @@ const MOCK_USER = {
 
 let websocketEnabled = false;
 let sshEnabled = false;
+let cloudConnectionEnabled = true;
 
 const requireSession = (request: Request) => {
   const session = request.headers.get('X-Session');
@@ -131,6 +132,22 @@ export const handlers = [
     if (denied) return denied;
     const body = (await request.json()) as { enable: boolean };
     websocketEnabled = body.enable;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/cloud_connection', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: cloudConnectionEnabled });
+  }),
+
+  http.put('/cloud_connection', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { enabled: boolean };
+    cloudConnectionEnabled = body.enabled;
     return new HttpResponse(null, { status: 204 });
   }),
 

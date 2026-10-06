@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { apiFetch } from '@/services/api';
 
 import { loginRequest, logoutRequest } from '@/services/auth';
+import { setCloudConnectionEnabled } from '@/services/cloudConnection';
 import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
 import { getCurrentWifi, resetWifi, setWifi, wifiScan } from '@/services/wifi';
 import { setSshEnabled, addSshKey } from '@/services/ssh';
@@ -29,6 +30,14 @@ describe('services — transforms and contracts', () => {
       const result = await loginRequest('secret');
       expect(mockApiFetch).toHaveBeenCalledWith('/login', 'POST', { password: 'secret' }, true);
       expect(result).toBe('tok');
+    });
+  });
+
+  describe('consent and cloud connection', () => {
+    it('setCloudConnectionEnabled sends PUT /cloud_connection with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setCloudConnectionEnabled(true);
+      expect(mockApiFetch).toHaveBeenCalledWith('/cloud_connection', 'PUT', { enabled: true });
     });
   });
 

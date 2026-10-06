@@ -15,6 +15,7 @@ actions.save: 'Enregistrer'
 actions.signingIn: 'Connexion en cours…'
 advanced.confirm: "Continuez à vos risques et périls. La modification des paramètres avancés peut affecter le comportement de l'appareil et peut annuler la garantie."
 advanced.label: 'Paramètres avancés'
+cloudConnection.label: 'Connexion au cloud'
 dropdown.empty: 'Aucune option disponible'
 dropdown.loadError: 'Impossible de charger les options'
 error.add: "Échec de l'ajout de {{feature}}"
