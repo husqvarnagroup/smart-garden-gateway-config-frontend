@@ -8,6 +8,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import { useTranslation } from 'i18next-vue';
 
 import WebsocketToggle from '@/components/WebsocketToggle.vue';
+import CloudConnectionToggle from '@/components/CloudConnectionToggle.vue';
 
 const { t } = useTranslation();
 </script>
@@ -17,6 +18,7 @@ const { t } = useTranslation();
     <h2>{{ t('localApi.label') }}</h2>
     <div class="rows">
       <WebsocketToggle />
+      <CloudConnectionToggle />
     </div>
   </section>
 </template>

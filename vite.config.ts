@@ -53,6 +53,7 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
               '/ssh_access_enable',
               '/ssh_access_credentials',
               '/licenses',
+              '/cloud_connection',
             ].map((path) => [
               path,
               { target: env.VITE_API_BASE_URL, changeOrigin: true, secure: false },
