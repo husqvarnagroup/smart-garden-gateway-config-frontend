@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { apiFetch } from '@/services/api';
 
 import { loginRequest, logoutRequest } from '@/services/auth';
+import { changePassword, resetPassword } from '@/services/password';
 import { setTelemetryConsent } from '@/services/telemetry';
 import { setSupportBundleConsent } from '@/services/supportBundle';
 import { setCloudConnectionEnabled } from '@/services/cloudConnection';
@@ -32,6 +33,25 @@ describe('services — transforms and contracts', () => {
       const result = await loginRequest('secret');
       expect(mockApiFetch).toHaveBeenCalledWith('/login', 'POST', { password: 'secret' }, true);
       expect(result).toBe('tok');
+    });
+  });
+
+  describe('password', () => {
+    it('changePassword sends PUT /password with current_password + password', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await changePassword('old-pass', 'new-pass');
+      expect(mockApiFetch).toHaveBeenCalledWith('/password', 'PUT', {
+        current_password: 'old-pass',
+        password: 'new-pass',
+      });
+    });
+
+    it('resetPassword sends DELETE /password with current_password', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await resetPassword('old-pass');
+      expect(mockApiFetch).toHaveBeenCalledWith('/password', 'DELETE', {
+        current_password: 'old-pass',
+      });
     });
   });
 

@@ -4,8 +4,10 @@
 
 import { delay, http, HttpResponse } from 'msw';
 
+const DEFAULT_PASSWORD = 'pass1234';
+
 const MOCK_USER = {
-  password: 'pass1234',
+  password: DEFAULT_PASSWORD,
   session: 'mock-session-123',
 };
 
@@ -38,6 +40,30 @@ export const handlers = [
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({});
+  }),
+
+  http.put('/password', async ({ request }) => {
+    await delay(400);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { current_password?: string; password?: string };
+    if (body.current_password !== MOCK_USER.password) {
+      return HttpResponse.json({ message: 'Invalid password' }, { status: 401 });
+    }
+    MOCK_USER.password = body.password ?? MOCK_USER.password;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.delete('/password', async ({ request }) => {
+    await delay(400);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { current_password?: string };
+    if (body.current_password !== MOCK_USER.password) {
+      return HttpResponse.json({ message: 'Invalid password' }, { status: 401 });
+    }
+    MOCK_USER.password = DEFAULT_PASSWORD;
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.get('/timezone_list', async ({ request }) => {

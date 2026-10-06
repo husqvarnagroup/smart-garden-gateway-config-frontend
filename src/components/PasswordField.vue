@@ -16,6 +16,8 @@ defineProps<{
   autocomplete?: 'current-password' | 'new-password';
   disabled?: boolean;
   error?: boolean;
+  minlength?: number;
+  maxlength?: number;
 }>();
 
 const id = useId();
@@ -38,6 +40,8 @@ const toggleVisibility = () => {
         name="password"
         :autocomplete="autocomplete"
         :disabled="disabled"
+        :minlength="minlength"
+        :maxlength="maxlength"
         :class="{ error }"
         required
       />
