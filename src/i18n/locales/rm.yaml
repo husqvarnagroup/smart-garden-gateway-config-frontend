@@ -51,6 +51,7 @@ success.disable: '{{feature}} deactivà'
 success.enable: '{{feature}} activà'
 success.reset: 'Redefinì cun success {{feature}}'
 success.save: 'Memorisà cun success'
+supportBundle.label: 'Pachets da support'
 telemetry.label: 'Telemetria'
 timezone.label: "Zona d'urari"
 timezone.notfound: "Nagina zona d'urari chattada"

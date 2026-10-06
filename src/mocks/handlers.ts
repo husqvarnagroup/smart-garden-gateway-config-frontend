@@ -13,6 +13,7 @@ let websocketEnabled = false;
 let sshEnabled = false;
 let cloudConnectionEnabled = true;
 let telemetryConsent = false;
+let supportBundleConsent = false;
 
 const requireSession = (request: Request) => {
   const session = request.headers.get('X-Session');
@@ -165,6 +166,22 @@ export const handlers = [
     if (denied) return denied;
     const body = (await request.json()) as { enabled: boolean };
     telemetryConsent = body.enabled;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/consent_support_bundle', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: supportBundleConsent });
+  }),
+
+  http.put('/consent_support_bundle', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { enabled: boolean };
+    supportBundleConsent = body.enabled;
     return new HttpResponse(null, { status: 204 });
   }),
 
