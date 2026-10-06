@@ -25,12 +25,12 @@ const { authState } = useAuth();
       <TimezoneInfo />
       <WifiInfo />
       <HomekitInfo />
-      <LogoutButton />
-      <GatewayVersion />
       <AdvancedFeatures>
         <WebsocketToggle />
         <SshSettings />
       </AdvancedFeatures>
+      <LogoutButton />
+      <GatewayVersion />
     </section>
   </BaseLayout>
 </template>
