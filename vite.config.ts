@@ -42,6 +42,7 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
             [
               '/login',
               '/logout',
+              '/password',
               '/wifi',
               '/wifi_list',
               '/timezone',
