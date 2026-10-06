@@ -8,6 +8,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 import { useTranslation } from 'i18next-vue';
 
 import TelemetryToggle from '@/components/TelemetryToggle.vue';
+import SupportBundleToggle from '@/components/SupportBundleToggle.vue';
 
 const { t } = useTranslation();
 </script>
@@ -17,6 +18,7 @@ const { t } = useTranslation();
     <h2>{{ t('privacy.label') }}</h2>
     <div class="rows">
       <TelemetryToggle />
+      <SupportBundleToggle />
     </div>
   </section>
 </template>

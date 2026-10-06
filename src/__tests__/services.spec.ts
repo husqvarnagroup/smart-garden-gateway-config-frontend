@@ -7,6 +7,7 @@ import { apiFetch } from '@/services/api';
 
 import { loginRequest, logoutRequest } from '@/services/auth';
 import { setTelemetryConsent } from '@/services/telemetry';
+import { setSupportBundleConsent } from '@/services/supportBundle';
 import { setCloudConnectionEnabled } from '@/services/cloudConnection';
 import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
 import { getCurrentWifi, resetWifi, setWifi, wifiScan } from '@/services/wifi';
@@ -39,6 +40,14 @@ describe('services — transforms and contracts', () => {
       mockApiFetch.mockResolvedValue(undefined);
       await setTelemetryConsent(true);
       expect(mockApiFetch).toHaveBeenCalledWith('/consent_telemetry', 'PUT', { enabled: true });
+    });
+
+    it('setSupportBundleConsent sends PUT /consent_support_bundle with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setSupportBundleConsent(false);
+      expect(mockApiFetch).toHaveBeenCalledWith('/consent_support_bundle', 'PUT', {
+        enabled: false,
+      });
     });
 
     it('setCloudConnectionEnabled sends PUT /cloud_connection with enabled', async () => {

@@ -54,6 +54,7 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
               '/ssh_access_credentials',
               '/licenses',
               '/consent_telemetry',
+              '/consent_support_bundle',
               '/cloud_connection',
             ].map((path) => [
               path,
