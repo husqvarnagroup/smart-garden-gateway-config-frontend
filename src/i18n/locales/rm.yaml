@@ -4,7 +4,6 @@
 
 ---
 actions.add: 'Agiuntar {{feature}}'
-actions.cancel: 'Interrumper'
 actions.continue: 'Cuntinuar'
 actions.delete: 'Stizzar {{feature}}'
 actions.disable: 'Deactivar'
@@ -15,7 +14,7 @@ actions.reset: 'Redefinir {{feature}}'
 actions.save: 'Memorisar'
 actions.signingIn: "S'annunzia…"
 advanced.confirm: 'Cuntinuar a tes agen ristg. Midar ils parameters avanzads po influenzar il cumportament dal apparat e po annullar la garanzia.'
-advanced.label: 'Avanzà'
+advanced.label: 'Parameters avanzads'
 dropdown.empty: 'Nagins elements disponibels'
 dropdown.loadError: 'Betg pud chargiar las opziuns'
 error.add: 'Betg pussibel agiuntar {{feature}}'
@@ -28,6 +27,7 @@ error.update: 'Betg pudì actualisar {{feature}}'
 homekit.description: 'HomeKit lubescha be in singul pairing cun quest GARDENA smart Gateway. Sche ti vuls definir in nov pairing stos ti redefinir il pairing existent.'
 homekit.label: 'Apple HomeKit'
 licenses: 'Licenzas'
+localApi.label: 'API locala'
 login.password.label: 'Pled-clav'
 login.password.placeholder: "Pled-clav d'administraziun"
 network.divider: 'u'

@@ -12,7 +12,6 @@ import { getWebsocketEnabled, setWebsocketEnabled } from '@/services/websocket';
 import { useAsync } from '@/composables/useAsync';
 import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
-import BaseCard from '@/components/BaseCard.vue';
 import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
 
@@ -47,19 +46,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BaseCard>
-    <div class="row">
-      <h2>{{ t('websocket.label') }}</h2>
-      <SkeletonBlock v-if="loading" width="44px" height="24px" />
-      <ToggleSwitch
-        v-else
-        :label="t('websocket.label')"
-        :model-value="enabled ?? false"
-        :loading="saving"
-        @update:model-value="toggle"
-      />
-    </div>
-  </BaseCard>
+  <div class="row">
+    <h3>{{ t('websocket.label') }}</h3>
+    <SkeletonBlock v-if="loading" width="44px" height="24px" />
+    <ToggleSwitch
+      v-else
+      :label="t('websocket.label')"
+      :model-value="enabled ?? false"
+      :loading="saving"
+      @update:model-value="toggle"
+    />
+  </div>
 </template>
 
 <style scoped>
@@ -67,5 +64,12 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+h3 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-grey-400);
 }
 </style>

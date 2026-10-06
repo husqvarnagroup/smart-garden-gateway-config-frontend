@@ -4,7 +4,6 @@
 
 ---
 actions.add: 'Ajouter {{feature}}'
-actions.cancel: 'Annuler'
 actions.continue: 'Continuer'
 actions.delete: 'Supprimer {{feature}}'
 actions.disable: 'Désactiver'
@@ -15,7 +14,7 @@ actions.reset: 'Réinitialiser {{feature}}'
 actions.save: 'Enregistrer'
 actions.signingIn: 'Connexion en cours…'
 advanced.confirm: "Continuez à vos risques et périls. La modification des paramètres avancés peut affecter le comportement de l'appareil et peut annuler la garantie."
-advanced.label: 'Avancé'
+advanced.label: 'Paramètres avancés'
 dropdown.empty: 'Aucune option disponible'
 dropdown.loadError: 'Impossible de charger les options'
 error.add: "Échec de l'ajout de {{feature}}"
@@ -28,6 +27,7 @@ error.update: 'Impossible de mettre à jour {{feature}}'
 homekit.description: "HomeKit ne permet d'établir qu'un seul appairage avec cette smart Gateway GARDENA. Si devez établir un nouvel appairage, réinitialisez les appairages existants."
 homekit.label: 'Apple HomeKit'
 licenses: 'Licences'
+localApi.label: 'API locale'
 login.password.label: 'Mot de passe'
 login.password.placeholder: 'Mot de passe admin'
 network.divider: 'ou'

@@ -4,7 +4,6 @@
 
 ---
 actions.add: 'Lisää {{feature}}'
-actions.cancel: 'Peruuta'
 actions.continue: 'Jatka'
 actions.delete: 'Poista {{feature}}'
 actions.disable: 'Poista käytöstä'
@@ -28,6 +27,7 @@ error.update: '{{feature}} päivittäminen epäonnistui'
 homekit.description: 'HomeKit sallii vain yhden laiteparin muodostamisen tähän GARDENA smart -yhdyskäyävään. Jos haluat luoda uuden laiteparin, poista olemassa olevat laiteparit.'
 homekit.label: 'Apple HomeKit'
 licenses: 'Lisenssit'
+localApi.label: 'Paikallinen API'
 login.password.label: 'Salasana'
 login.password.placeholder: 'Järjestelmänvalvojan salasana'
 network.divider: 'tai'

@@ -12,7 +12,6 @@ import { addSshKey, getSshEnabled, setSshEnabled } from '@/services/ssh';
 import { useAsync } from '@/composables/useAsync';
 import { useOptimisticSubmit } from '@/composables/useOptimisticSubmit';
 import { useToast } from '@/composables/useToast';
-import BaseCard from '@/components/BaseCard.vue';
 import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import StyledButton from '@/components/StyledButton.vue';
 import ToggleSwitch from '@/components/ToggleSwitch.vue';
@@ -61,7 +60,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <BaseCard>
+  <section>
     <div class="row">
       <h2>{{ t('ssh.label') }}</h2>
       <SkeletonBlock v-if="loading" width="44px" height="24px" />
@@ -93,7 +92,7 @@ onMounted(async () => {
         {{ t('actions.add', { feature: t('ssh.key.label') }) }}
       </StyledButton>
     </div>
-  </BaseCard>
+  </section>
 </template>
 
 <style scoped>
