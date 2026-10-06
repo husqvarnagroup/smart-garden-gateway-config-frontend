@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { apiFetch } from '@/services/api';
 
 import { loginRequest, logoutRequest } from '@/services/auth';
+import { setTelemetryConsent } from '@/services/telemetry';
 import { setCloudConnectionEnabled } from '@/services/cloudConnection';
 import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
 import { getCurrentWifi, resetWifi, setWifi, wifiScan } from '@/services/wifi';
@@ -34,6 +35,12 @@ describe('services — transforms and contracts', () => {
   });
 
   describe('consent and cloud connection', () => {
+    it('setTelemetryConsent sends PUT /consent_telemetry with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setTelemetryConsent(true);
+      expect(mockApiFetch).toHaveBeenCalledWith('/consent_telemetry', 'PUT', { enabled: true });
+    });
+
     it('setCloudConnectionEnabled sends PUT /cloud_connection with enabled', async () => {
       mockApiFetch.mockResolvedValue(undefined);
       await setCloudConnectionEnabled(true);

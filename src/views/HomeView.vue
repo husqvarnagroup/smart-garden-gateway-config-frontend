@@ -13,6 +13,7 @@ import HomekitInfo from '@/components/HomekitInfo.vue';
 import GatewayVersion from '@/components/GatewayVersion.vue';
 import LogoutButton from '@/components/LogoutButton.vue';
 import LocalApiSettings from '@/components/LocalApiSettings.vue';
+import PrivacyConsent from '@/components/PrivacyConsent.vue';
 import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
 import SshSettings from '@/components/SshSettings.vue';
 
@@ -27,6 +28,7 @@ const { authState } = useAuth();
       <HomekitInfo />
       <AdvancedFeatures>
         <LocalApiSettings />
+        <PrivacyConsent />
         <SshSettings />
       </AdvancedFeatures>
       <LogoutButton />
