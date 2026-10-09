@@ -47,6 +47,26 @@ describe('LocalApiSettings', () => {
 
     expect(wrapper.findComponent(WebsocketToggle).exists()).toBe(true);
     expect(wrapper.findComponent(CloudConnectionToggle).exists()).toBe(true);
-    expect(wrapper.findAll('[role="switch"]')).toHaveLength(2);
+    expect(wrapper.findAll('h3').map((h) => h.text())).toEqual([
+      i18next.t('websocket.label'),
+      i18next.t('cloudConnection.label'),
+    ]);
+    expect(wrapper.findAll('.description').map((p) => p.text())).toEqual([
+      i18next.t('websocket.description'),
+      i18next.t('cloudConnection.description'),
+    ]);
+  });
+
+  it('wires each toggle to its own service', async () => {
+    const wrapper = mountLocalApiSettings();
+    await flushPromises();
+
+    for (const toggle of wrapper.findAll('[role="switch"]')) {
+      await toggle.trigger('click');
+    }
+    await flushPromises();
+
+    expect(websocketService.setWebsocketEnabled).toHaveBeenCalledWith(true);
+    expect(cloudConnectionService.setCloudConnectionEnabled).toHaveBeenCalledWith(true);
   });
 });

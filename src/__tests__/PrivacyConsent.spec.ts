@@ -45,6 +45,26 @@ describe('PrivacyConsent', () => {
 
     expect(wrapper.findComponent(TelemetryToggle).exists()).toBe(true);
     expect(wrapper.findComponent(SupportBundleToggle).exists()).toBe(true);
-    expect(wrapper.findAll('[role="switch"]')).toHaveLength(2);
+    expect(wrapper.findAll('h3').map((h) => h.text())).toEqual([
+      i18next.t('telemetry.label'),
+      i18next.t('supportBundle.label'),
+    ]);
+    expect(wrapper.findAll('.description').map((p) => p.text())).toEqual([
+      i18next.t('telemetry.description'),
+      i18next.t('supportBundle.description'),
+    ]);
+  });
+
+  it('wires each toggle to its own service', async () => {
+    const wrapper = mountPrivacyConsent();
+    await flushPromises();
+
+    for (const toggle of wrapper.findAll('[role="switch"]')) {
+      await toggle.trigger('click');
+    }
+    await flushPromises();
+
+    expect(telemetryService.setTelemetryConsent).toHaveBeenCalledWith(true);
+    expect(supportBundleService.setSupportBundleConsent).toHaveBeenCalledWith(true);
   });
 });
