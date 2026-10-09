@@ -16,6 +16,7 @@ actions.save: 'Enregistrer'
 actions.signingIn: 'Connexion en cours…'
 advanced.confirm: "Continuez à vos risques et périls. La modification des paramètres avancés peut affecter le comportement de l'appareil et peut annuler la garantie."
 advanced.label: 'Paramètres avancés'
+cloudConnection.description: "Lorsque cette option est activée, la gateway se connecte au cloud GARDENA afin que vous puissiez contrôler vos appareils avec l'application GARDENA smart. Lorsqu'elle est désactivée, la gateway n'est accessible que via le réseau local."
 cloudConnection.label: 'Connexion au cloud'
 dropdown.empty: 'Aucune option disponible'
 dropdown.loadError: 'Impossible de charger les options'
@@ -70,4 +71,5 @@ timezone.label: 'Fuseau horaire'
 timezone.notfound: 'Aucun fuseau horaire trouvé'
 title: 'Configuration de la passerelle'
 version: 'Version'
+websocket.description: "Active l'API WebSocket locale afin que des systèmes tiers de votre réseau, comme des plateformes domotiques, puissent contrôler vos appareils directement, sans passer par le cloud."
 websocket.label: 'Support WebSocket'

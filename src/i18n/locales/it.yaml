@@ -16,6 +16,7 @@ actions.save: 'Salva'
 actions.signingIn: 'Accesso in corso…'
 advanced.confirm: 'Continuare a proprio rischio. La modifica delle impostazioni avanzate può influire sul comportamento del dispositivo e potrebbe invalidare la garanzia.'
 advanced.label: 'Impostazioni avanzate'
+cloudConnection.description: "Se attivata, il Gateway si connette al cloud GARDENA per consentire il controllo dei dispositivi con l'app GARDENA smart. Se disattivata, il Gateway è raggiungibile solo tramite la rete locale."
 cloudConnection.label: 'Connessione cloud'
 dropdown.empty: 'Nessuna opzione disponibile'
 dropdown.loadError: 'Impossibile caricare le opzioni'
@@ -70,4 +71,5 @@ timezone.label: 'Fuso orario'
 timezone.notfound: 'Nessun fuso orario trovato'
 title: 'Configurazione gateway'
 version: 'Versione'
+websocket.description: "Attiva l'API WebSocket locale in modo che sistemi di terze parti nella rete locale, come le piattaforme di domotica, possano controllare i dispositivi direttamente senza il cloud."
 websocket.label: 'Supporto WebSocket'

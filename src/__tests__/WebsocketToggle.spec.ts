@@ -37,6 +37,14 @@ describe('WebsocketToggle', () => {
     resetToastMocks();
   });
 
+  it('shows the title and description', async () => {
+    const wrapper = mountWebsocketToggle();
+    await flushPromises();
+
+    expect(wrapper.get('h3').text()).toBe(i18next.t('websocket.label'));
+    expect(wrapper.get('.description').text()).toBe(i18next.t('websocket.description'));
+  });
+
   it('clicking the toggle enables websocket support and shows success toast', async () => {
     vi.mocked(websocketService.setWebsocketEnabled).mockResolvedValue(undefined);
     const wrapper = mountWebsocketToggle();
