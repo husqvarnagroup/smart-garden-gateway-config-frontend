@@ -7,6 +7,7 @@ SPDX-License-Identifier: GPL-3.0-or-later
 <script setup lang="ts">
 import { useTranslation } from 'i18next-vue';
 
+import SettingsSection from '@/components/SettingsSection.vue';
 import TelemetryToggle from '@/components/TelemetryToggle.vue';
 import SupportBundleToggle from '@/components/SupportBundleToggle.vue';
 
@@ -14,23 +15,8 @@ const { t } = useTranslation();
 </script>
 
 <template>
-  <section>
-    <h2>{{ t('privacy.label') }}</h2>
-    <div class="rows">
-      <TelemetryToggle />
-      <SupportBundleToggle />
-    </div>
-  </section>
+  <SettingsSection :title="t('privacy.label')">
+    <TelemetryToggle />
+    <SupportBundleToggle />
+  </SettingsSection>
 </template>
-
-<style scoped>
-h2 {
-  margin: 0 0 var(--space-4);
-}
-
-.rows {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-</style>
