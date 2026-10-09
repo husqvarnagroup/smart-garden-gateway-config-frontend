@@ -49,11 +49,11 @@ watch(open, (isOpen) => {
 .sections {
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-6);
 }
 
 .sections :slotted(section:not(:first-child)) {
-  padding-top: var(--space-4);
+  padding-top: var(--space-6);
   border-top: var(--border-sm) solid var(--color-grey-200);
 }
 </style>
