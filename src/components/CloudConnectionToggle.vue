@@ -46,16 +46,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="row">
-    <h3>{{ t('cloudConnection.label') }}</h3>
-    <SkeletonBlock v-if="loading" width="44px" height="24px" />
-    <ToggleSwitch
-      v-else
-      :label="t('cloudConnection.label')"
-      :model-value="enabled ?? false"
-      :loading="saving"
-      @update:model-value="toggle"
-    />
+  <div>
+    <div class="row">
+      <h3>{{ t('cloudConnection.label') }}</h3>
+      <SkeletonBlock v-if="loading" width="44px" height="24px" />
+      <ToggleSwitch
+        v-else
+        :label="t('cloudConnection.label')"
+        :model-value="enabled ?? false"
+        :loading="saving"
+        @update:model-value="toggle"
+      />
+    </div>
+    <p class="description">{{ t('cloudConnection.description') }}</p>
   </div>
 </template>
 
@@ -70,6 +73,12 @@ h3 {
   font-size: var(--text-sm);
   font-weight: 700;
   margin: 0;
+  color: var(--color-grey-400);
+}
+
+.description {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-sm);
   color: var(--color-grey-400);
 }
 </style>

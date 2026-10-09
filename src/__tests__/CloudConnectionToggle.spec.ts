@@ -39,6 +39,14 @@ describe('CloudConnectionToggle', () => {
     resetToastMocks();
   });
 
+  it('shows the title and description', async () => {
+    const wrapper = mountCloudConnectionToggle();
+    await flushPromises();
+
+    expect(wrapper.get('h3').text()).toBe(i18next.t('cloudConnection.label'));
+    expect(wrapper.get('.description').text()).toBe(i18next.t('cloudConnection.description'));
+  });
+
   it('clicking the toggle enables cloud connection and shows success toast', async () => {
     vi.mocked(cloudConnectionService.setCloudConnectionEnabled).mockResolvedValue(undefined);
     const wrapper = mountCloudConnectionToggle();
