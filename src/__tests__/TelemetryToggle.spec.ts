@@ -37,6 +37,14 @@ describe('TelemetryToggle', () => {
     resetToastMocks();
   });
 
+  it('shows the title and description', async () => {
+    const wrapper = mountTelemetryToggle();
+    await flushPromises();
+
+    expect(wrapper.get('h3').text()).toBe(i18next.t('telemetry.label'));
+    expect(wrapper.get('.description').text()).toBe(i18next.t('telemetry.description'));
+  });
+
   it('clicking the toggle enables telemetry consent and shows success toast', async () => {
     vi.mocked(telemetryService.setTelemetryConsent).mockResolvedValue(undefined);
     const wrapper = mountTelemetryToggle();

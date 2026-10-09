@@ -37,6 +37,14 @@ describe('SupportBundleToggle', () => {
     resetToastMocks();
   });
 
+  it('shows the title and description', async () => {
+    const wrapper = mountSupportBundleToggle();
+    await flushPromises();
+
+    expect(wrapper.get('h3').text()).toBe(i18next.t('supportBundle.label'));
+    expect(wrapper.get('.description').text()).toBe(i18next.t('supportBundle.description'));
+  });
+
   it('clicking the toggle enables support-bundle consent and shows success toast', async () => {
     vi.mocked(supportBundleService.setSupportBundleConsent).mockResolvedValue(undefined);
     const wrapper = mountSupportBundleToggle();
