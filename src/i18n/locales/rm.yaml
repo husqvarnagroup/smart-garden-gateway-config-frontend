@@ -62,7 +62,9 @@ success.enable: '{{feature}} activà'
 success.reset: 'Redefinì cun success {{feature}}'
 success.save: 'Memorisà cun success'
 success.update: '{{feature}} actualisà'
-supportBundle.label: 'Pachets da support'
+supportBundle.description: "Permetta da crear rapports diagnostics detagliads cura ch'in problem vegn constatà, per pudair analisar e schliar problems pli effizientamain."
+supportBundle.label: 'Pachet da support'
+telemetry.description: "Il gateway rimna cuntinuadamain protocols d'errur e metricas da prestaziun anonimisads e als trametta al cloud per percorscher baud problems e meglierar la stabilitad da l'apparat."
 telemetry.label: 'Telemetria'
 timezone.label: "Zona d'urari"
 timezone.notfound: "Nagina zona d'urari chattada"
