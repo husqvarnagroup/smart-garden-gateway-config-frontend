@@ -7,10 +7,10 @@ import { mount } from '@vue/test-utils';
 import I18NextVue from 'i18next-vue';
 
 import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
-import BaseCard from '@/components/BaseCard.vue';
 import i18next from '@/i18n';
 
 const SLOT_TEXT = 'slot content';
+const WARNING = 'Continue at your own risk';
 
 const mountAdvancedFeatures = () =>
   mount(AdvancedFeatures, {
@@ -22,63 +22,51 @@ const mountAdvancedFeatures = () =>
     },
   });
 
-const clickToggle = (wrapper: ReturnType<typeof mountAdvancedFeatures>) =>
-  wrapper.get('[data-testid="advanced-toggle"]').trigger('click');
-const clickContinue = (wrapper: ReturnType<typeof mountAdvancedFeatures>) =>
+type Wrapper = ReturnType<typeof mountAdvancedFeatures>;
+
+const clickToggle = (wrapper: Wrapper) =>
+  wrapper.get('[data-testid="expandable-toggle"]').trigger('click');
+const clickContinue = (wrapper: Wrapper) =>
   wrapper.get('[data-testid="advanced-continue"]').trigger('click');
-const clickCancel = (wrapper: ReturnType<typeof mountAdvancedFeatures>) =>
-  wrapper.get('[data-testid="advanced-cancel"]').trigger('click');
 
 describe('AdvancedFeatures', () => {
-  it('starts in hidden state — card and slot not rendered', () => {
+  it('starts collapsed with only the Advanced Settings title visible', () => {
     const wrapper = mountAdvancedFeatures();
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(false);
+
+    expect(wrapper.text()).toContain('Advanced Settings');
+    expect(wrapper.text()).not.toContain(WARNING);
     expect(wrapper.find('[data-testid="slot"]').exists()).toBe(false);
   });
 
-  it('chevron click transitions hidden → confirming (card visible, slot hidden)', async () => {
+  it('expanding shows the warning and Continue, but not the settings yet', async () => {
     const wrapper = mountAdvancedFeatures();
+
     await clickToggle(wrapper);
 
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(true);
+    expect(wrapper.text()).toContain(WARNING);
+    expect(wrapper.find('[data-testid="advanced-continue"]').exists()).toBe(true);
     expect(wrapper.find('[data-testid="slot"]').exists()).toBe(false);
   });
 
-  it('chevron click while confirming transitions back to hidden', async () => {
+  it('Continue replaces the warning with the settings', async () => {
     const wrapper = mountAdvancedFeatures();
-    await clickToggle(wrapper);
-    await clickToggle(wrapper);
 
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(false);
-  });
-
-  it('Cancel button transitions confirming → hidden', async () => {
-    const wrapper = mountAdvancedFeatures();
-    await clickToggle(wrapper);
-    await clickCancel(wrapper);
-
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(false);
-    expect(wrapper.find('[data-testid="slot"]').exists()).toBe(false);
-  });
-
-  it('chevron click while open transitions back to hidden (slot removed)', async () => {
-    const wrapper = mountAdvancedFeatures();
-    await clickToggle(wrapper);
-    await clickContinue(wrapper);
-    expect(wrapper.find('[data-testid="slot"]').exists()).toBe(true);
-
-    await clickToggle(wrapper);
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(false);
-    expect(wrapper.find('[data-testid="slot"]').exists()).toBe(false);
-  });
-
-  it('Continue button transitions confirming → open (slot renders)', async () => {
-    const wrapper = mountAdvancedFeatures();
     await clickToggle(wrapper);
     await clickContinue(wrapper);
 
-    expect(wrapper.findComponent(BaseCard).exists()).toBe(false);
-    expect(wrapper.find('[data-testid="slot"]').exists()).toBe(true);
-    expect(wrapper.find('[data-testid="slot"]').text()).toBe(SLOT_TEXT);
+    expect(wrapper.text()).not.toContain(WARNING);
+    expect(wrapper.get('[data-testid="slot"]').text()).toBe(SLOT_TEXT);
+  });
+
+  it('collapsing resets back to the warning on the next expand', async () => {
+    const wrapper = mountAdvancedFeatures();
+
+    await clickToggle(wrapper);
+    await clickContinue(wrapper);
+    await clickToggle(wrapper);
+    await clickToggle(wrapper);
+
+    expect(wrapper.text()).toContain(WARNING);
+    expect(wrapper.find('[data-testid="slot"]').exists()).toBe(false);
   });
 });

@@ -10,9 +10,11 @@ import BaseLayout from '@/layouts/BaseLayout.vue';
 import TimezoneInfo from '@/components/TimezoneInfo.vue';
 import WifiInfo from '@/components/WifiInfo/WifiInfo.vue';
 import HomekitInfo from '@/components/HomekitInfo.vue';
+import PasswordSettings from '@/components/PasswordSettings.vue';
 import GatewayVersion from '@/components/GatewayVersion.vue';
 import LogoutButton from '@/components/LogoutButton.vue';
-import WebsocketToggle from '@/components/WebsocketToggle.vue';
+import LocalApiSettings from '@/components/LocalApiSettings.vue';
+import PrivacyConsent from '@/components/PrivacyConsent.vue';
 import AdvancedFeatures from '@/components/AdvancedFeatures.vue';
 import SshSettings from '@/components/SshSettings.vue';
 
@@ -24,13 +26,15 @@ const { authState } = useAuth();
     <section>
       <TimezoneInfo />
       <WifiInfo />
+      <PasswordSettings />
       <HomekitInfo />
-      <LogoutButton />
-      <GatewayVersion />
       <AdvancedFeatures>
-        <WebsocketToggle />
+        <LocalApiSettings />
+        <PrivacyConsent />
         <SshSettings />
       </AdvancedFeatures>
+      <LogoutButton />
+      <GatewayVersion />
     </section>
   </BaseLayout>
 </template>

@@ -10,75 +10,82 @@ import { allowConsoleErrors } from './setup';
 import { resetToastMocks } from './helpers/mockUseToast';
 import { expectErrorToastFired, expectSuccessToastFired } from './helpers/assertErrorToast';
 import { deferred } from './helpers/asyncControl';
-import WebsocketToggle from '@/components/WebsocketToggle.vue';
+import SettingToggle from '@/components/SettingToggle.vue';
 import SkeletonBlock from '@/components/SkeletonBlock.vue';
 import i18next from '@/i18n';
-import * as websocketService from '@/services/websocket';
 
-vi.mock('@/services/websocket', () => ({
-  getWebsocketEnabled: vi.fn<() => Promise<{ enabled: boolean }>>(),
-  setWebsocketEnabled: vi.fn<(enable: boolean) => Promise<void>>(),
-}));
+const load = vi.fn<() => Promise<{ enabled: boolean }>>();
+const save = vi.fn<(enabled: boolean) => Promise<void>>();
 
-const mountWebsocketToggle = () =>
-  mount(WebsocketToggle, {
+const mountSettingToggle = () =>
+  mount(SettingToggle, {
+    props: { label: 'Some Setting', description: 'What the setting does.', load, save },
     global: {
       plugins: [[I18NextVue, { i18next }]],
     },
   });
 
-const getToggle = (wrapper: ReturnType<typeof mountWebsocketToggle>) =>
+const getToggle = (wrapper: ReturnType<typeof mountSettingToggle>) =>
   wrapper.get('[role="switch"]');
 
-describe('WebsocketToggle', () => {
+describe('SettingToggle', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(websocketService.getWebsocketEnabled).mockResolvedValue({ enabled: false });
+    load.mockResolvedValue({ enabled: false });
     resetToastMocks();
   });
 
-  it('clicking the toggle enables websocket support and shows success toast', async () => {
-    vi.mocked(websocketService.setWebsocketEnabled).mockResolvedValue(undefined);
-    const wrapper = mountWebsocketToggle();
+  it('shows the label and description', async () => {
+    const wrapper = mountSettingToggle();
+    await flushPromises();
+
+    expect(wrapper.get('h3').text()).toBe('Some Setting');
+    expect(wrapper.get('.description').text()).toBe('What the setting does.');
+  });
+
+  it('clicking the toggle enables the setting and shows success toast', async () => {
+    save.mockResolvedValue(undefined);
+    const wrapper = mountSettingToggle();
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
     await flushPromises();
 
-    expect(websocketService.setWebsocketEnabled).toHaveBeenCalledWith(true);
+    expect(save).toHaveBeenCalledWith(true);
     expectSuccessToastFired();
   });
 
-  it('shows an error toast when enabling websocket support fails', async () => {
-    vi.mocked(websocketService.setWebsocketEnabled).mockRejectedValue(new Error('Failed'));
+  it('shows an error toast and rolls back when enabling fails', async () => {
+    save.mockRejectedValue(new Error('Failed'));
     allowConsoleErrors();
-    const wrapper = mountWebsocketToggle();
+    const wrapper = mountSettingToggle();
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
     await flushPromises();
 
     expectErrorToastFired();
+    expect(getToggle(wrapper).attributes('aria-checked')).toBe('false');
   });
 
-  it('clicking the toggle disables websocket support and shows success toast', async () => {
-    vi.mocked(websocketService.getWebsocketEnabled).mockResolvedValue({ enabled: true });
-    vi.mocked(websocketService.setWebsocketEnabled).mockResolvedValue(undefined);
-    const wrapper = mountWebsocketToggle();
+  it('clicking the toggle disables the setting and shows success toast', async () => {
+    load.mockResolvedValue({ enabled: true });
+    save.mockResolvedValue(undefined);
+    const wrapper = mountSettingToggle();
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
     await flushPromises();
 
-    expect(websocketService.setWebsocketEnabled).toHaveBeenCalledWith(false);
+    expect(save).toHaveBeenCalledWith(false);
     expectSuccessToastFired();
   });
 
-  it('shows an error toast when disabling websocket support fails', async () => {
-    vi.mocked(websocketService.getWebsocketEnabled).mockResolvedValue({ enabled: true });
-    vi.mocked(websocketService.setWebsocketEnabled).mockRejectedValue(new Error('Failed'));
+  it('shows an error toast when disabling fails', async () => {
+    load.mockResolvedValue({ enabled: true });
+    save.mockRejectedValue(new Error('Failed'));
     allowConsoleErrors();
-    const wrapper = mountWebsocketToggle();
+    const wrapper = mountSettingToggle();
     await flushPromises();
 
     await getToggle(wrapper).trigger('click');
@@ -89,8 +96,8 @@ describe('WebsocketToggle', () => {
 
   it('shows a skeleton while the initial state is being loaded', async () => {
     const pending = deferred<{ enabled: boolean }>();
-    vi.mocked(websocketService.getWebsocketEnabled).mockReturnValue(pending.promise);
-    const wrapper = mountWebsocketToggle();
+    load.mockReturnValue(pending.promise);
+    const wrapper = mountSettingToggle();
 
     expect(wrapper.findComponent(SkeletonBlock).exists()).toBe(true);
     expect(wrapper.find('[role="switch"]').exists()).toBe(false);
@@ -103,17 +110,17 @@ describe('WebsocketToggle', () => {
   });
 
   it('shows an error toast when loading the initial state fails', async () => {
-    vi.mocked(websocketService.getWebsocketEnabled).mockRejectedValue(new Error('Failed'));
-    mountWebsocketToggle();
+    load.mockRejectedValue(new Error('Failed'));
+    mountSettingToggle();
     await flushPromises();
 
     expectErrorToastFired();
   });
 
-  it('disables the toggle while updating websocket support', async () => {
+  it('disables the toggle while saving', async () => {
     const pending = deferred();
-    vi.mocked(websocketService.setWebsocketEnabled).mockReturnValue(pending.promise);
-    const wrapper = mountWebsocketToggle();
+    save.mockReturnValue(pending.promise);
+    const wrapper = mountSettingToggle();
     await flushPromises();
     const toggle = getToggle(wrapper);
 

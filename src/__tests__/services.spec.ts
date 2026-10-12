@@ -6,6 +6,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { apiFetch } from '@/services/api';
 
 import { loginRequest, logoutRequest } from '@/services/auth';
+import { changePassword, resetPassword } from '@/services/password';
+import { setTelemetryConsent } from '@/services/telemetry';
+import { setSupportBundleConsent } from '@/services/supportBundle';
+import { setCloudConnectionEnabled } from '@/services/cloudConnection';
 import { getCurrentTimezone, listTimezones, setTimezone } from '@/services/timezone';
 import { getCurrentWifi, resetWifi, setWifi, wifiScan } from '@/services/wifi';
 import { setSshEnabled, addSshKey } from '@/services/ssh';
@@ -29,6 +33,47 @@ describe('services — transforms and contracts', () => {
       const result = await loginRequest('secret');
       expect(mockApiFetch).toHaveBeenCalledWith('/login', 'POST', { password: 'secret' }, true);
       expect(result).toBe('tok');
+    });
+  });
+
+  describe('password', () => {
+    it('changePassword sends PUT /password with current_password + password', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await changePassword('old-pass', 'new-pass');
+      expect(mockApiFetch).toHaveBeenCalledWith('/password', 'PUT', {
+        current_password: 'old-pass',
+        password: 'new-pass',
+      });
+    });
+
+    it('resetPassword sends DELETE /password with current_password', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await resetPassword('old-pass');
+      expect(mockApiFetch).toHaveBeenCalledWith('/password', 'DELETE', {
+        current_password: 'old-pass',
+      });
+    });
+  });
+
+  describe('consent and cloud connection', () => {
+    it('setTelemetryConsent sends PUT /consent_telemetry with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setTelemetryConsent(true);
+      expect(mockApiFetch).toHaveBeenCalledWith('/consent_telemetry', 'PUT', { enabled: true });
+    });
+
+    it('setSupportBundleConsent sends PUT /consent_support_bundle with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setSupportBundleConsent(false);
+      expect(mockApiFetch).toHaveBeenCalledWith('/consent_support_bundle', 'PUT', {
+        enabled: false,
+      });
+    });
+
+    it('setCloudConnectionEnabled sends PUT /cloud_connection with enabled', async () => {
+      mockApiFetch.mockResolvedValue(undefined);
+      await setCloudConnectionEnabled(true);
+      expect(mockApiFetch).toHaveBeenCalledWith('/cloud_connection', 'PUT', { enabled: true });
     });
   });
 

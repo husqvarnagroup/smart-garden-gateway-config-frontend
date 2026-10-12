@@ -4,13 +4,18 @@
 
 import { delay, http, HttpResponse } from 'msw';
 
+const DEFAULT_PASSWORD = 'pass1234';
+
 const MOCK_USER = {
-  password: 'pass1234',
+  password: DEFAULT_PASSWORD,
   session: 'mock-session-123',
 };
 
 let websocketEnabled = false;
 let sshEnabled = false;
+let cloudConnectionEnabled = true;
+let telemetryConsent = false;
+let supportBundleConsent = false;
 
 const requireSession = (request: Request) => {
   const session = request.headers.get('X-Session');
@@ -35,6 +40,30 @@ export const handlers = [
     const denied = requireSession(request);
     if (denied) return denied;
     return HttpResponse.json({});
+  }),
+
+  http.put('/password', async ({ request }) => {
+    await delay(400);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { current_password?: string; password?: string };
+    if (body.current_password !== MOCK_USER.password) {
+      return HttpResponse.json({ message: 'Invalid password' }, { status: 401 });
+    }
+    MOCK_USER.password = body.password ?? MOCK_USER.password;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.delete('/password', async ({ request }) => {
+    await delay(400);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { current_password?: string };
+    if (body.current_password !== MOCK_USER.password) {
+      return HttpResponse.json({ message: 'Invalid password' }, { status: 401 });
+    }
+    MOCK_USER.password = DEFAULT_PASSWORD;
+    return new HttpResponse(null, { status: 204 });
   }),
 
   http.get('/timezone_list', async ({ request }) => {
@@ -131,6 +160,54 @@ export const handlers = [
     if (denied) return denied;
     const body = (await request.json()) as { enable: boolean };
     websocketEnabled = body.enable;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/cloud_connection', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: cloudConnectionEnabled });
+  }),
+
+  http.put('/cloud_connection', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { enabled: boolean };
+    cloudConnectionEnabled = body.enabled;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/consent_telemetry', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: telemetryConsent });
+  }),
+
+  http.put('/consent_telemetry', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { enabled: boolean };
+    telemetryConsent = body.enabled;
+    return new HttpResponse(null, { status: 204 });
+  }),
+
+  http.get('/consent_support_bundle', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    return HttpResponse.json({ enabled: supportBundleConsent });
+  }),
+
+  http.put('/consent_support_bundle', async ({ request }) => {
+    await delay(300);
+    const denied = requireSession(request);
+    if (denied) return denied;
+    const body = (await request.json()) as { enabled: boolean };
+    supportBundleConsent = body.enabled;
     return new HttpResponse(null, { status: 204 });
   }),
 

@@ -42,6 +42,7 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
             [
               '/login',
               '/logout',
+              '/password',
               '/wifi',
               '/wifi_list',
               '/timezone',
@@ -53,6 +54,9 @@ export const createViteConfig = (env: Record<string, string> = {}) => ({
               '/ssh_access_enable',
               '/ssh_access_credentials',
               '/licenses',
+              '/consent_telemetry',
+              '/consent_support_bundle',
+              '/cloud_connection',
             ].map((path) => [
               path,
               { target: env.VITE_API_BASE_URL, changeOrigin: true, secure: false },
