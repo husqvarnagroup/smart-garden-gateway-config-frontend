@@ -30,7 +30,7 @@ error.update: 'Betg pudì actualisar {{feature}}'
 homekit.description: 'HomeKit lubescha be in singul pairing cun quest GARDENA smart Gateway. Sche ti vuls definir in nov pairing stos ti redefinir il pairing existent.'
 homekit.label: 'Apple HomeKit'
 licenses: 'Licenzas'
-localApi.label: 'API locala'
+localApi.label: 'Connectivitad'
 login.password.label: 'Pled-clav'
 login.password.placeholder: "Pled-clav d'administraziun"
 network.divider: 'u'
@@ -46,7 +46,7 @@ network.security.label: 'Segirezza'
 network.security.none: 'Nagin'
 password.confirm.label: 'Confermar il nov pled-clav'
 password.current.label: 'Pled-clav actual'
-password.description: 'Vegn duvrà per s’annunziar en questa configuraziun da la passarella. Tegna el a segir.'
+password.description: 'Pled-clav per s’annunziar en questa interfatscha da configuraziun. Tscherna in pled-clav segir.'
 password.heading: 'Parameters dal pled-clav'
 password.label: 'Pled-clav'
 password.lengthInvalid: 'Il pled-clav sto avair tranter 8 e 50 caracters'
@@ -65,11 +65,11 @@ success.save: 'Memorisà cun success'
 success.update: '{{feature}} actualisà'
 supportBundle.description: "Permetta da crear rapports diagnostics detagliads cura ch'in problem vegn constatà, per pudair analisar e schliar problems pli effizientamain."
 supportBundle.label: 'Pachet da support'
-telemetry.description: "Il gateway rimna cuntinuadamain protocols d'errur e metricas da prestaziun anonimisads e als trametta al cloud per percorscher baud problems e meglierar la stabilitad da l'apparat."
+telemetry.description: "Lubescha al gateway da rimnar cuntinuadamain protocols d'errur e metricas da prestaziun anonimisads e da trametter quels al cloud per percorscher baud problems e meglierar la stabilitad da l'apparat."
 telemetry.label: 'Telemetria'
 timezone.label: "Zona d'urari"
 timezone.notfound: "Nagina zona d'urari chattada"
 title: 'Configuraziun da la passarella'
 version: 'Versiun'
 websocket.description: "Activescha l'API WebSocket locala, uschia che sistems da terzas partidas en Vossa rait, sco plattafurmas d'automatisaziun da chasa, pon controllar Voss apparats directamain senza il cloud."
-websocket.label: 'Sustegn WebSocket'
+websocket.label: 'API locala'
