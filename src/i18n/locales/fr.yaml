@@ -63,9 +63,9 @@ success.enable: '{{feature}} activé'
 success.reset: 'Réinitialisation de {{feature}} réussie'
 success.save: 'Enregistrement réussi'
 success.update: '{{feature}} mis à jour'
-supportBundle.description: "Autorisez la création de rapports de diagnostic détaillés lorsqu'un problème est détecté afin de faciliter l'analyse et la résolution des problèmes."
+supportBundle.description: "Permet la création de rapports de diagnostic détaillés lorsqu'un problème est détecté afin de faciliter l'analyse et la résolution des problèmes."
 supportBundle.label: 'Ensemble de support'
-telemetry.description: "Autorisez la gateway à collecter en continu des journaux d'erreurs et des métriques de performance anonymisés et à les envoyer au cloud afin de détecter rapidement les problèmes et d'améliorer la stabilité de l'appareil."
+telemetry.description: "Autorise la gateway à collecter en continu des journaux d'erreurs et des métriques de performance anonymisés et à les envoyer au cloud afin de détecter rapidement les problèmes et d'améliorer la stabilité de l'appareil."
 telemetry.label: 'Télémétrie'
 timezone.label: 'Fuseau horaire'
 timezone.notfound: 'Aucun fuseau horaire trouvé'
